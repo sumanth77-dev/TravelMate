@@ -134,8 +134,8 @@ h3 { font-size: clamp(1.1rem, 2vw, 1.35rem); }
 }
 .nav-logo {
   font-family: 'Playfair Display', serif;
-  font-size: 1.3rem; font-weight: 700;
-  color: #fff; transition: color var(--ease);
+  font-size: 1.5rem; font-weight: 900;
+  color: #eeeaea; transition: color var(--ease);
 }
 .navbar.solid .nav-logo { color: var(--teal-dark); }
 .nav-logo .dot { color: var(--gold); }
