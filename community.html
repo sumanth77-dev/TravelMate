@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
 
 <style>
 :root{
@@ -27,7 +28,7 @@ body{
 
 /* CONTAINER */
 .container{
-  max-width:1000px;
+  max-width:2000px;
   margin:40px auto;
   padding:20px;
 }
@@ -67,14 +68,19 @@ body{
 /* Gallery layout tweaks */
 .main-image-wrap { grid-column: 1 / -1; }
 #mainImage { width: 100%; height: 420px; object-fit: cover; border-radius: 18px; }
-.thumb-row { display:flex; gap:10px; flex-wrap:nowrap; overflow-x:auto; padding:6px 2px; }
-.thumb { width:120px; height:120px; object-fit:cover; border-radius:8px; cursor:pointer; border:2px solid transparent; flex:0 0 auto; }
-.thumb:hover { border-color:var(--primary); transform:translateY(-3px); }
-.thumb.hidden { display:none; }
-
-/* Show more button styles */
-.show-more { border:2px solid var(--primary); color:var(--primary); background:transparent; border-radius:10px; padding:8px 14px; transition:all .18s ease; }
-.show-more:hover { background:var(--primary); color:var(--white); transform:translateY(-3px); }
+/* Place hero overlay (title, location, rating on image) */
+.place-hero-overlay {
+  position: absolute; left: 24px; right: 24px; bottom: 24px;
+  color: #fff; text-shadow: 0 4px 20px rgba(0,0,0,.45);
+}
+.place-hero-overlay .overlay-title{
+  font-size: 2.4rem; margin: 0 0 8px; font-weight:700; font-family: 'Playfair Display', serif;
+}
+.place-hero-overlay .overlay-meta{ display:flex; gap:12px; align-items:center; font-size:0.95rem; }
+.place-hero-overlay .location{ display:inline-flex; align-items:center; gap:8px; background: rgba(0,0,0,0.28); padding:6px 10px; border-radius:999px; }
+.place-hero-overlay .rating-pill{ display:inline-flex; align-items:center; gap:6px; background: rgba(0,0,0,0.28); padding:6px 10px; border-radius:999px; }
+.place-hero-overlay .rating-pill i{ color: #ffd166; }
+.place-hero-overlay .review-count{ color: rgba(255,255,255,0.9); margin-left:6px; font-weight:500; }
 
 /* Lightbox modal */
 .img-modal { position:fixed; inset:0; background:rgba(0,0,0,.85); display:flex; align-items:center; justify-content:center; z-index:9999; visibility:hidden; opacity:0; transition:opacity .18s ease; }
@@ -224,27 +230,47 @@ body{
 
 <body>
 
+ <!-- ══════════════ NAVBAR ══════════════ -->
+  <nav class="navbar transparent" id="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#" class="active">Home</a></li>
+        <!--<li><a href="destinations.html">Destinations</a></li>-->
+        <li><a href="#">Community</a></li>
+        <li><a href="#">Find Guides</a></li>
+        <li><a href="travel-mate-dashboard.html">DashBoard</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="signup.html">Register</a></li>
+        
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
 <div class="container">
 
 <!-- PLACE HEADER -->
 <div class="place-header">
-  <div class="place-title">Bali, Indonesia</div>
+  <div class="gallery">
+      <div class="main-image-wrap" style="position:relative;">
+        <img id="mainImage" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1200&q=90" alt="Main">
+
+        <div class="place-hero-overlay">
+          <div class="overlay-inner">
+            <h1 class="overlay-title">Bali, Indonesia</h1>
+            <div class="overlay-meta">
+              <span class="location"><i class="fas fa-map-marker-alt"></i> Southeast Asia</span>
+              <span class="rating-pill"><i class="fas fa-star"></i> <strong>4.8</strong> <span class="review-count">(2341 reviews)</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
   <div class="place-desc">
     Famous for beaches, temples, waterfalls and vibrant nightlife.
-  </div>
-
-  <div class="gallery">
-      <div class="main-image-wrap">
-        <img id="mainImage" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1200&q=90" alt="Main">
-      </div>
-      <div id="thumbRow" class="thumb-row">
-        <img class="thumb" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80">
-        <img class="thumb" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80">
-        <img class="thumb" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&q=80">
-      </div>
-      <div style="width:100%;text-align:center;margin-top:10px;">
-        <button id="showMoreBtn" class="show-more">Show more</button>
-      </div>
   </div>
 </div>
 
@@ -257,14 +283,57 @@ body{
 <!-- REVIEWS SECTION -->
 <div class="section active" id="reviews">
 
-  <div id="reviewContainer"></div>
+  <div id="reviewContainer">
+    <!-- Existing reviews -->
+    <div class="review-card">
+      <div class="review-user">Aisha Tan</div>
+      <div class="review-rating">
+        <i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star active"></i>
+      </div>
+      <div class="review-text">Amazing beaches and friendly locals — the sunrise at the east coast is unforgettable.</div>
+      <div class="review-actions">
+        <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">8</span></div>
+        <button class="contact-reviewer btn btn-outline" data-reviewer="Aisha Tan" style="margin-left:10px;">Message</button>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-user">Carlos Mendes</div>
+      <div class="review-rating">
+        <i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star"></i>
+      </div>
+      <div class="review-text">Lots of great spots for photos; some areas are crowded but overall a must-visit.</div>
+      <div class="review-actions">
+        <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">14</span></div>
+        <button class="contact-reviewer btn btn-outline" data-reviewer="Carlos Mendes" style="margin-left:10px;">Message</button>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-user">Mei Zhang</div>
+      <div class="review-rating">
+        <i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+      </div>
+      <div class="review-text">Great food and culture; plan for transport time between spots.</div>
+      <div class="review-actions">
+        <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">5</span></div>
+        <button class="contact-reviewer btn btn-outline" data-reviewer="Mei Zhang" style="margin-left:10px;">Message</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ADD REVIEW (placed after reviews) -->
   <div class="add-review" id="addReviewForm">
     <h3>Add Review</h3>
     <input type="text" id="reviewUser" placeholder="Your Name">
+    <select id="reviewRating" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;margin-bottom:10px;">
+      <option value="5">5 — Excellent</option>
+      <option value="4">4 — Very good</option>
+      <option value="3">3 — Good</option>
+      <option value="2">2 — Fair</option>
+      <option value="1">1 — Poor</option>
+    </select>
     <textarea id="reviewText" placeholder="Write your experience..."></textarea>
-    <input type="file" id="reviewImage">
     <button id="submitReview">Submit</button>
   </div>
 
@@ -329,48 +398,34 @@ $("#submitReview").click(function(){
 
   let name=$("#reviewUser").val();
   let text=$("#reviewText").val();
-  let file=$("#reviewImage")[0].files[0];
+  let rating = parseInt($("#reviewRating").val(),10) || 5;
 
   if(name==="" || text===""){
     alert("Fill all fields");
     return;
   }
 
-  let reader=new FileReader();
-  reader.onload=function(e){
+  // build stars
+  let stars='';
+  for(let i=1;i<=5;i++) stars += `<i class="fas fa-star ${i<=rating? 'active':''}"></i>`;
 
-    let reviewHTML=`
-      <div class="review-card">
-        <div class="review-user">${name}</div>
-        <div class="review-text">${text}</div>
-        ${file ? `<img src="${e.target.result}" class="review-img">` : ""}
-        <div class="review-actions">
-          <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">0</span></div>
-          ${name ? `<button class="contact-reviewer btn btn-outline" data-reviewer="${name}" style="margin-left:10px;">Message</button>` : ''}
-        </div>
+  let reviewHTML=`
+    <div class="review-card">
+      <div class="review-user">${name}</div>
+      <div class="review-rating">${stars}</div>
+      <div class="review-text">${text}</div>
+      <div class="review-actions">
+        <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">0</span></div>
+        ${name ? `<button class="contact-reviewer btn btn-outline" data-reviewer="${name}" style="margin-left:10px;">Message</button>` : ''}
       </div>
-    `;
+    </div>
+  `;
 
-    $("#reviewContainer").prepend(reviewHTML);
-    // If the review included an image, add it as a thumbnail to the gallery
-    if(file && e.target && e.target.result){
-      const t = $('<img>').addClass('thumb').attr('src', e.target.result);
-      $('#thumbRow').append(t);
-      // hide extras if over limit
-      $('#thumbRow img').slice(5).addClass('hidden');
-      $('#showMoreBtn').text('Show more');
-    }
-  }
-
-  if(file){
-    reader.readAsDataURL(file);
-  } else {
-    reader.onload({target:{result:""}});
-  }
+  $("#reviewContainer").prepend(reviewHTML);
 
   $("#reviewUser").val("");
   $("#reviewText").val("");
-  $("#reviewImage").val("");
+  $("#reviewRating").val('5');
 
 });
 
@@ -391,11 +446,7 @@ $(document).on("click",".like-btn",function(){
   countElement.text(count);
 });
 
-// Thumbnail click -> set main image or open modal
-$(document).on('click', '.thumb', function(){
-  const src = $(this).attr('src');
-  $('#mainImage').attr('src', src);
-});
+// (no thumbnails — single main image only)
 
 // Click main image to open modal
 if ($('#mainImage').length) {
@@ -411,22 +462,6 @@ $(document).on('click', '#imageModal .close, #imageModal', function(e){
   $('#imageModal').removeClass('open');
 });
 
-// Initialize thumbnails: hide extras beyond 5
-$('#thumbRow img').slice(5).addClass('hidden');
-
-// Show more thumbnails (toggle hidden extras)
-$('#showMoreBtn').click(function(){
-  const hidden = $('.thumb.hidden');
-  if(hidden.length){ hidden.removeClass('hidden'); $(this).text('Show less'); }
-  else { $('#thumbRow img').slice(5).addClass('hidden'); $(this).text('Show more'); }
-});
-
-// Show more thumbnails (toggle hidden extras)
-$('#showMoreBtn').click(function(){
-  const hidden = $('.thumb.hidden');
-  if(hidden.length){ hidden.removeClass('hidden'); $(this).text('Show less'); }
-  else { $('#thumbRow img').slice(5).addClass('hidden'); $(this).text('Show more'); }
-});
 
 // Contact reviewer - open message modal
 $(document).on('click', '.contact-reviewer', function(){
