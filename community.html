@@ -350,31 +350,8 @@ body{
 
 <div class="page-wrap">
 
-  <!-- PLACE HEADER -->
-  <div class="place-header">
-    <div class="main-image-wrap">
-      <img id="mainImage" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1400&q=90" alt="Bali">
-      <div class="place-hero-overlay">
-        <h1 class="overlay-title">Bali, Indonesia</h1>
-        <div class="overlay-meta">
-          <span class="location"><i class="fas fa-map-marker-alt"></i> Southeast Asia</span>
-          <span class="rating-pill"><i class="fas fa-star"></i> <strong>4.8</strong> <span class="review-count">(2341 reviews)</span></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Thumbnail strip — different photos of Bali -->
-    <div class="thumb-strip">
-      <img class="active" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&q=80" alt="Bali Rice Terraces" data-full="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1400&q=90">
-      <img src="https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=400&q=80" alt="Bali Temple" data-full="https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=1400&q=90">
-      <img src="https://images.unsplash.com/photo-1604928141064-207cea6f571f?w=400&q=80" alt="Bali Beach" data-full="https://images.unsplash.com/photo-1604928141064-207cea6f571f?w=1400&q=90">
-      <img src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=400&q=80" alt="Bali Sunset" data-full="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=1400&q=90">
-      <img src="https://images.unsplash.com/photo-1570789210967-2cac24afeb00?w=400&q=80" alt="Bali Waterfall" data-full="https://images.unsplash.com/photo-1570789210967-2cac24afeb00?w=1400&q=90">
-      <img src="https://images.unsplash.com/photo-1559628376-f3fe5f782a2e?w=400&q=80" alt="Ubud Monkey Forest" data-full="https://images.unsplash.com/photo-1559628376-f3fe5f782a2e?w=1400&q=90">
-    </div>
-
-    <div class="place-desc">Famous for beaches, temples, waterfalls and vibrant nightlife.</div>
-  </div>
+  <!-- PLACE HEADER (dynamic) -->
+  <div class="place-header" id="placeHeader"></div>
 
   <!-- TABS -->
   <div class="tabs">
@@ -516,6 +493,113 @@ body{
 </div><!-- /page-wrap -->
 
 <script>
+  // Dynamic place header rendering
+  const places = {
+    bali: {
+      title: "Bali, Indonesia",
+      location: "Indonesia",
+      rating: "4.8",
+      reviews: 2340,
+      mainImage: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1400&q=90",
+      desc: "Famous for beaches, temples, waterfalls and vibrant nightlife.",
+      thumbs: [
+        {src:"https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&q=80", alt:"Bali Rice Terraces", full:"https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=400&q=80", alt:"Bali Temple", full:"https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1604928141064-207cea6f571f?w=400&q=80", alt:"Bali Beach", full:"https://images.unsplash.com/photo-1604928141064-207cea6f571f?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=400&q=80", alt:"Bali Sunset", full:"https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1570789210967-2cac24afeb00?w=400&q=80", alt:"Bali Waterfall", full:"https://images.unsplash.com/photo-1570789210967-2cac24afeb00?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1559628376-f3fe5f782a2e?w=400&q=80", alt:"Ubud Monkey Forest", full:"https://images.unsplash.com/photo-1559628376-f3fe5f782a2e?w=1400&q=90"}
+      ]
+    },
+    paris: {
+      title: "Paris, France",
+      location: "France",
+      rating: "4.9",
+      reviews: 5621,
+      mainImage: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1400&q=90",
+      desc: "Known for the Eiffel Tower, art, cafes, and romantic atmosphere.",
+      thumbs: [
+        {src:"https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=400&q=80", alt:"Eiffel Tower", full:"https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1464983953574-0892a7167e67?w=400&q=80", alt:"Louvre Museum", full:"https://images.unsplash.com/photo-1464983953574-0892a7167e67?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1465101046530-73398c7f3b43?w=400&q=80", alt:"Seine River", full:"https://images.unsplash.com/photo-1465101046530-73398c7f3b43?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&q=80", alt:"Montmartre", full:"https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1400&q=90"}
+      ]
+    },
+    swiss: {
+      title: "Swiss Alps, Switzerland",
+      location: "Switzerland",
+      rating: "4.7",
+      reviews: 1980,
+      mainImage: "https://images.unsplash.com/photo-1472791108553-c9405341e398?w=1400&q=90",
+      desc: "Breathtaking mountain views, skiing, and charming villages.",
+      thumbs: [
+        {src:"https://images.unsplash.com/photo-1472791108553-c9405341e398?w=400&q=80", alt:"Swiss Alps", full:"https://images.unsplash.com/photo-1472791108553-c9405341e398?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1465101046530-73398c7f3b43?w=400&q=80", alt:"Lake Geneva", full:"https://images.unsplash.com/photo-1465101046530-73398c7f3b43?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1464983953574-0892a7167e67?w=400&q=80", alt:"Swiss Village", full:"https://images.unsplash.com/photo-1464983953574-0892a7167e67?w=1400&q=90"}
+      ]
+    },
+    maldives: {
+      title: "Maldives Islands",
+      location: "Maldives",
+      rating: "5.0",
+      reviews: 4210,
+      mainImage: "https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=1400&q=90",
+      desc: "Crystal clear waters, luxury resorts, and stunning coral reefs.",
+      thumbs: [
+        {src:"https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=400&q=80", alt:"Maldives Beach", full:"https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=400&q=80", alt:"Maldives Resort", full:"https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=400&q=80", alt:"Maldives Sunset", full:"https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=1400&q=90"}
+      ]
+    },
+    tokyo: {
+      title: "Tokyo, Japan",
+      location: "Japan",
+      rating: "4.8",
+      reviews: 6800,
+      mainImage: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1400&q=90",
+      desc: "A blend of tradition and technology, famous for cherry blossoms and vibrant city life.",
+      thumbs: [
+        {src:"https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=80", alt:"Tokyo City", full:"https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1465101178521-c1f9c7e7c1b0?w=400&q=80", alt:"Shibuya Crossing", full:"https://images.unsplash.com/photo-1465101178521-c1f9c7e7c1b0?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&q=80", alt:"Cherry Blossoms", full:"https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1400&q=90"}
+      ]
+    },
+    queenstown: {
+      title: "Queenstown, New Zealand",
+      location: "New Zealand",
+      rating: "4.9",
+      reviews: 3102,
+      mainImage: "https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=1400&q=90",
+      desc: "Adventure capital with bungee jumping, skiing, and beautiful lakes.",
+      thumbs: [
+        {src:"https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=400&q=80", alt:"Queenstown Adventure", full:"https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=400&q=80", alt:"Queenstown Lake", full:"https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=1400&q=90"},
+        {src:"https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=400&q=80", alt:"Queenstown Ski", full:"https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=1400&q=90"}
+      ]
+    }
+  };
+
+  (function(){
+    const key = (new URLSearchParams(window.location.search).get('place') || 'bali').toLowerCase();
+    const place = places[key] || places['bali'];
+    const thumbsHtml = place.thumbs.map((t, i) =>
+      `<img ${i===0?'class="active"':''} src="${t.src}" alt="${t.alt}" data-full="${t.full}">`
+    ).join('');
+    document.getElementById('placeHeader').innerHTML = `
+      <div class="main-image-wrap">
+        <img id="mainImage" src="${place.mainImage}" alt="${place.title}">
+        <div class="place-hero-overlay">
+          <h1 class="overlay-title">${place.title}</h1>
+          <div class="overlay-meta">
+            <span class="location"><i class="fas fa-map-marker-alt"></i> ${place.location}</span>
+            <span class="rating-pill"><i class="fas fa-star"></i> <strong>${place.rating}</strong> <span class="review-count">(${place.reviews} reviews)</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="thumb-strip">${thumbsHtml}</div>
+      <div class="place-desc">${place.desc}</div>
+    `;
+  })();
      window.addEventListener('scroll', function() {
     const navbar = document.getElementById('navbar');
     if(window.scrollY > 40) {
