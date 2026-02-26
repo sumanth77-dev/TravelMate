@@ -132,7 +132,7 @@
         <div class="dest-card fade-up delay-1">
           <div class="dest-card-img">
             <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80" alt="Bali">
-            <span class="card-badge badge badge-teal">Beach</span>
+            <span class="card-badge badge-teal">Beach</span>
             <button class="save-btn" onclick="toggleSave(this)"><i class="far fa-heart"></i></button>
           </div>
           <div class="dest-card-body">
@@ -437,17 +437,31 @@
     });
 
     /* ── Save toggle ── */
-    function toggleSave(btn) {
-      btn.classList.toggle('saved');
-      const icon = btn.querySelector('i');
-      if (btn.classList.contains('saved')) {
-        icon.className = 'fas fa-heart';
-        showToast('Destination saved!', 'success');
-      } else {
-        icon.className = 'far fa-heart';
-        showToast('Removed from saved', 'info');
-      }
-    }
+    // ✅ NEW — saves to localStorage so dashboard can read it
+function toggleSave(btn) {
+  const card  = btn.closest('.dest-card');
+  const name  = card.querySelector('.dest-title').textContent.trim();
+  const img   = card.querySelector('img').src;
+  const loc   = card.querySelector('.dest-loc').textContent.replace(/[^\w\s,]/g, '').trim();
+  const badge = card.querySelector('.card-badge')?.textContent.trim() || '';
+
+  let wishlist = JSON.parse(localStorage.getItem('tm_wishlist') || '[]');
+  const idx = wishlist.findIndex(d => d.name === name);
+
+  if (idx === -1) {
+    wishlist.push({ name, img, loc, badge });
+    localStorage.setItem('tm_wishlist', JSON.stringify(wishlist));
+    btn.classList.add('saved');
+    btn.querySelector('i').className = 'fas fa-heart';
+    showToast('❤️ Added to Wishlist!', 'success');
+  } else {
+    wishlist.splice(idx, 1);
+    localStorage.setItem('tm_wishlist', JSON.stringify(wishlist));
+    btn.classList.remove('saved');
+    btn.querySelector('i').className = 'far fa-heart';
+    showToast('Removed from Wishlist', 'info');
+  }
+}
 
     /* ── Counter animation ── */
     function animateCounters() {
@@ -490,7 +504,21 @@
       setTimeout(() => toast.classList.add('show'), 10);
       setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3000);
     }
+
+    /* Add to wishlist */
+    function addToWishlist(destination) {
+      // Get the current wishlist from localStorage
+      let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+      // Add the new destination if it's not already in the wishlist
+      if (!wishlist.includes(destination)) {
+        wishlist.push(destination);
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        alert(`${destination} has been added to your wishlist!`);
+      } else {
+        alert(`${destination} is already in your wishlist.`);
+      }
+    }
   </script>
 </body>
 </html>
-  
