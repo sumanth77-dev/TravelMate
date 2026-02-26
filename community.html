@@ -19,477 +19,647 @@
   --text:#1f2937;
 }
 
+*, *::before, *::after { box-sizing: border-box; }
+
 body{
   font-family:'Poppins',sans-serif;
   background:var(--light);
   margin:0;
+  padding:0;
   color:var(--text);
 }
 
-/* CONTAINER */
-.container{
-  max-width:2000px;
-  margin:40px auto;
-  padding:20px;
+/* Full-width container */
+.page-wrap{
+  width:100%;
+  max-width:100%;
+  padding: 88px 40px 30px; /* top=88px clears 68px fixed navbar + gap */
 }
 
 /* PLACE HEADER */
 .place-header{
   background:white;
   border-radius:25px;
-  padding:25px;
+  padding:0 0 20px;
   box-shadow:0 10px 30px rgba(34,197,94,0.15);
+  overflow:hidden;
 }
 
-.place-title{
-  font-size:28px;
-  font-weight:600;
-}
-
-.place-desc{
-  margin-top:10px;
-  color:#555;
-}
-
-/* IMAGE GALLERY */
-.gallery{
-  display:block;
-  gap:10px;
-  margin-top:20px;
-}
-
-.gallery img{
+.main-image-wrap { position:relative; width:100%; }
+#mainImage {
   width:100%;
-  height:200px;
+  height:520px;
   object-fit:cover;
-  border-radius:20px;
+  border-radius:0;
+  cursor:pointer;
+  display:block;
+  transition: opacity .3s ease;
 }
 
-/* Gallery layout tweaks */
-.main-image-wrap { grid-column: 1 / -1; }
-#mainImage { width: 100%; height: 420px; object-fit: cover; border-radius: 18px; }
-/* Place hero overlay (title, location, rating on image) */
 .place-hero-overlay {
-  position: absolute; left: 24px; right: 24px; bottom: 24px;
-  color: #fff; text-shadow: 0 4px 20px rgba(0,0,0,.45);
+  position:absolute; left:30px; right:30px; bottom:28px;
+  color:#fff; text-shadow:0 4px 20px rgba(0,0,0,.5);
+  pointer-events:none;
 }
 .place-hero-overlay .overlay-title{
-  font-size: 2.4rem; margin: 0 0 8px; font-weight:700; font-family: 'Playfair Display', serif;
+  font-size:2.8rem; margin:0 0 10px; font-weight:700; line-height:1.15;
 }
-.place-hero-overlay .overlay-meta{ display:flex; gap:12px; align-items:center; font-size:0.95rem; }
-.place-hero-overlay .location{ display:inline-flex; align-items:center; gap:8px; background: rgba(0,0,0,0.28); padding:6px 10px; border-radius:999px; }
-.place-hero-overlay .rating-pill{ display:inline-flex; align-items:center; gap:6px; background: rgba(0,0,0,0.28); padding:6px 10px; border-radius:999px; }
-.place-hero-overlay .rating-pill i{ color: #ffd166; }
-.place-hero-overlay .review-count{ color: rgba(255,255,255,0.9); margin-left:6px; font-weight:500; }
+.place-hero-overlay .overlay-meta{ display:flex; gap:12px; align-items:center; font-size:0.97rem; flex-wrap:wrap; }
+.place-hero-overlay .location{
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(0,0,0,0.32); padding:6px 14px; border-radius:999px;
+  pointer-events:all;
+}
+.place-hero-overlay .rating-pill{
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(0,0,0,0.32); padding:6px 14px; border-radius:999px;
+  pointer-events:all;
+}
+.place-hero-overlay .rating-pill i{ color:#ffd166; }
+.place-hero-overlay .review-count{ color:rgba(255,255,255,0.9); margin-left:4px; font-weight:500; }
 
-/* Lightbox modal */
-.img-modal { position:fixed; inset:0; background:rgba(0,0,0,.85); display:flex; align-items:center; justify-content:center; z-index:9999; visibility:hidden; opacity:0; transition:opacity .18s ease; }
-.img-modal.open { visibility:visible; opacity:1; }
-.img-modal img { max-width:92%; max-height:92%; border-radius:10px; }
-.img-modal .close { position:absolute; top:20px; right:24px; color:#fff; font-size:22px; cursor:pointer; }
+/* Thumbnail strip */
+.thumb-strip{
+  display:flex;
+  gap:10px;
+  padding:14px 20px 0;
+  overflow-x:auto;
+  scrollbar-width:thin;
+}
+.thumb-strip img{
+  width:120px;
+  height:76px;
+  object-fit:cover;
+  border-radius:12px;
+  cursor:pointer;
+  border:3px solid transparent;
+  flex-shrink:0;
+  transition:border-color .2s, transform .15s;
+}
+.thumb-strip img.active{ border-color:var(--primary); transform:scale(1.04); }
+.thumb-strip img:hover{ border-color:#86efac; }
+
+.place-desc{ padding:14px 22px 0; color:#555; font-size:0.97rem; }
+
+/* Lightbox */
+.img-modal{ position:fixed; inset:0; background:rgba(0,0,0,.88); display:flex; align-items:center; justify-content:center; z-index:9999; visibility:hidden; opacity:0; transition:opacity .18s ease; }
+.img-modal.open{ visibility:visible; opacity:1; }
+.img-modal img{ max-width:92%; max-height:92%; border-radius:10px; }
+.img-modal .close{ position:absolute; top:20px; right:24px; color:#fff; font-size:30px; cursor:pointer; line-height:1; z-index:10000; }
 
 /* TABS */
 .tabs{
-  margin-top:40px;
+  margin-top:36px;
   display:flex;
-  gap:20px;
-  border-bottom:2px solid #ddd;
+  gap:0;
+  border-bottom:2px solid #e5e7eb;
 }
-
 .tab-btn{
-  padding:10px 20px;
+  padding:12px 28px;
   cursor:pointer;
   font-weight:500;
+  font-size:0.95rem;
   border-bottom:3px solid transparent;
+  transition:all .2s;
+  margin-bottom:-2px;
 }
-
 .tab-btn.active{
   border-color:var(--primary);
   color:var(--primary);
 }
+.tab-btn:hover:not(.active){ color:var(--primary-dark); }
 
-/* SECTION */
-.section{
-  display:none;
-  margin-top:30px;
-}
+.section{ display:none; margin-top:28px; }
+.section.active{ display:block; }
 
-.section.active{
-  display:block;
-}
-
-/* REVIEW CARD */
+/* ── REVIEW CARD ── */
 .review-card{
   background:white;
-  padding:20px;
+  padding:20px 22px;
   border-radius:20px;
-  margin-bottom:20px;
-  box-shadow:0 5px 20px rgba(0,0,0,0.05);
+  margin-bottom:18px;
+  box-shadow:0 4px 18px rgba(0,0,0,0.07);
+  position:relative;
 }
 
-.review-user{
+.review-rating-badge{
+  position:absolute;
+  top:18px;
+  right:18px;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  border-radius:20px;
+  padding:5px 12px;
+  font-size:0.82rem;
   font-weight:600;
+  color:#ea580c;
+  display:flex;
+  align-items:center;
+  gap:4px;
 }
+.review-rating-badge i{ font-size:0.78rem; }
 
-.review-rating i{
-  color:#ddd;
+.review-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+  padding-right:100px;
 }
-
-.review-rating i.active{
-  color:var(--primary);
+.review-avatar{
+  width:44px; height:44px; border-radius:50%;
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  color:#fff; display:flex; align-items:center; justify-content:center;
+  font-weight:700; font-size:1.15rem; flex-shrink:0;
 }
+.review-user{ font-weight:600; font-size:1rem; }
+.review-date{ font-size:0.78rem; color:#9ca3af; }
 
-.review-img{
-  width:100%;
-  margin-top:10px;
-  border-radius:15px;
+.review-text{
+  color:#374151; font-size:0.93rem; line-height:1.65; margin-bottom:14px;
 }
 
 .review-actions{
-  margin-top:10px;
-  display:flex;
-  gap:15px;
+  display:flex; align-items:center; gap:14px; margin-top:4px;
 }
-
 .like-btn{
-  cursor:pointer;
-  color:#888;
+  cursor:pointer; color:#9ca3af; font-size:0.88rem;
+  display:flex; align-items:center; gap:5px; transition:color .2s; user-select:none;
+}
+.like-btn:hover{ color:#ef4444; }
+.like-btn.liked{ color:#ef4444; }
+
+.msg-icon-btn{
+  background:#e6f9ee; border:none; border-radius:50%;
+  width:34px; height:34px; display:flex; align-items:center; justify-content:center;
+  color:var(--primary); font-size:1rem; cursor:pointer;
+  transition:background .2s, transform .15s; flex-shrink:0;
+}
+.msg-icon-btn:hover{ background:#bbf7d0; transform:scale(1.1); }
+
+/* Inline message compose box */
+.inline-msg-box{
+  display:none;
+  margin-top:14px;
+  background:#f0fdf4;
+  border-radius:14px;
+  padding:14px 16px;
+  border:1px solid #bbf7d0;
+}
+.inline-msg-box textarea{
+  width:100%; border:1px solid #d1fae5; border-radius:10px;
+  padding:9px 12px; font-family:'Poppins',sans-serif; font-size:0.88rem;
+  resize:none; outline:none; background:#fff; transition:border .2s;
+}
+.inline-msg-box textarea:focus{ border-color:var(--primary); }
+.inline-msg-actions{
+  display:flex; justify-content:flex-end; gap:8px; margin-top:8px;
+}
+.inline-msg-actions .btn-send{
+  background:var(--primary); color:#fff; border:none;
+  padding:7px 20px; border-radius:50px; font-size:0.85rem; cursor:pointer; transition:background .2s;
+}
+.inline-msg-actions .btn-send:hover{ background:var(--primary-dark); }
+.inline-msg-actions .btn-cancel{
+  background:#e5e7eb; color:#374151; border:none;
+  padding:7px 14px; border-radius:50px; font-size:0.85rem; cursor:pointer;
 }
 
-.like-btn.liked{
-  color:red;
+/* Sent messages thread (shows under compose) */
+.msg-thread{
+  margin-top:12px;
+  display:none;
+  flex-direction:column;
+  gap:8px;
+}
+.msg-bubble-wrap{
+  display:flex;
+  justify-content:flex-end;
+}
+.msg-bubble{
+  background:#dcfce7;
+  border:1px solid #bbf7d0;
+  border-radius:16px 16px 4px 16px;
+  padding:9px 14px;
+  font-size:0.86rem;
+  color:#14532d;
+  max-width:75%;
+  word-break:break-word;
+  position:relative;
+}
+.msg-bubble .msg-time{
+  font-size:0.72rem;
+  color:#6b7280;
+  margin-top:4px;
+  text-align:right;
+}
+.msg-sent-notice{
+  color:var(--primary); font-size:0.82rem; margin-top:6px; display:none; font-weight:500;
+  display:none; align-items:center; gap:5px;
 }
 
 /* ADD REVIEW */
 .add-review{
-  background:white;
-  padding:20px;
-  border-radius:20px;
-  margin-bottom:30px;
+  background:white; padding:24px; border-radius:20px; margin-bottom:30px;
+  box-shadow:0 4px 18px rgba(0,0,0,0.06);
 }
-
+.add-review h3{ margin-top:0; font-size:1.1rem; color:var(--primary-dark); margin-bottom:16px; }
 .add-review input,
-.add-review textarea{
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
-  border-radius:15px;
-  border:1px solid #ddd;
+.add-review textarea,
+.add-review select{
+  width:100%; padding:10px 14px; margin-bottom:12px; border-radius:12px;
+  border:1px solid #ddd; font-family:'Poppins',sans-serif; font-size:0.9rem;
+  outline:none; transition:border .2s;
 }
-
+.add-review input:focus, .add-review textarea:focus, .add-review select:focus{ border-color:var(--primary); }
 .add-review button{
-  background:var(--primary);
-  color:white;
-  border:none;
-  padding:10px 20px;
-  border-radius:50px;
-  cursor:pointer;
+  background:var(--primary); color:white; border:none; padding:11px 28px;
+  border-radius:50px; cursor:pointer; font-size:0.93rem; font-family:'Poppins',sans-serif; transition:background .2s;
 }
-
-.add-review button:hover{
-  background:var(--primary-dark);
-}
+.add-review button:hover{ background:var(--primary-dark); }
 
 /* GUIDE CARD */
 .guide-card{
-  background:white;
-  padding:20px;
-  border-radius:20px;
-  margin-bottom:20px;
-  display:flex;
-  align-items:center;
-  gap:15px;
-  box-shadow:0 5px 20px rgba(0,0,0,0.05);
+  background:white; padding:18px 22px; border-radius:20px; margin-bottom:18px;
+  display:flex; align-items:center; gap:16px; box-shadow:0 4px 18px rgba(0,0,0,0.06);
 }
-
-.guide-card img{
-  width:60px;
-  height:60px;
-  border-radius:50%;
-  object-fit:cover;
-}
-
-.guide-name{
-  font-weight:600;
-}
-
+.guide-card img{ width:60px; height:60px; border-radius:50%; object-fit:cover; }
+.guide-name{ font-weight:600; font-size:1rem; }
+.guide-sub{ font-size:0.84rem; color:#6b7280; margin-top:2px; }
 .guide-btn{
-  margin-left:auto;
-  background:var(--primary);
-  color:white;
-  padding:8px 15px;
-  border-radius:50px;
-  cursor:pointer;
+  margin-left:auto; background:var(--primary); color:white; padding:9px 20px;
+  border-radius:50px; cursor:pointer; font-size:0.88rem; border:none; transition:background .2s;
 }
+.guide-btn:hover{ background:var(--primary-dark); }
 
-.guide-btn:hover{
-  background:var(--primary-dark);
+/* Responsive */
+@media(max-width:768px){
+  .page-wrap{ padding: 88px 12px 16px; }
+  #mainImage{ height:260px; }
+  .place-hero-overlay .overlay-title{ font-size:1.6rem; }
+  .thumb-strip img{ width:80px; height:54px; }
 }
 </style>
 </head>
 
 <body>
 
- <!-- ══════════════ NAVBAR ══════════════ -->
-  <nav class="navbar transparent" id="navbar">
-    <div class="navbar-inner">
-      <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="index.html" class="active">Home</a></li>
-        <!--<li><a href="destinations.html">Destinations</a></li>-->
-        <li><a href="main_community.html">Community</a></li>
-        <li><a href="#">Find Guides</a></li>
-        <li><a href="travel-mate-dashboard.html">DashBoard</a></li>
-        <li><a href="login.html">Login</a></li>
-        <li><a href="signup.html">Register</a></li>
-        
-      </ul>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div id="pointsCounter" class="badge badge-teal">0 pts</div>
-        </div>
-      <button class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
+<!-- Back Button (fixed below navbar) -->
+<!-- Back Button — paste this right after the closing </nav> tag -->
+<a href="index.html" style="
+  position: fixed;
+  top: 68px;
+  left: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #f8f5f5;
+  color: #080606;
+  border-radius: 0 8px 8px 0;
+  box-shadow: 2px 2px 8px rgba(235, 229, 229, 0.842);
+  text-decoration: none;
+  font-size: 1rem;
+  transition: background 0.2s;
+">
+  <i class="fas fa-arrow-left"></i>
+</a>
+
+<!-- NAVBAR -->
+<nav class="navbar transparent" id="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="main_community.html">Community</a></li>
+      <li><a href="#">Find Guides</a></li>
+      <li><a href="travel-mate-dashboard.html">DashBoard</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="signup.html">Register</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div id="pointsCounter" class="badge badge-teal">0 pts</div>
     </div>
-  </nav>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
 
-<div class="container">
+<div class="page-wrap">
 
-<!-- PLACE HEADER -->
-<div class="place-header">
-  <div class="gallery">
-      <div class="main-image-wrap" style="position:relative;">
-        <img id="mainImage" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1200&q=90" alt="Main">
+  <!-- PLACE HEADER -->
+  <div class="place-header">
+    <div class="main-image-wrap">
+      <img id="mainImage" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1400&q=90" alt="Bali">
+      <div class="place-hero-overlay">
+        <h1 class="overlay-title">Bali, Indonesia</h1>
+        <div class="overlay-meta">
+          <span class="location"><i class="fas fa-map-marker-alt"></i> Southeast Asia</span>
+          <span class="rating-pill"><i class="fas fa-star"></i> <strong>4.8</strong> <span class="review-count">(2341 reviews)</span></span>
+        </div>
+      </div>
+    </div>
 
-        <div class="place-hero-overlay">
-          <div class="overlay-inner">
-            <h1 class="overlay-title">Bali, Indonesia</h1>
-            <div class="overlay-meta">
-              <span class="location"><i class="fas fa-map-marker-alt"></i> Southeast Asia</span>
-              <span class="rating-pill"><i class="fas fa-star"></i> <strong>4.8</strong> <span class="review-count">(2341 reviews)</span></span>
-            </div>
+    <!-- Thumbnail strip — different photos of Bali -->
+    <div class="thumb-strip">
+      <img class="active" src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&q=80" alt="Bali Rice Terraces" data-full="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1400&q=90">
+      <img src="https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=400&q=80" alt="Bali Temple" data-full="https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=1400&q=90">
+      <img src="https://images.unsplash.com/photo-1604928141064-207cea6f571f?w=400&q=80" alt="Bali Beach" data-full="https://images.unsplash.com/photo-1604928141064-207cea6f571f?w=1400&q=90">
+      <img src="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=400&q=80" alt="Bali Sunset" data-full="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=1400&q=90">
+      <img src="https://images.unsplash.com/photo-1570789210967-2cac24afeb00?w=400&q=80" alt="Bali Waterfall" data-full="https://images.unsplash.com/photo-1570789210967-2cac24afeb00?w=1400&q=90">
+      <img src="https://images.unsplash.com/photo-1559628376-f3fe5f782a2e?w=400&q=80" alt="Ubud Monkey Forest" data-full="https://images.unsplash.com/photo-1559628376-f3fe5f782a2e?w=1400&q=90">
+    </div>
+
+    <div class="place-desc">Famous for beaches, temples, waterfalls and vibrant nightlife.</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab-btn active" data-tab="reviews">Reviews</div>
+    <div class="tab-btn" data-tab="guides">Guide Section</div>
+  </div>
+
+  <!-- REVIEWS SECTION -->
+  <div class="section active" id="reviews">
+
+    <div id="reviewContainer">
+
+      <!-- Review 1 -->
+      <div class="review-card">
+        <span class="review-rating-badge"><i class="fas fa-star"></i> 5.0</span>
+        <div class="review-header">
+          <div class="review-avatar">A</div>
+          <div>
+            <div class="review-user">Aisha Tan</div>
+            <div class="review-date">Feb 2025</div>
+          </div>
+        </div>
+        <div class="review-text">Amazing beaches and friendly locals — the sunrise at the east coast is unforgettable.</div>
+        <div class="review-actions">
+          <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">8</span></div>
+          <button class="msg-icon-btn contact-reviewer" data-reviewer="Aisha Tan" title="Message Aisha Tan">
+            <i class="fas fa-comment-dots"></i>
+          </button>
+        </div>
+        <div class="inline-msg-box">
+          <div class="msg-thread"></div>
+          <textarea rows="3" placeholder="Write a message to Aisha Tan..."></textarea>
+          <div class="inline-msg-actions">
+            <button class="btn-cancel">Cancel</button>
+            <button class="btn-send">Send <i class="fas fa-paper-plane"></i></button>
           </div>
         </div>
       </div>
-  </div>
-  <div class="place-desc">
-    Famous for beaches, temples, waterfalls and vibrant nightlife.
-  </div>
-</div>
 
-<!-- TABS -->
-<div class="tabs">
-  <div class="tab-btn active" data-tab="reviews">Reviews</div>
-  <div class="tab-btn" data-tab="guides">Guide Section</div>
-</div>
-
-<!-- REVIEWS SECTION -->
-<div class="section active" id="reviews">
-
-  <div id="reviewContainer">
-    <!-- Existing reviews -->
-    <div class="review-card">
-      <div class="review-user">Aisha Tan</div>
-      <div class="review-rating">
-        <i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star active"></i>
+      <!-- Review 2 -->
+      <div class="review-card">
+        <span class="review-rating-badge"><i class="fas fa-star"></i> 4.0</span>
+        <div class="review-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);">C</div>
+          <div>
+            <div class="review-user">Carlos Mendes</div>
+            <div class="review-date">Jan 2025</div>
+          </div>
+        </div>
+        <div class="review-text">Lots of great spots for photos; some areas are crowded but overall a must-visit.</div>
+        <div class="review-actions">
+          <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">14</span></div>
+          <button class="msg-icon-btn contact-reviewer" data-reviewer="Carlos Mendes" title="Message Carlos Mendes">
+            <i class="fas fa-comment-dots"></i>
+          </button>
+        </div>
+        <div class="inline-msg-box">
+          <div class="msg-thread"></div>
+          <textarea rows="3" placeholder="Write a message to Carlos Mendes..."></textarea>
+          <div class="inline-msg-actions">
+            <button class="btn-cancel">Cancel</button>
+            <button class="btn-send">Send <i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
       </div>
-      <div class="review-text">Amazing beaches and friendly locals — the sunrise at the east coast is unforgettable.</div>
-      <div class="review-actions">
-        <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">8</span></div>
-        <button class="contact-reviewer btn btn-outline" data-reviewer="Aisha Tan" style="margin-left:10px;">Message</button>
+
+      <!-- Review 3 -->
+      <div class="review-card">
+        <span class="review-rating-badge"><i class="fas fa-star"></i> 3.0</span>
+        <div class="review-header">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">M</div>
+          <div>
+            <div class="review-user">Mei Zhang</div>
+            <div class="review-date">Dec 2024</div>
+          </div>
+        </div>
+        <div class="review-text">Great food and culture; plan for transport time between spots.</div>
+        <div class="review-actions">
+          <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">5</span></div>
+          <button class="msg-icon-btn contact-reviewer" data-reviewer="Mei Zhang" title="Message Mei Zhang">
+            <i class="fas fa-comment-dots"></i>
+          </button>
+        </div>
+        <div class="inline-msg-box">
+          <div class="msg-thread"></div>
+          <textarea rows="3" placeholder="Write a message to Mei Zhang..."></textarea>
+          <div class="inline-msg-actions">
+            <button class="btn-cancel">Cancel</button>
+            <button class="btn-send">Send <i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
       </div>
+
+    </div><!-- /reviewContainer -->
+
+    <!-- ADD REVIEW -->
+    <div class="add-review" id="addReviewForm">
+      <h3>✍️ Add Your Review</h3>
+      <input type="text" id="reviewUser" placeholder="Your Name">
+      <select id="reviewRating">
+        <option value="5">⭐⭐⭐⭐⭐ — Excellent</option>
+        <option value="4">⭐⭐⭐⭐ — Very Good</option>
+        <option value="3">⭐⭐⭐ — Good</option>
+        <option value="2">⭐⭐ — Fair</option>
+        <option value="1">⭐ — Poor</option>
+      </select>
+      <textarea id="reviewText" rows="4" placeholder="Share your experience..."></textarea>
+      <button id="submitReview">Submit Review</button>
     </div>
 
-    <div class="review-card">
-      <div class="review-user">Carlos Mendes</div>
-      <div class="review-rating">
-        <i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star"></i>
+  </div><!-- /reviews section -->
+
+  <!-- GUIDES SECTION -->
+  <div class="section" id="guides">
+    <div class="guide-card">
+      <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Ramesh">
+      <div>
+        <div class="guide-name">Ramesh Kumar</div>
+        <div class="guide-sub">5 Years Experience | English & Hindi</div>
       </div>
-      <div class="review-text">Lots of great spots for photos; some areas are crowded but overall a must-visit.</div>
-      <div class="review-actions">
-        <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">14</span></div>
-        <button class="contact-reviewer btn btn-outline" data-reviewer="Carlos Mendes" style="margin-left:10px;">Message</button>
+      <button class="guide-btn">Contact</button>
+    </div>
+    <div class="guide-card">
+      <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Anita">
+      <div>
+        <div class="guide-name">Anita Sharma</div>
+        <div class="guide-sub">3 Years Experience | English</div>
       </div>
-    </div>
-
-    <div class="review-card">
-      <div class="review-user">Mei Zhang</div>
-      <div class="review-rating">
-        <i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star active"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-      </div>
-      <div class="review-text">Great food and culture; plan for transport time between spots.</div>
-      <div class="review-actions">
-        <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">5</span></div>
-        <button class="contact-reviewer btn btn-outline" data-reviewer="Mei Zhang" style="margin-left:10px;">Message</button>
-      </div>
+      <button class="guide-btn">Contact</button>
     </div>
   </div>
 
-  <!-- ADD REVIEW (placed after reviews) -->
-  <div class="add-review" id="addReviewForm">
-    <h3>Add Review</h3>
-    <input type="text" id="reviewUser" placeholder="Your Name">
-    <select id="reviewRating" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;margin-bottom:10px;">
-      <option value="5">5 — Excellent</option>
-      <option value="4">4 — Very good</option>
-      <option value="3">3 — Good</option>
-      <option value="2">2 — Fair</option>
-      <option value="1">1 — Poor</option>
-    </select>
-    <textarea id="reviewText" placeholder="Write your experience..."></textarea>
-    <button id="submitReview">Submit</button>
+  <!-- Image lightbox -->
+  <div id="imageModal" class="img-modal">
+    <div class="close">&times;</div>
+    <img src="" alt="View">
   </div>
 
-</div>
-
-<!-- GUIDES SECTION -->
-<div class="section" id="guides">
-
-  <div class="guide-card">
-    <img src="https://randomuser.me/api/portraits/men/32.jpg">
-    <div>
-      <div class="guide-name">Ramesh Kumar</div>
-      <div>5 Years Experience | English & Hindi</div>
-    <script>
-      (function(){
-        const el = document.getElementById('pointsCounter');
-        if(!el) return;
-        const pts = Number(localStorage.getItem('tm_points') || 0);
-        el.textContent = pts + ' pts';
-      })();
-    </script>
-    </div>
-    <div class="guide-btn">Contact</div>
-  </div>
-
-  <div class="guide-card">
-    <img src="https://randomuser.me/api/portraits/women/44.jpg">
-    <div>
-      <div class="guide-name">Anita Sharma</div>
-      <div>3 Years Experience | English</div>
-    </div>
-    <div class="guide-btn">Contact</div>
-  </div>
-
-</div>
-
-<!-- Image lightbox modal -->
-<div id="imageModal" class="img-modal">
-  <div class="close">&times;</div>
-  <img src="" alt="View">
-</div>
-
-<!-- Message modal -->
-<div id="messageModal" class="img-modal">
-  <div class="close">&times;</div>
-  <div style="background:#fff;padding:18px;border-radius:10px;max-width:760px;width:90%;">
-    <h3 class="modal-title">Message Reviewer</h3>
-    <textarea id="messageText" style="width:100%;height:120px;margin-top:10px;border-radius:8px;border:1px solid #ddd;padding:8px;"></textarea>
-    <div style="text-align:right;margin-top:10px;">
-      <button id="sendMessageBtn" class="btn btn-primary">Send</button>
-    </div>
-  </div>
-</div>
-
-</div>
+</div><!-- /page-wrap -->
 
 <script>
-
-// TAB SWITCH
-$(".tab-btn").click(function(){
-  $(".tab-btn").removeClass("active");
-  $(this).addClass("active");
-
-  $(".section").removeClass("active");
-  $("#" + $(this).data("tab")).addClass("active");
-});
-
-// ADD REVIEW
-$("#submitReview").click(function(){
-
-  let name=$("#reviewUser").val();
-  let text=$("#reviewText").val();
-  let rating = parseInt($("#reviewRating").val(),10) || 5;
-
-  if(name==="" || text===""){
-    alert("Fill all fields");
-    return;
-  }
-
-  // build stars
-  let stars='';
-  for(let i=1;i<=5;i++) stars += `<i class="fas fa-star ${i<=rating? 'active':''}"></i>`;
-
-  let reviewHTML=`
-    <div class="review-card">
-      <div class="review-user">${name}</div>
-      <div class="review-rating">${stars}</div>
-      <div class="review-text">${text}</div>
-      <div class="review-actions">
-        <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">0</span></div>
-        ${name ? `<button class="contact-reviewer btn btn-outline" data-reviewer="${name}" style="margin-left:10px;">Message</button>` : ''}
-      </div>
-    </div>
-  `;
-
-  $("#reviewContainer").prepend(reviewHTML);
-
-  $("#reviewUser").val("");
-  $("#reviewText").val("");
-  $("#reviewRating").val('5');
-
-});
-
-// LIKE REVIEW
-$(document).on("click",".like-btn",function(){
-
-  let countElement=$(this).find(".count");
-  let count=parseInt(countElement.text());
-
-  if($(this).hasClass("liked")){
-    count--;
-    $(this).removeClass("liked");
-  } else {
-    count++;
-    $(this).addClass("liked");
-  }
-
-  countElement.text(count);
-});
-
-// (no thumbnails — single main image only)
-
-// Click main image to open modal
-if ($('#mainImage').length) {
-  $(document).on('click', '#mainImage', function(){
-    $('#imageModal img').attr('src', $(this).attr('src'));
-    $('#imageModal').addClass('open');
+     window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('navbar');
+    if(window.scrollY > 40) {
+      navbar.classList.remove('transparent');
+      navbar.classList.add('solid');
+    } else {
+      navbar.classList.remove('solid');
+      navbar.classList.add('transparent');
+    }
   });
-}
+  // Points counter
+  (function(){
+    const el = document.getElementById('pointsCounter');
+    if(!el) return;
+    const pts = Number(localStorage.getItem('tm_points') || 0);
+    el.textContent = pts + ' pts';
+  })();
 
-// Image modal close
-$(document).on('click', '#imageModal .close, #imageModal', function(e){
-  if (e.target !== this && !$(e.target).is('.close')) return;
-  $('#imageModal').removeClass('open');
-});
+  // TAB SWITCH
+  $(".tab-btn").click(function(){
+    $(".tab-btn").removeClass("active");
+    $(this).addClass("active");
+    $(".section").removeClass("active");
+    $("#" + $(this).data("tab")).addClass("active");
+  });
 
+  // THUMBNAIL SWITCH — changes main image to the clicked thumbnail
+  $(document).on("click", ".thumb-strip img", function(){
+    const fullSrc = $(this).data("full") || $(this).attr("src");
+    $(".thumb-strip img").removeClass("active");
+    $(this).addClass("active");
+    $("#mainImage").fadeOut(120, function(){
+      $(this).attr("src", fullSrc).fadeIn(180);
+    });
+  });
 
-// Contact reviewer - open message modal
-$(document).on('click', '.contact-reviewer', function(){
-  const reviewer = $(this).data('reviewer') || 'Reviewer';
-  $('#messageModal .modal-title').text('Message ' + reviewer);
-  $('#messageModal').addClass('open');
-});
+  // ADD REVIEW
+  $("#submitReview").click(function(){
+    const name   = $("#reviewUser").val().trim();
+    const text   = $("#reviewText").val().trim();
+    const rating = parseInt($("#reviewRating").val(), 10) || 5;
+    if(!name || !text){ alert("Please fill in all fields."); return; }
 
-// Send message (simulate)
-$('#sendMessageBtn').click(function(){
-  const msg = $('#messageText').val().trim();
-  if(!msg) return alert('Enter a message');
-  alert('Message sent to reviewer: ' + msg);
-  $('#messageText').val('');
-  $('#messageModal').removeClass('open');
-});
+    const initial = name.charAt(0).toUpperCase();
+    const colors = [
+      'linear-gradient(135deg,#22c55e,#16a34a)',
+      'linear-gradient(135deg,#3b82f6,#1d4ed8)',
+      'linear-gradient(135deg,#f59e0b,#d97706)',
+      'linear-gradient(135deg,#ec4899,#be185d)',
+      'linear-gradient(135deg,#8b5cf6,#6d28d9)'
+    ];
+    const color   = colors[Math.floor(Math.random() * colors.length)];
+    const dateStr = new Date().toLocaleString('default',{month:'short',year:'numeric'});
 
+    const html = `
+      <div class="review-card">
+        <span class="review-rating-badge"><i class="fas fa-star"></i> ${rating}.0</span>
+        <div class="review-header">
+          <div class="review-avatar" style="background:${color};">${initial}</div>
+          <div>
+            <div class="review-user">${name}</div>
+            <div class="review-date">${dateStr}</div>
+          </div>
+        </div>
+        <div class="review-text">${text}</div>
+        <div class="review-actions">
+          <div class="like-btn"><i class="fa fa-heart"></i> <span class="count">0</span></div>
+          <button class="msg-icon-btn contact-reviewer" data-reviewer="${name}" title="Message ${name}">
+            <i class="fas fa-comment-dots"></i>
+          </button>
+        </div>
+        <div class="inline-msg-box">
+          <div class="msg-thread"></div>
+          <textarea rows="3" placeholder="Write a message to ${name}..."></textarea>
+          <div class="inline-msg-actions">
+            <button class="btn-cancel">Cancel</button>
+            <button class="btn-send">Send <i class="fas fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>`;
+
+    $("#reviewContainer").prepend(html);
+    $("#reviewUser").val(""); $("#reviewText").val(""); $("#reviewRating").val("5");
+  });
+
+  // LIKE
+  $(document).on("click", ".like-btn", function(){
+    const countEl = $(this).find(".count");
+    let count = parseInt(countEl.text());
+    if($(this).hasClass("liked")){ count--; $(this).removeClass("liked"); }
+    else { count++; $(this).addClass("liked"); }
+    countEl.text(count);
+  });
+
+  // TOGGLE INLINE MESSAGE BOX
+  $(document).on("click", ".msg-icon-btn.contact-reviewer", function(){
+    const card = $(this).closest(".review-card");
+    const box  = card.find(".inline-msg-box");
+    $(".inline-msg-box").not(box).slideUp(150);
+    box.slideToggle(200);
+    if(box.is(":visible")) box.find("textarea").focus();
+  });
+
+  // CANCEL
+  $(document).on("click", ".btn-cancel", function(){
+    const box = $(this).closest(".inline-msg-box");
+    box.find("textarea").val("");
+    box.slideUp(150);
+  });
+
+  // SEND — appends bubble ABOVE textarea inside the thread div
+  $(document).on("click", ".btn-send", function(){
+    const box    = $(this).closest(".inline-msg-box");
+    const ta     = box.find("textarea");
+    const thread = box.find(".msg-thread");
+    const msg    = ta.val().trim();
+    if(!msg){ ta.focus(); return; }
+
+    const now  = new Date();
+    const time = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+    const bubble = `
+      <div class="msg-bubble-wrap">
+        <div class="msg-bubble">
+          ${msg}
+          <div class="msg-time">${time}</div>
+        </div>
+      </div>`;
+
+    thread.append(bubble).css("display","flex");
+    ta.val("");
+    // scroll thread to latest
+    thread.scrollTop(thread[0].scrollHeight);
+  });
+
+  // Main image → lightbox
+  $(document).on("click", "#mainImage", function(){
+    $("#imageModal img").attr("src", $(this).attr("src"));
+    $("#imageModal").addClass("open");
+  });
+  $(document).on("click", "#imageModal .close, #imageModal", function(e){
+    if(e.target !== this && !$(e.target).is(".close")) return;
+    $("#imageModal").removeClass("open");
+  });
 </script>
 
 </body>
