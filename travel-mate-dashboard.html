@@ -382,7 +382,7 @@
     box-shadow: 0 0 0 3px rgba(13,148,136,0.1);
   }
 
-  .save-btn {
+ /*.save-btn {
     background: var(--primary);
     color: white;
     border: none;
@@ -395,7 +395,7 @@
     transition: 0.2s;
   }
 
-  .save-btn:hover { background: var(--primary-dark); }
+  .save-btn:hover { background: var(--primary-dark); }*/
 
   @media (max-width: 900px) {
     .overview-grid { grid-template-columns: 1fr; }
@@ -546,28 +546,73 @@
     </div>
   </div>
 
+
   <!-- WISHLIST -->
   <div class="tab-content" id="wishlist">
-    <div class="card-grid">
-      <div class="grid-card"><h3>Paris</h3><p>City of Lights</p></div>
-      <div class="grid-card"><h3>Tokyo</h3><p>Land of the Rising Sun</p></div>
-      <div class="grid-card"><h3>Switzerland</h3><p>Alpine Paradise</p></div>
-    </div>
+    <div class="card-grid" id="wishlistGrid"></div>
   </div>
 
   <!-- MY POSTS -->
-  <div class="tab-content" id="my-posts">
-    <div class="card-grid">
-      <div class="grid-card">
-        <h3>Sunset at Bali Temple</h3>
-        <p>❤️ 45 &nbsp;💬 12</p>
-      </div>
-      <div class="grid-card">
-        <h3>Hidden gems in Paris</h3>
-        <p>❤️ 89 &nbsp;💬 23</p>
-      </div>
+<div class="tab-content" id="my-posts">
+
+  <!-- Create Post Button -->
+  <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
+    <button class="create-post-btn" id="openCreatePost">
+      ＋ Create Post
+    </button>
+  </div>
+
+  <!-- Posts will appear here -->
+  <div class="card-grid" id="posts-grid">
+    <div class="no-posts" style="text-align:center;color:#9ca3af;padding:40px;background:white;border-radius:25px;grid-column:1/-1;">
+      <span style="font-size:40px;display:block;margin-bottom:12px;">✍️</span>
+      <p>No posts yet. Share your travel story!</p>
     </div>
   </div>
+
+</div>
+
+<!-- CREATE POST MODAL (place before </body>) -->
+<div id="createPostModal" class="cm-modal" aria-hidden="true">
+  <div class="cm-dialog">
+    <header class="cm-header">
+      <h2>Create Post</h2>
+      <button id="closeCreatePost" class="icon-btn">✕</button>
+    </header>
+    <form id="createPostForm" class="cm-form scrollable-form">
+      <label class="cm-label">Photos</label>
+      <div id="dropZone" class="drop-zone">
+        <input id="fileInput" type="file" accept="image/*" multiple hidden>
+        <div class="drop-inner">
+          <div class="drop-icon">⬆</div>
+          <div class="drop-text">
+            Drag & drop photos or click to browse<br>
+            <small>+10 points per photo uploaded</small>
+          </div>
+        </div>
+      </div>
+      <div id="preview" class="preview-grid"></div>
+      <label class="cm-label">Location</label>
+      <input id="locationInput" class="cm-input" placeholder="Where did you visit?">
+      <label class="cm-label">Caption</label>
+      <textarea id="captionInput" class="cm-textarea" rows="3" placeholder="Share your experience..."></textarea>
+      <label class="cm-label">Rating</label>
+      <div id="rating" class="rating-stars" data-rating="0">
+        <span class="star" data-value="1">☆</span>
+        <span class="star" data-value="2">☆</span>
+        <span class="star" data-value="3">☆</span>
+        <span class="star" data-value="4">☆</span>
+        <span class="star" data-value="5">☆</span>
+      </div>
+      <label class="cm-label">Travel Blog (optional)</label>
+      <textarea id="blogInput" class="cm-textarea" rows="6" placeholder="Write a detailed blog about your experience..."></textarea>
+      <div class="cm-actions">
+        <button type="button" id="publishBtn" class="btn btn-primary btn-lg">Publish Post (+50 points)</button>
+        <button type="button" id="cancelBtn" class="btn btn-white">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
 
   <!-- BOOKINGS -->
   <div class="tab-content" id="bookings">
@@ -597,12 +642,23 @@
       <input type="text" class="profile-input" placeholder="Full Name">
       <input type="email" class="profile-input" placeholder="Email">
       <input type="text" class="profile-input" placeholder="Phone Number">
-      <button class="save-btn">Save Changes</button>
+      <button style="background:var(--primary);color:white;border:none;padding:11px 24px;border-radius:20px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;margin-top:4px;display:block;">Save Changes</button>
     </div>
   </div>
 </div>
 
 <script>
+  // Navbar scroll effect
+  window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('navbar');
+    if(window.scrollY > 40) {
+      navbar.classList.remove('transparent');
+      navbar.classList.add('solid');
+    } else {
+      navbar.classList.remove('solid');
+      navbar.classList.add('transparent');
+    }
+  });
   const tabs = document.querySelectorAll('.tab');
   const contents = document.querySelectorAll('.tab-content');
 
@@ -623,6 +679,219 @@
     const pts = Number(localStorage.getItem('tm_points') || 0);
     el.textContent = pts + ' pts';
   })();
+</script>
+<style>
+  /* ── Wishlist card styles ── */
+  .wishlist-card {
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative;
+  }
+  .wishlist-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(13,148,136,0.15);
+  }
+  .wishlist-card img {
+    width: 100%; height: 155px;
+    object-fit: cover; display: block;
+  }
+  .wish-badge {
+    position: absolute; top: 10px; left: 10px;
+    background: rgba(255,255,255,0.92);
+    color: #0f766e; font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: 20px;
+  }
+  .remove-wish-btn {
+    position: absolute; top: 9px; right: 9px;
+    background: rgba(255,255,255,0.92); border: none;
+    border-radius: 50%; width: 30px; height: 30px;
+    cursor: pointer; color: #ef4444; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.2s, background 0.2s;
+  }
+  .remove-wish-btn:hover { background: #fee2e2; transform: scale(1.15); }
+  .wishlist-card-body { padding: 14px 16px 16px; }
+  .wishlist-card-body h3 { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+  .wishlist-card-body p { font-size: 12px; color: var(--muted); }
+
+  .wishlist-empty {
+    grid-column: 1 / -1; text-align: center;
+    padding: 60px 24px; color: #9ca3af;
+  }
+  .wishlist-empty .empty-icon { font-size: 3.5rem; margin-bottom: 14px; }
+  .wishlist-empty h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
+  .wishlist-empty p { font-size: 14px; margin-bottom: 20px; }
+  .wishlist-empty a {
+    display: inline-block; background: var(--primary); color: white;
+    padding: 11px 24px; border-radius: 50px; text-decoration: none;
+    font-weight: 600; font-size: 14px; transition: background 0.2s;
+  }
+  .wishlist-empty a:hover { background: var(--primary-dark); }
+</style>
+
+<script>
+  /* ── Wishlist: read from localStorage and render ── */
+  function getWishlist() {
+    return JSON.parse(localStorage.getItem('tm_wishlist') || '[]');
+  }
+  function saveWishlist(list) {
+    localStorage.setItem('tm_wishlist', JSON.stringify(list));
+  }
+
+  function renderWishlist() {
+    const grid = document.getElementById('wishlistGrid');
+    if (!grid) return;
+    const wishlist = getWishlist();
+
+    if (wishlist.length === 0) {
+      grid.innerHTML = `
+        <div class="wishlist-empty">
+          <div class="empty-icon">🌍</div>
+          <h3>Your wishlist is empty</h3>
+          <p>Go to the home page and click ❤️ on any destination to save it here.</p>
+          <a href="index.html">Explore Destinations</a>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = wishlist.map((dest, i) => `
+      <div class="wishlist-card">
+        <img src="${dest.img}" alt="${dest.name}"
+             onerror="this.src='https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80'">
+        ${dest.badge ? `<span class="wish-badge">${dest.badge}</span>` : ''}
+        <button class="remove-wish-btn" onclick="removeWish(${i})" title="Remove">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="wishlist-card-body">
+          <h3>${dest.name}</h3>
+          <p>${dest.loc || ''}</p>
+        </div>
+      </div>`).join('');
+  }
+
+  function removeWish(i) {
+    const list = getWishlist();
+    list.splice(i, 1);
+    saveWishlist(list);
+    renderWishlist();
+  }
+
+  renderWishlist();
+
+  let selectedImages = [];
+  let currentRating = 0;
+
+  // Open
+  document.getElementById('openCreatePost').addEventListener('click', function () {
+    const modal = document.getElementById('createPostModal');
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  });
+
+  // Close
+  function closeModal() {
+    const modal = document.getElementById('createPostModal');
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    document.getElementById('createPostForm').reset();
+    document.getElementById('preview').innerHTML = '';
+    selectedImages = [];
+    currentRating = 0;
+    document.querySelectorAll('.star').forEach(function (s) {
+      s.classList.remove('active', 'hover');
+      s.textContent = '☆';
+    });
+  }
+
+  document.getElementById('closeCreatePost').addEventListener('click', closeModal);
+  document.getElementById('cancelBtn').addEventListener('click', closeModal);
+  document.getElementById('createPostModal').addEventListener('click', function (e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Drop zone
+  var dropZone = document.getElementById('dropZone');
+  var fileInput = document.getElementById('fileInput');
+
+  dropZone.addEventListener('click', function () { fileInput.click(); });
+  dropZone.addEventListener('dragover', function (e) { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', function () { dropZone.classList.remove('dragover'); });
+  dropZone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', function () { handleFiles(fileInput.files); });
+
+  function handleFiles(files) {
+    Array.from(files).forEach(function (file) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        selectedImages.push(e.target.result);
+        renderPreview();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderPreview() {
+    document.getElementById('preview').innerHTML = selectedImages.map(function (src, i) {
+      return '<div class="preview-item"><img src="' + src + '" alt="preview"><button class="preview-remove" onclick="removeImage(' + i + ')">✕</button></div>';
+    }).join('');
+  }
+
+  function removeImage(i) {
+    selectedImages.splice(i, 1);
+    renderPreview();
+  }
+
+  // Stars
+  document.querySelectorAll('.star').forEach(function (star) {
+    star.addEventListener('mouseenter', function () {
+      var v = parseInt(star.dataset.value);
+      document.querySelectorAll('.star').forEach(function (s) {
+        var sv = parseInt(s.dataset.value);
+        s.classList.remove('active');
+        if (sv <= v) { s.classList.add('hover'); s.textContent = '★'; }
+        else { s.classList.remove('hover'); s.textContent = '☆'; }
+      });
+    });
+    star.addEventListener('mouseleave', function () {
+      document.querySelectorAll('.star').forEach(function (s) {
+        var sv = parseInt(s.dataset.value);
+        s.classList.remove('hover');
+        if (sv <= currentRating) { s.classList.add('active'); s.textContent = '★'; }
+        else { s.classList.remove('active'); s.textContent = '☆'; }
+      });
+    });
+    star.addEventListener('click', function () {
+      currentRating = parseInt(star.dataset.value);
+      document.getElementById('rating').setAttribute('data-rating', currentRating);
+      document.querySelectorAll('.star').forEach(function (s) {
+        var sv = parseInt(s.dataset.value);
+        if (sv <= currentRating) { s.classList.add('active'); s.textContent = '★'; }
+        else { s.classList.remove('active'); s.textContent = '☆'; }
+      });
+    });
+  });
+
+  // Publish
+  document.getElementById('publishBtn').addEventListener('click', function () {
+    var loc = document.getElementById('locationInput').value.trim();
+    var cap = document.getElementById('captionInput').value.trim();
+    if (!loc) { alert('Please enter a location!'); return; }
+    if (!cap) { alert('Please write a caption!'); return; }
+    var pts = 50 + (selectedImages.length * 10);
+    alert('Post published! You earned +' + pts + ' points 🎉');
+    closeModal();
+  });
+
 </script>
 </body>
 </html>

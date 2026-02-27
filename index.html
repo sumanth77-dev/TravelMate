@@ -55,26 +55,57 @@
         <button class="btn btn-primary" onclick="handleSearch()">Search</button>
       </div>
 
-      <div class="hero-stats fade-up delay-4">
-        <div class="hero-stat">
-          <div class="stat-num"><span class="counter" data-target="12000">0</span>+</div>
-          <div class="stat-lbl">Travellers</div>
-        </div>
-        <div class="hero-stat">
-          <div class="stat-num"><span class="counter" data-target="480">0</span>+</div>
-          <div class="stat-lbl">Destinations</div>
-        </div>
-        <div class="hero-stat">
-          <div class="stat-num"><span class="counter" data-target="38000">0</span>+</div>
-          <div class="stat-lbl">Reviews</div>
-        </div>
-      </div>
+      <div class="stats-bar">
+
+  <div class="stat-card">
+    <div class="stat-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+        <circle cx="12" cy="9" r="2.5"/>
+      </svg>
+    </div>
+    <div class="stat-value">500+</div>
+    <div class="stat-label">Destinations</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon">
+      <svg viewBox="0 0 24 24">
+        <circle cx="9" cy="7" r="3"/>
+        <circle cx="15" cy="7" r="3"/>
+        <path d="M3 20c0-3.31 2.69-6 6-6h6c3.31 0 6 2.69 6 6"/>
+      </svg>
+    </div>
+    <div class="stat-value">2,000+</div>
+    <div class="stat-label">Active Guides</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon">
+      <svg viewBox="0 0 24 24">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    </div>
+    <div class="stat-value">50K+</div>
+    <div class="stat-label">Reviews</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="9" r="4"/>
+        <path d="M9 9c0 0-1.5 1-1.5 3s1.5 3 1.5 3M15 9c0 0 1.5 1 1.5 3s-1.5 3-1.5 3"/>
+        <line x1="12" y1="16" x2="12" y2="21"/>
+        <polyline points="9 19 12 22 15 19"/>
+      </svg>
+    </div>
+    <div class="stat-value">1M+</div>
+    <div class="stat-label">Points Earned</div>
+  </div>
+
+</div>
     </div>
 
-    <div class="hero-scroll">
-      <span>Scroll to explore</span>
-      <i class="fas fa-chevron-down"></i>
-    </div>
   </section>
 
   <script>
@@ -85,39 +116,6 @@
       el.textContent = pts + ' pts';
     })();
   </script>
-
-  <!-- ══════════════ CATEGORIES ══════════════ -->
-  <section class="section-pad bg-surface">
-    <div class="container">
-      <div class="section-heading center fade-up">
-        <p class="section-label">&#10022; Browse by Type</p>
-        <h2>Explore Categories</h2>
-        <div class="divider center"></div>
-      </div>
-      <div class="cat-grid">
-        <div class="cat-card fade-up delay-1">
-          <div class="cat-icon">&#127958;</div>
-          <h4>Beach</h4>
-          <p>142 destinations</p>
-        </div>
-        <div class="cat-card fade-up delay-2">
-          <div class="cat-icon">&#9968;</div>
-          <h4>Hill Station</h4>
-          <p>89 destinations</p>
-        </div>
-        <div class="cat-card fade-up delay-3">
-          <div class="cat-icon">&#127961;</div>
-          <h4>City</h4>
-          <p>215 destinations</p>
-        </div>
-        <div class="cat-card fade-up delay-4">
-          <div class="cat-icon">&#129495;</div>
-          <h4>Adventure</h4>
-          <p>67 destinations</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ══════════════ FEATURED DESTINATIONS ══════════════ -->
   <section class="section-pad" id="destinations">
@@ -134,7 +132,7 @@
         <div class="dest-card fade-up delay-1">
           <div class="dest-card-img">
             <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80" alt="Bali">
-            <span class="card-badge badge badge-teal">Beach</span>
+            <span class="card-badge badge-teal">Beach</span>
             <button class="save-btn" onclick="toggleSave(this)"><i class="far fa-heart"></i></button>
           </div>
           <div class="dest-card-body">
@@ -146,7 +144,7 @@
             </div>
             <div class="dest-footer">
               <span class="dest-price">From <strong>$45/night</strong></span>
-                <a href="community.html" class="btn btn-primary btn-sm">View Details</a>
+                <a href="community.html?place=bali" class="btn btn-primary btn-sm">View Details</a>
             </div>
           </div>
         </div>
@@ -154,7 +152,7 @@
         <div class="dest-card fade-up delay-2">
           <div class="dest-card-img">
             <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&q=80" alt="Paris">
-            <span class="card-badge badge badge-gold">City</span>
+            <span class="card-badge badge-gold">City</span>
             <button class="save-btn" onclick="toggleSave(this)"><i class="far fa-heart"></i></button>
           </div>
           <div class="dest-card-body">
@@ -166,7 +164,7 @@
             </div>
             <div class="dest-footer">
               <span class="dest-price">From <strong>$120/night</strong></span>
-                <a href="community.html" class="btn btn-primary btn-sm">View Details</a>
+                <a href="community.html?place=paris" class="btn btn-primary btn-sm">View Details</a>
             </div>
           </div>
         </div>
@@ -186,7 +184,7 @@
             </div>
             <div class="dest-footer">
               <span class="dest-price">From <strong>$200/night</strong></span>
-                <a href="community.html" class="btn btn-primary btn-sm">View Details</a>
+                <a href="community.html?place=swiss" class="btn btn-primary btn-sm">View Details</a>
             </div>
           </div>
         </div>
@@ -194,7 +192,7 @@
         <div class="dest-card fade-up delay-1">
           <div class="dest-card-img">
             <img src="https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=600&q=80" alt="Maldives">
-            <span class="card-badge badge badge-teal">Beach</span>
+            <span class="card-badge badge-teal">Beach</span>
             <button class="save-btn" onclick="toggleSave(this)"><i class="far fa-heart"></i></button>
           </div>
           <div class="dest-card-body">
@@ -206,7 +204,7 @@
             </div>
             <div class="dest-footer">
               <span class="dest-price">From <strong>$350/night</strong></span>
-                <a href="community.html" class="btn btn-primary btn-sm">View Details</a>
+                <a href="community.html?place=maldives" class="btn btn-primary btn-sm">View Details</a>
             </div>
           </div>
         </div>
@@ -214,7 +212,7 @@
         <div class="dest-card fade-up delay-2">
           <div class="dest-card-img">
             <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80" alt="Tokyo">
-            <span class="card-badge badge badge-gold">City</span>
+            <span class="card-badge badge-gold">City</span>
             <button class="save-btn" onclick="toggleSave(this)"><i class="far fa-heart"></i></button>
           </div>
           <div class="dest-card-body">
@@ -226,7 +224,7 @@
             </div>
             <div class="dest-footer">
               <span class="dest-price">From <strong>$80/night</strong></span>
-              <a href="community.html" class="btn btn-primary btn-sm">View Details</a>
+              <a href="community.html?place=tokyo" class="btn btn-primary btn-sm">View Details</a>
             </div>
           </div>
         </div>
@@ -246,7 +244,7 @@
             </div>
             <div class="dest-footer">
               <span class="dest-price">From <strong>$90/night</strong></span>
-                <a href="community.html" class="btn btn-primary btn-sm">View Details</a>
+                <a href="community.html?place=queenstown" class="btn btn-primary btn-sm">View Details</a>
             </div>
           </div>
         </div>
@@ -359,7 +357,7 @@
       <div class="footer-grid">
 
         <div class="footer-brand">
-          <div class="footer-logo">&#10022; TravelMate</div>
+          <div class="footer-logo">&#10022; SmartTravel</div>
           <p>Your community for authentic travel experiences, honest reviews, and unforgettable journeys worldwide.</p>
           <div class="social-links">
             <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
@@ -373,11 +371,9 @@
         <div class="footer-col">
           <h5>Explore</h5>
           <ul>
-            <li><a href="#">All Destinations</a></li>
-            <li><a href="#">Beach Escapes</a></li>
-            <li><a href="#">Adventure Trips</a></li>
-            <li><a href="#">City Breaks</a></li>
-            <li><a href="#">Hill Stations</a></li>
+            <li><a href="main_community.html">Community</a></li>
+            <li><a href="">Popular places</a></li>
+            
           </ul>
         </div>
 
@@ -408,7 +404,7 @@
       <div class="footer-bottom">
         <span>&#169; 2026 Smart Travel Community. All rights reserved.</span>
         <span class="footer-contact">
-          <i class="fas fa-envelope" style="color:#d4a843"></i> hello@travelmate.com &nbsp;&middot;&nbsp;
+          <i class="fas fa-envelope" style="color:#d4a843"></i> hello@smarttravel.com &nbsp;&middot;&nbsp;
           <i class="fas fa-phone" style="color:#d4a843"></i> +1 (800) 555-TRAVEL
         </span>
       </div>
@@ -439,19 +435,33 @@
     });
 
     /* ── Save toggle ── */
-    function toggleSave(btn) {
-      btn.classList.toggle('saved');
-      const icon = btn.querySelector('i');
-      if (btn.classList.contains('saved')) {
-        icon.className = 'fas fa-heart';
-        showToast('Destination saved!', 'success');
-      } else {
-        icon.className = 'far fa-heart';
-        showToast('Removed from saved', 'info');
-      }
-    }
+    // ✅ NEW — saves to localStorage so dashboard can read it
+function toggleSave(btn) {
+  const card  = btn.closest('.dest-card');
+  const name  = card.querySelector('.dest-title').textContent.trim();
+  const img   = card.querySelector('img').src;
+  const loc   = card.querySelector('.dest-loc').textContent.replace(/[^\w\s,]/g, '').trim();
+  const badge = card.querySelector('.card-badge')?.textContent.trim() || '';
 
-    /* ── Counter animation ── */
+  let wishlist = JSON.parse(localStorage.getItem('tm_wishlist') || '[]');
+  const idx = wishlist.findIndex(d => d.name === name);
+
+  if (idx === -1) {
+    wishlist.push({ name, img, loc, badge });
+    localStorage.setItem('tm_wishlist', JSON.stringify(wishlist));
+    btn.classList.add('saved');
+    btn.querySelector('i').className = 'fas fa-heart';
+    showToast('❤️ Added to Wishlist!', 'success');
+  } else {
+    wishlist.splice(idx, 1);
+    localStorage.setItem('tm_wishlist', JSON.stringify(wishlist));
+    btn.classList.remove('saved');
+    btn.querySelector('i').className = 'far fa-heart';
+    showToast('Removed from Wishlist', 'info');
+  }
+}
+
+     /* ── Counter animation ── */
     function animateCounters() {
       document.querySelectorAll('.counter').forEach(el => {
         const target = parseInt(el.dataset.target, 10);
@@ -491,6 +501,21 @@
       document.getElementById('toastContainer').appendChild(toast);
       setTimeout(() => toast.classList.add('show'), 10);
       setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3000);
+    }
+
+    /* Add to wishlist */
+    function addToWishlist(destination) {
+      // Get the current wishlist from localStorage
+      let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+      // Add the new destination if it's not already in the wishlist
+      if (!wishlist.includes(destination)) {
+        wishlist.push(destination);
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        alert(`${destination} has been added to your wishlist!`);
+      } else {
+        alert(`${destination} is already in your wishlist.`);
+      }
     }
   </script>
 </body>
