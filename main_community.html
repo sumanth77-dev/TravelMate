@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +8,90 @@
 	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 	<style>
 		.community-wrap { padding: 40px 0 120px; }
+
+		/* ── Filter Tabs ── */
+		.filter-btn {
+			padding: 8px 20px;
+			border-radius: 999px;
+			border: 2px solid #ddd;
+			background: transparent;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all .2s;
+			font-size: 14px;
+		}
+		.filter-btn:hover { border-color: #888; }
+		.filter-btn.active {
+			background: #0f172a;
+			color: #fff;
+			border-color: #0f172a;
+		}
+
+		/* ── Post sort transition ── */
+		.posts-list { transition: opacity .2s; }
+		.posts-list.sorting { opacity: 0.4; }
+
+		/* ── Star rating badge on card ── */
+		.post-stars { font-size: 18px; color: #f59e0b; letter-spacing: 1px; }
+
+		/* ── Like / action buttons ── */
+		.icon-btn { background: none; border: none; cursor: pointer; font-size: 14px; padding: 4px 8px; border-radius: 6px; transition: background .15s; }
+		.icon-btn:hover { background: #f1f5f9; }
+
+		/* ── Toast ── */
+		.toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(60px); background:#0f172a; color:#fff; padding:10px 22px; border-radius:8px; font-size:14px; opacity:0; transition:all .3s; pointer-events:none; z-index:9999; }
+		.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+		/* ── Modal ── */
+		.cm-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:900; align-items:center; justify-content:center; }
+		.cm-modal.open { display:flex; }
+		.cm-dialog { background:#fff; border-radius:16px; padding:32px; width:min(560px,95vw); max-height:90vh; overflow-y:auto; }
+		.cm-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+		.cm-label { display:block; font-weight:600; margin:14px 0 6px; font-size:14px; }
+		.cm-input, .cm-textarea { width:100%; padding:10px 14px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:14px; font-family:inherit; box-sizing:border-box; }
+		.cm-textarea { resize:vertical; }
+		.drop-zone { border:2px dashed #cbd5e1; border-radius:10px; padding:28px; text-align:center; cursor:pointer; transition:border-color .2s; }
+		.drop-zone.over { border-color:#0f172a; }
+		.drop-icon { font-size:28px; margin-bottom:8px; }
+		.drop-text { font-size:13px; color:#64748b; }
+		.preview-grid { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+		.preview-item img { width:80px; height:80px; object-fit:cover; border-radius:8px; }
+		.rating-stars .star { font-size:26px; cursor:pointer; color:#f59e0b; }
+		.cm-actions { display:flex; gap:12px; margin-top:22px; }
+		.btn { padding:10px 22px; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer; border:2px solid transparent; transition:all .2s; }
+		.btn-primary { background:#0f172a; color:#fff; }
+		.btn-primary:hover { background:#1e293b; }
+		.btn-white { background:#fff; color:#0f172a; border-color:#cbd5e1; }
+		.btn-white:hover { border-color:#0f172a; }
+		.btn-lg { padding:12px 28px; font-size:15px; }
+
+		/* ── Post card ── */
+		.post-card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,.07); margin-bottom:20px; overflow:hidden; }
+		.post-header { display:flex; justify-content:space-between; align-items:center; padding:14px 16px 0; }
+		.author { display:flex; align-items:center; gap:10px; }
+		.author img { width:40px; height:40px; border-radius:50%; object-fit:cover; }
+		.author-name { font-weight:700; font-size:14px; }
+		.author-meta { font-size:12px; color:#64748b; }
+		.post-image img { width:100%; max-height:360px; object-fit:cover; display:block; }
+		.post-body { padding:12px 16px 6px; font-size:14px; line-height:1.6; }
+		.post-footer { padding:6px 16px 14px; display:flex; justify-content:space-between; align-items:center; }
+		.post-actions { display:flex; gap:6px; align-items:center; }
+
+		/* ── Chat ── */
+		.chat-modal { display:none; position:fixed; bottom:20px; right:20px; z-index:999; }
+		.chat-box { width:300px; background:#fff; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,.15); overflow:hidden; }
+		.chat-header { background:#0f172a; color:#fff; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; font-weight:600; }
+		.chat-header button { background:none; border:none; color:#fff; font-size:16px; cursor:pointer; }
+		.chat-messages { height:220px; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:8px; }
+		.message { max-width:80%; padding:8px 12px; border-radius:12px; font-size:13px; }
+		.message.sent { background:#0f172a; color:#fff; align-self:flex-end; border-bottom-right-radius:2px; }
+		.message.received { background:#f1f5f9; align-self:flex-start; border-bottom-left-radius:2px; }
+		.chat-input { display:flex; border-top:1px solid #e2e8f0; }
+		.chat-input input { flex:1; padding:10px 12px; border:none; outline:none; font-size:13px; }
+		.chat-input button { padding:10px 16px; background:#0f172a; color:#fff; border:none; cursor:pointer; font-weight:600; }
+
+		/* ── Sort indicator ── */
+		.sort-label { font-size:12px; color:#94a3b8; margin-left:8px; }
 	</style>
 </head>
 <body>
@@ -39,17 +122,24 @@
 					<h1 style="margin-bottom:6px;">Community</h1>
 					<p class="section-sub">Travel stories from around the world</p>
 					<div style="display:flex;gap:10px;margin-top:18px;align-items:center;">
-						<button class="filter-btn active">Latest</button>
-						<button class="filter-btn">Popular</button>
-						<button class="filter-btn">Top Rated</button>
+						<button class="filter-btn active" data-filter="latest">🕐 Latest</button>
+						<button class="filter-btn" data-filter="popular">🔥 Popular</button>
+						<button class="filter-btn" data-filter="toprated">⭐ Top Rated</button>
+						<span class="sort-label" id="sortLabel">Sorted by: Latest</span>
 					</div>
 				</div>
 				<div style="display:flex;align-items:center;gap:12px;">
 					<button id="openCreatePost" class="btn btn-white">Create Post</button>
 				</div>
 			</div>
-			<div class="posts-list" style="margin-top:28px;">
-				<article class="post-card">
+
+			<div class="posts-list" id="postsList" style="margin-top:28px;">
+
+				<!-- Post 1 -->
+				<article class="post-card"
+					data-timestamp="1710000000"
+					data-likes="234"
+					data-rating="4">
 					<header class="post-header">
 						<div class="author">
 							<img src="https://images.unsplash.com/photo-1544006659-f0b21884ce1d?w=120&q=80" alt="avatar">
@@ -66,13 +156,26 @@
 					</div>
 					<footer class="post-footer">
 						<div class="post-actions">
-							<button class="icon-btn">❤ 234</button>
+							<button class="icon-btn like-btn" data-liked="false">❤ <span class="like-count">234</span></button>
 							<button class="icon-btn message-btn">💬 Message</button>
+							<button class="icon-btn save-btn" data-saved="false">🔖</button>
+							<button class="icon-btn share-btn">🔗</button>
 						</div>
-						<div class="post-share">🔗</div>
 					</footer>
+					<div class="comments-section" style="display:none;padding:10px 16px;">
+						<div class="comments-list"></div>
+						<div style="display:flex;gap:8px;margin-top:8px;">
+							<input type="text" class="comment-input cm-input" placeholder="Write a comment...">
+							<button class="btn btn-primary add-comment">Post</button>
+						</div>
+					</div>
 				</article>
-				<article class="post-card">
+
+				<!-- Post 2 -->
+				<article class="post-card"
+					data-timestamp="1709913600"
+					data-likes="512"
+					data-rating="5">
 					<header class="post-header">
 						<div class="author">
 							<img src="https://images.unsplash.com/photo-1545996124-1e2d6d6f9f3a?w=120&q=80" alt="avatar">
@@ -89,13 +192,58 @@
 					</div>
 					<footer class="post-footer">
 						<div class="post-actions">
-							<button class="icon-btn">❤ 512</button>
+							<button class="icon-btn like-btn" data-liked="false">❤ <span class="like-count">512</span></button>
 							<button class="icon-btn message-btn">💬 Message</button>
+							<button class="icon-btn save-btn" data-saved="false">🔖</button>
+							<button class="icon-btn share-btn">🔗</button>
 						</div>
-						<div class="post-share">🔗</div>
 					</footer>
+					<div class="comments-section" style="display:none;padding:10px 16px;">
+						<div class="comments-list"></div>
+						<div style="display:flex;gap:8px;margin-top:8px;">
+							<input type="text" class="comment-input cm-input" placeholder="Write a comment...">
+							<button class="btn btn-primary add-comment">Post</button>
+						</div>
+					</div>
 				</article>
-			</div>
+
+				<!-- Post 3 -->
+				<article class="post-card"
+					data-timestamp="1709827200"
+					data-likes="89"
+					data-rating="3">
+					<header class="post-header">
+						<div class="author">
+							<img src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=120&q=80" alt="avatar">
+							<div>
+								<div class="author-name">Amara Osei</div>
+								<div class="author-meta">Santorini, Greece · 2d ago</div>
+							</div>
+						</div>
+						<div class="post-stars">★★★☆☆</div>
+					</header>
+					<div class="post-image"><img src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1400&q=80" alt="santorini"></div>
+					<div class="post-body">
+						<p>Santorini sunsets are everything they're hyped up to be 🌅 Crowded but absolutely worth it.</p>
+					</div>
+					<footer class="post-footer">
+						<div class="post-actions">
+							<button class="icon-btn like-btn" data-liked="false">❤ <span class="like-count">89</span></button>
+							<button class="icon-btn message-btn">💬 Message</button>
+							<button class="icon-btn save-btn" data-saved="false">🔖</button>
+							<button class="icon-btn share-btn">🔗</button>
+						</div>
+					</footer>
+					<div class="comments-section" style="display:none;padding:10px 16px;">
+						<div class="comments-list"></div>
+						<div style="display:flex;gap:8px;margin-top:8px;">
+							<input type="text" class="comment-input cm-input" placeholder="Write a comment...">
+							<button class="btn btn-primary add-comment">Post</button>
+						</div>
+					</div>
+				</article>
+
+			</div><!-- /posts-list -->
 		</div>
 	</main>
 
@@ -138,54 +286,100 @@
 		</div>
 	</div>
 
-
-	<!-- CHAT MODAL -->
-<div id="chatModal" class="chat-modal">
-	<div class="chat-box">
-		<div class="chat-header">
-			<span id="chatUser">Chat</span>
-			<button onclick="closeChat()">✖</button>
-		</div>
-
-		<div class="chat-messages" id="chatMessages"></div>
-
-		<div class="chat-input">
-			<input type="text" id="chatInput" placeholder="Type a message...">
-			<button onclick="sendMessage()">Send</button>
+	<!-- Chat Modal -->
+	<div id="chatModal" class="chat-modal">
+		<div class="chat-box">
+			<div class="chat-header">
+				<span id="chatUser">Chat</span>
+				<button onclick="closeChat()">✖</button>
+			</div>
+			<div class="chat-messages" id="chatMessages"></div>
+			<div class="chat-input">
+				<input type="text" id="chatInput" placeholder="Type a message...">
+				<button onclick="sendMessage()">Send</button>
+			</div>
 		</div>
 	</div>
-</div>
 
 	<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 	<script>
-		let uploadedImages = [];
+		/* ── Navbar scroll ── */
 		window.addEventListener('scroll', function() {
 			const navbar = document.getElementById('navbar');
-			if(window.scrollY > 40) {
-				navbar.classList.remove('transparent');
-				navbar.classList.add('solid');
-			} else {
-				navbar.classList.remove('solid');
-				navbar.classList.add('transparent');
-			}
+			navbar.classList.toggle('solid', window.scrollY > 40);
+			navbar.classList.toggle('transparent', window.scrollY <= 40);
 		});
-		
-		const openBtn = document.getElementById('openCreatePost');
-		const modal = document.getElementById('createPostModal');
-		const closeBtn = document.getElementById('closeCreatePost');
-		const cancelBtn = document.getElementById('cancelBtn');
-		const publishBtn = document.getElementById('publishBtn');
-		const fileInput = document.getElementById('fileInput');
-		const dropZone = document.getElementById('dropZone');
-		const preview = document.getElementById('preview');
-		const toast = document.getElementById('toast');
+
+		/* ── Points ── */
 		const pointsCounter = document.getElementById('pointsCounter');
+		function getPoints(){ return Number(localStorage.getItem('tm_points') || 0); }
+		function setPoints(n){ localStorage.setItem('tm_points', String(n)); pointsCounter.textContent = n + ' pts'; }
+		setPoints(getPoints());
+
+		/* ── Toast ── */
+		const toast = document.getElementById('toast');
+		function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=> toast.classList.remove('show'), 2600); }
+
+		/* ══════════════════════════════
+		   SORTING SYSTEM
+		══════════════════════════════ */
+		let currentFilter = 'latest';
+
+		const filterLabels = {
+			latest:   'Sorted by: Latest',
+			popular:  'Sorted by: Most Popular ❤',
+			toprated: 'Sorted by: Top Rated ⭐'
+		};
+
+		function sortPosts(filter) {
+			const list = document.getElementById('postsList');
+			const posts = Array.from(list.querySelectorAll('.post-card'));
+
+			list.classList.add('sorting');
+
+			posts.sort((a, b) => {
+				if (filter === 'latest') {
+					return Number(b.dataset.timestamp) - Number(a.dataset.timestamp);
+				}
+				if (filter === 'popular') {
+					const likesA = Number(a.querySelector('.like-count').textContent);
+					const likesB = Number(b.querySelector('.like-count').textContent);
+					return likesB - likesA;
+				}
+				if (filter === 'toprated') {
+					return Number(b.dataset.rating) - Number(a.dataset.rating);
+				}
+				return 0;
+			});
+
+			setTimeout(() => {
+				posts.forEach(p => list.appendChild(p));
+				list.classList.remove('sorting');
+				document.getElementById('sortLabel').textContent = filterLabels[filter];
+			}, 200);
+		}
+
+		document.querySelectorAll('.filter-btn').forEach(btn => {
+			btn.addEventListener('click', function() {
+				document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+				this.classList.add('active');
+				currentFilter = this.dataset.filter;
+				sortPosts(currentFilter);
+			});
+		});
+
+		/* ══════════════════════════════
+		   CREATE POST MODAL
+		══════════════════════════════ */
+		let uploadedImages = [];
+		const modal = document.getElementById('createPostModal');
+		const ratingEl = document.getElementById('rating');
+
 		function openModal(){
 			modal.classList.add('open');
 			modal.setAttribute('aria-hidden','false');
 			document.body.style.overflow = 'hidden';
-			setTimeout(()=> document.getElementById('fileInput') && document.getElementById('fileInput').focus(), 50);
 		}
 		function closeModal(){
 			modal.classList.remove('open');
@@ -193,313 +387,197 @@
 			clearForm();
 			document.body.style.overflow = '';
 		}
-		openBtn && openBtn.addEventListener('click', openModal);
-		closeBtn && closeBtn.addEventListener('click', closeModal);
-		cancelBtn && cancelBtn.addEventListener('click', closeModal);
+
+		document.getElementById('openCreatePost').addEventListener('click', openModal);
+		document.getElementById('closeCreatePost').addEventListener('click', closeModal);
+		document.getElementById('cancelBtn').addEventListener('click', closeModal);
+
+		const dropZone = document.getElementById('dropZone');
+		const fileInput = document.getElementById('fileInput');
+		const preview   = document.getElementById('preview');
+
 		dropZone.addEventListener('click', ()=> fileInput.click());
 		dropZone.addEventListener('dragover', (e)=>{ e.preventDefault(); dropZone.classList.add('over'); });
 		dropZone.addEventListener('dragleave', ()=> dropZone.classList.remove('over'));
 		dropZone.addEventListener('drop', (e)=>{ e.preventDefault(); dropZone.classList.remove('over'); handleFiles(e.dataTransfer.files); });
 		fileInput.addEventListener('change', (e)=> handleFiles(e.target.files));
+
 		function handleFiles(files){
-	const arr = Array.from(files);
+			Array.from(files).forEach(file=>{
+				if(!file.type.startsWith('image/')) return;
+				const fr = new FileReader();
+				fr.onload = ()=>{
+					uploadedImages.push(fr.result);
+					const box = document.createElement('div');
+					box.className = 'preview-item';
+					box.innerHTML = `<img src="${fr.result}" alt="${file.name}">`;
+					preview.appendChild(box);
+				};
+				fr.readAsDataURL(file);
+			});
+		}
 
-	arr.forEach(file=>{
-		if(!file.type.startsWith('image/')) return;
-
-		const fr = new FileReader();
-
-		fr.onload = ()=>{
-			uploadedImages.push(fr.result); // store image
-
-			const img = document.createElement('img');
-			img.src = fr.result;
-			img.alt = file.name;
-
-			const box = document.createElement('div');
-			box.className = 'preview-item';
-			box.appendChild(img);
-
-			preview.appendChild(box);
-		};
-
-		fr.readAsDataURL(file);
-	});
-}
-
-
-
-
-
-		const ratingEl = document.getElementById('rating');
-		ratingEl && ratingEl.addEventListener('click', (e)=>{
+		ratingEl.addEventListener('click', (e)=>{
 			const s = e.target.closest('.star'); if(!s) return;
 			const val = Number(s.dataset.value);
 			ratingEl.dataset.rating = val;
-			[...ratingEl.querySelectorAll('.star')].forEach(st=> st.textContent = (Number(st.dataset.value) <= val ? '★' : '☆'));
+			[...ratingEl.querySelectorAll('.star')].forEach(st=> st.textContent = Number(st.dataset.value) <= val ? '★' : '☆');
 		});
-		function getPoints(){ return Number(localStorage.getItem('tm_points') || 0); }
-		function setPoints(n){ localStorage.setItem('tm_points', String(n)); pointsCounter.textContent = n + ' pts'; }
-		setPoints(getPoints());
-		function showToast(msg){ toast.textContent = msg; toast.classList.add('show'); setTimeout(()=> toast.classList.remove('show'), 2600); }
-		publishBtn.addEventListener('click', ()=>{
+
+		document.getElementById('publishBtn').addEventListener('click', ()=>{
 			const add = 50;
-			const newPoints = getPoints() + add;
-			setPoints(newPoints);
+			setPoints(getPoints() + add);
 			showToast('Post published — +' + add + ' points');
 			addPostToList();
 			closeModal();
+			// re-apply current sort after adding
+			setTimeout(()=> sortPosts(currentFilter), 50);
 		});
+
 		function addPostToList(){
+			const title  = document.querySelector('#captionInput').value || 'New travel post';
+			const loc    = document.querySelector('#locationInput').value || '';
+			const rating = Number(ratingEl.dataset.rating);
+			const nowTs  = Math.floor(Date.now() / 1000);
 
-	const title = document.querySelector('#captionInput').value || 'New travel post';
-	const loc = document.querySelector('#locationInput').value || '';
-	const rating = Number(ratingEl ? ratingEl.dataset.rating : 0);
+			const post = document.createElement('article');
+			post.className = 'post-card';
+			post.dataset.timestamp = nowTs;
+			post.dataset.likes     = '0';
+			post.dataset.rating    = rating;
 
-	const post = document.createElement('article');
-	post.className = 'post-card';
-
-	post.innerHTML = `
-		<header class="post-header">
-			<div class="author">
-				<img src="https://images.unsplash.com/photo-1544006659-f0b21884ce1d?w=120&q=80" alt="avatar" />
-				<div>
-					<div class="author-name">You</div>
-					<div class="author-meta">${escapeHtml(loc)} · just now</div>
+			post.innerHTML = `
+				<header class="post-header">
+					<div class="author">
+						<img src="https://images.unsplash.com/photo-1544006659-f0b21884ce1d?w=120&q=80" alt="avatar">
+						<div>
+							<div class="author-name">You</div>
+							<div class="author-meta">${escapeHtml(loc)} · just now</div>
+						</div>
+					</div>
+					<div class="post-stars">${'★'.repeat(rating)}${'☆'.repeat(5-rating)}</div>
+				</header>
+				<div class="post-image">
+					${uploadedImages.length
+						? uploadedImages.map(img=>`<img src="${img}">`).join('')
+						: `<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1400&q=80">`}
 				</div>
-			</div>
-			<div class="post-stars">${'★'.repeat(rating)}${'☆'.repeat(5-rating)}</div>
-		</header>
+				<div class="post-body"><p>${escapeHtml(title)}</p></div>
+				<footer class="post-footer">
+					<div class="post-actions">
+						<button class="icon-btn like-btn" data-liked="false">❤ <span class="like-count">0</span></button>
+						<button class="icon-btn message-btn">💬 Message</button>
+						<button class="icon-btn save-btn" data-saved="false">🔖</button>
+						<button class="icon-btn share-btn">🔗</button>
+					</div>
+				</footer>
+				<div class="comments-section" style="display:none;padding:10px 16px;">
+					<div class="comments-list"></div>
+					<div style="display:flex;gap:8px;margin-top:8px;">
+						<input type="text" class="comment-input cm-input" placeholder="Write a comment...">
+						<button class="btn btn-primary add-comment">Post</button>
+					</div>
+				</div>`;
 
-		<div class="post-image carousel">
-	${uploadedImages.length 
-		? uploadedImages.map(img => `<img src="${img}" />`).join('')
-		: `<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1400&q=80" />`
-	}
-</div>
+			document.getElementById('postsList').insertBefore(post, document.getElementById('postsList').firstChild);
+		}
 
-		<div class="post-body">
-			<p>${escapeHtml(title)}</p>
-		</div>
-
-		<footer class="post-footer">
-			<div class="post-actions">
-
-				<button class="icon-btn like-btn" data-liked="false">
-					❤ <span class="like-count">0</span>
-				</button>
-
-			    <button class="icon-btn message-btn">💬 Message</button>
-
-				<button class="icon-btn save-btn" data-saved="false">🔖</button>
-
-				<button class="icon-btn share-btn">🔗</button>
-
-				<button class="icon-btn pin-btn">📌</button>
-
-			</div>
-		</footer>
-
-		<div class="comments-section" style="display:none;padding:10px 0;">
-			<div class="comments-list"></div>
-			<div style="display:flex;gap:8px;margin-top:8px;">
-				<input type="text" class="comment-input cm-input" placeholder="Write a comment...">
-				<button class="btn btn-primary add-comment">Post</button>
-			</div>
-		</div>
-	`;
-
-	document.querySelector('.posts-list').insertBefore(
-		post,
-		document.querySelector('.posts-list').firstChild
-	);
-}
-
-
-		function escapeHtml(s){ return String(s).replace(/[&"'<>]/g, c=> ({'&':'&amp;','"':'&quot;','\'':'&#39;','<':'&lt;','>':'&gt;'}[c])); }
+		function escapeHtml(s){ return String(s).replace(/[&"'<>]/g, c=>({'&':'&amp;','"':'&quot;','\'':'&#39;','<':'&lt;','>':'&gt;'}[c])); }
 		function clearForm(){
-			 document.getElementById('createPostForm').reset();
-			 uploadedImages = []; preview.innerHTML=''; ratingEl && ([...ratingEl.querySelectorAll('.star')].forEach(st=> st.textContent='☆'), ratingEl.dataset.rating=0); }
+			document.getElementById('createPostForm').reset();
+			uploadedImages = [];
+			preview.innerHTML = '';
+			[...ratingEl.querySelectorAll('.star')].forEach(st=> st.textContent='☆');
+			ratingEl.dataset.rating = 0;
+		}
 
+		/* ══════════════════════════════
+		   UNIFIED CLICK HANDLER
+		══════════════════════════════ */
+		document.addEventListener('click', function(e){
+			const post = e.target.closest('.post-card');
+			if(!post) return;
 
-		
+			// LIKE — also updates data-likes for sort
+			if(e.target.closest('.like-btn')){
+				const btn = post.querySelector('.like-btn');
+				const countEl = btn.querySelector('.like-count');
+				let count = Number(countEl.textContent);
+				const liked = btn.dataset.liked === 'true';
+				btn.dataset.liked = liked ? 'false' : 'true';
+				btn.style.color = liked ? '' : 'red';
+				const newCount = liked ? count - 1 : count + 1;
+				countEl.textContent = newCount;
+				post.dataset.likes = newCount;
+				// re-sort if in popular mode
+				if(currentFilter === 'popular') sortPosts('popular');
+				return;
+			}
 
+			// MESSAGE
+			if(e.target.closest('.message-btn')){
+				openChat(post.querySelector('.author-name').textContent);
+				return;
+			}
 
-		
+			// SHARE
+			if(e.target.closest('.share-btn')){
+				const text = post.querySelector('.post-body p').textContent;
+				navigator.clipboard.writeText(text).then(()=> showToast('Copied to clipboard!'));
+				return;
+			}
 
+			// COMMENT
+			if(e.target.closest('.add-comment')){
+				const input = post.querySelector('.comment-input');
+				const list  = post.querySelector('.comments-list');
+				if(!input.value.trim()) return;
+				const p = document.createElement('p');
+				p.style.cssText = 'margin:4px 0;font-size:13px;';
+				p.textContent = 'You: ' + input.value;
+				list.appendChild(p);
+				input.value = '';
+				post.querySelector('.comments-section').style.display = 'block';
+			}
+		});
 
+		/* ══════════════════════════════
+		   CHAT
+		══════════════════════════════ */
+		let currentChatUser = '';
 
-/* ===== ADD THIS RIGHT BELOW ===== */
-
-function upgradeExistingPosts(){
-
-	document.querySelectorAll('.post-card').forEach(post => {
-
-		// Skip if already upgraded
-		if(post.dataset.upgraded) return;
-
-		post.dataset.upgraded = "true";
-
-		const footer = post.querySelector('.post-footer');
-
-		footer.innerHTML = `
-			<div class="post-actions">
-
-				<button class="icon-btn like-btn" data-liked="false">
-					❤ <span class="like-count">0</span>
-				</button>
-
-				<button class="icon-btn message-btn">💬 Message</button>
-
-				<button class="icon-btn save-btn" data-saved="false">🔖</button>
-
-				<button class="icon-btn share-btn">🔗</button>
-
-				<button class="icon-btn pin-btn">📌</button>
-
-			</div>
-		`;
-
-		const commentSection = document.createElement('div');
-		commentSection.className = 'comments-section';
-		commentSection.style.display = 'none';
-		commentSection.style.padding = '10px 0';
-
-		commentSection.innerHTML = `
-			<div class="comments-list"></div>
-			<div style="display:flex;gap:8px;margin-top:8px;">
-				<input type="text" class="comment-input cm-input" placeholder="Write a comment...">
-				<button class="btn btn-primary add-comment">Post</button>
-			</div>
-		`;
-
-		post.appendChild(commentSection);
-	});
-}
-upgradeExistingPosts();
-
-/* ===============================
-   UPGRADE OLD POSTS FIRST
-=============================== */
-/* ===============================
-   UPGRADE OLD POSTS
-=============================== */
-
-
-
-
-
-/* ===============================
-   ONE UNIFIED CLICK HANDLER
-=============================== */
-document.addEventListener('click', function(e){
-
-	const post = e.target.closest('.post-card');
-	if(!post) return;
-
-	// MESSAGE
-	if(e.target.closest('.message-btn')){
-		const username = post.querySelector('.author-name').textContent;
-		openChat(username);
-		return;
-	}
-
-	// SHARE
-	if(e.target.closest('.share-btn')){
-		const text = post.querySelector('.post-body p').textContent;
-		navigator.clipboard.writeText(text);
-		alert("Post copied!");
-		return;
-	}
-
-	// LIKE
-	if(e.target.closest('.like-btn')){
-		const btn = post.querySelector('.like-btn');
-		const countEl = btn.querySelector('.like-count');
-
-		let count = Number(countEl.textContent);
-		const liked = btn.dataset.liked === "true";
-
-		btn.dataset.liked = liked ? "false" : "true";
-		btn.style.color = liked ? "" : "red";
-		countEl.textContent = liked ? count - 1 : count + 1;
-		return;
-	}
-
-	// ADD COMMENT
-	if(e.target.closest('.add-comment')){
-		const input = post.querySelector('.comment-input');
-		const list = post.querySelector('.comments-list');
-
-		if(!input.value.trim()) return;
-
-		const p = document.createElement('p');
-		p.textContent = "You: " + input.value;
-
-		list.appendChild(p);
-		input.value = "";
-	}
-});
-
-/* ===============================
-   MINI CHAT SYSTEM
-=============================== */
-
-let currentChatUser = "";
-
-function openChat(userId){
-	currentChatUser = userId;
-	document.getElementById("chatModal").style.display = "block";
-	document.getElementById("chatUser").innerText = "Chat with " + userId;
-	loadMessages();
-}
-
-function closeChat(){
-	document.getElementById("chatModal").style.display = "none";
-}
-
-function sendMessage(){
-	const input = document.getElementById("chatInput");
-	const text = input.value.trim();
-	if(!text) return;
-
-	const message = {
-		text: text,
-		type: "sent",
-		time: Date.now()
-	};
-
-	let chats = JSON.parse(localStorage.getItem("tm_chats") || "{}");
-
-	if(!chats[currentChatUser])
-		chats[currentChatUser] = [];
-
-	chats[currentChatUser].push(message);
-
-	localStorage.setItem("tm_chats", JSON.stringify(chats));
-
-	input.value = "";
-	loadMessages();
-}
-
-function loadMessages(){
-	const box = document.getElementById("chatMessages");
-	box.innerHTML = "";
-
-	let chats = JSON.parse(localStorage.getItem("tm_chats") || "{}");
-	let messages = chats[currentChatUser] || [];
-
-	messages.forEach(msg=>{
-		const div = document.createElement("div");
-		div.className = "message " + msg.type;
-		div.textContent = msg.text;
-		box.appendChild(div);
-	});
-
-	box.scrollTop = box.scrollHeight;
-}
+		function openChat(userId){
+			currentChatUser = userId;
+			document.getElementById('chatModal').style.display = 'block';
+			document.getElementById('chatUser').innerText = 'Chat with ' + userId;
+			loadMessages();
+		}
+		function closeChat(){
+			document.getElementById('chatModal').style.display = 'none';
+		}
+		function sendMessage(){
+			const input = document.getElementById('chatInput');
+			const text = input.value.trim();
+			if(!text) return;
+			let chats = JSON.parse(localStorage.getItem('tm_chats') || '{}');
+			if(!chats[currentChatUser]) chats[currentChatUser] = [];
+			chats[currentChatUser].push({ text, type: 'sent', time: Date.now() });
+			localStorage.setItem('tm_chats', JSON.stringify(chats));
+			input.value = '';
+			loadMessages();
+		}
+		function loadMessages(){
+			const box = document.getElementById('chatMessages');
+			box.innerHTML = '';
+			let chats = JSON.parse(localStorage.getItem('tm_chats') || '{}');
+			(chats[currentChatUser] || []).forEach(msg=>{
+				const div = document.createElement('div');
+				div.className = 'message ' + msg.type;
+				div.textContent = msg.text;
+				box.appendChild(div);
+			});
+			box.scrollTop = box.scrollHeight;
+		}
 	</script>
-	</body>
-	
-
-	</html>
+</body>
+</html>
