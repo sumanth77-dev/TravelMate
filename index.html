@@ -7,6 +7,85 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── Search autocomplete dropdown ── */
+    .hero-search-wrap {
+      position: relative;
+      max-width: 620px;
+      margin: 0 auto 48px;
+    }
+    .hero-search { margin: 0; }
+    .search-autocomplete {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0; right: 0;
+      background: #fff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.12);
+      z-index: 200;
+      overflow: hidden;
+      display: none;
+    }
+    .search-autocomplete.open { display: block; }
+    .autocomplete-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 16px; cursor: pointer;
+      font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #334155; transition: background .15s;
+    }
+    .autocomplete-item:hover { background: #f0f9ff; }
+    .ac-icon { color: #0e7490; }
+    .ac-badge {
+      margin-left: auto; font-size: 11px; padding: 2px 8px;
+      border-radius: 999px; background: #e0f2fe; color: #0e7490; font-weight: 600;
+    }
+
+    /* ── Search Results Section ── */
+    #searchResultsSection {
+      display: none;
+      padding: 60px 0 40px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    #searchResultsSection.visible {
+      display: block;
+      animation: fadeSlideIn 0.4s ease;
+    }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .search-result-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+    }
+    .search-result-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(20px, 3vw, 28px); color: #0f172a;
+    }
+    .search-result-header h2 em { color: #0e7490; font-style: italic; }
+    .search-count {
+      font-size: 13px; color: #64748b; background: #e0f2fe;
+      padding: 4px 12px; border-radius: 999px; font-weight: 600;
+    }
+    .clear-search-btn {
+      background: none; border: 1.5px solid #cbd5e1; padding: 6px 16px;
+      border-radius: 8px; font-size: 13px; font-weight: 600;
+      color: #64748b; cursor: pointer; transition: all .2s;
+    }
+    .clear-search-btn:hover { border-color: #0f172a; color: #0f172a; }
+    .no-results { text-align: center; padding: 50px 20px; color: #64748b; }
+    .no-results .no-results-icon { font-size: 48px; margin-bottom: 14px; opacity: .4; }
+    .no-results h3 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 8px; color: #334155; }
+
+    /* ── Card highlight ── */
+    .dest-card.search-match {
+      box-shadow: 0 0 0 3px #0e7490, 0 8px 32px rgba(14,116,144,.18);
+      transform: translateY(-4px); transition: all .35s;
+    }
+    .dest-card.search-dim { opacity: 0.35; filter: grayscale(40%); transition: all .35s; }
+  </style>
 </head>
 <body>
 
@@ -16,13 +95,11 @@
       <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
       <ul class="nav-links" id="navLinks">
         <li><a href="index.html" class="active">Home</a></li>
-        <!--<li><a href="destinations.html">Destinations</a></li>-->
         <li><a href="main_community.html">Community</a></li>
         <li><a href="findguides.html">Find Guides</a></li>
         <li><a href="travel-mate-dashboard.html">DashBoard</a></li>
         <li><a href="login.html">Login</a></li>
         <li><a href="signup.html">Register</a></li>
-        
       </ul>
       <div style="display:flex;align-items:center;gap:12px;">
         <div id="pointsCounter" class="badge badge-teal">0 pts</div>
@@ -49,61 +126,65 @@
         honest reviews, and hidden gems from around the world.
       </p>
 
-      <div class="hero-search fade-up delay-3">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" id="heroSearch" placeholder="Search destinations, cities, experiences...">
-        <button class="btn btn-primary" onclick="handleSearch()">Search</button>
+      <!-- ONLY CHANGE: wrapped in div for autocomplete positioning -->
+      <div class="hero-search-wrap fade-up delay-3">
+        <div class="hero-search">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="heroSearch" placeholder="Search destinations, cities, experiences..." autocomplete="off">
+          <button class="btn btn-primary" onclick="handleSearch()">Search</button>
+        </div>
+        <div class="search-autocomplete" id="autocompleteList"></div>
       </div>
 
       <div class="stats-bar">
 
-  <div class="stat-card">
-    <div class="stat-icon">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-        <circle cx="12" cy="9" r="2.5"/>
-      </svg>
-    </div>
-    <div class="stat-value">500+</div>
-    <div class="stat-label">Destinations</div>
-  </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+              <circle cx="12" cy="9" r="2.5"/>
+            </svg>
+          </div>
+          <div class="stat-value">500+</div>
+          <div class="stat-label">Destinations</div>
+        </div>
 
-  <div class="stat-card">
-    <div class="stat-icon">
-      <svg viewBox="0 0 24 24">
-        <circle cx="9" cy="7" r="3"/>
-        <circle cx="15" cy="7" r="3"/>
-        <path d="M3 20c0-3.31 2.69-6 6-6h6c3.31 0 6 2.69 6 6"/>
-      </svg>
-    </div>
-    <div class="stat-value">2,000+</div>
-    <div class="stat-label">Active Guides</div>
-  </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24">
+              <circle cx="9" cy="7" r="3"/>
+              <circle cx="15" cy="7" r="3"/>
+              <path d="M3 20c0-3.31 2.69-6 6-6h6c3.31 0 6 2.69 6 6"/>
+            </svg>
+          </div>
+          <div class="stat-value">2,000+</div>
+          <div class="stat-label">Active Guides</div>
+        </div>
 
-  <div class="stat-card">
-    <div class="stat-icon">
-      <svg viewBox="0 0 24 24">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-      </svg>
-    </div>
-    <div class="stat-value">50K+</div>
-    <div class="stat-label">Reviews</div>
-  </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <div class="stat-value">50K+</div>
+          <div class="stat-label">Reviews</div>
+        </div>
 
-  <div class="stat-card">
-    <div class="stat-icon">
-      <svg viewBox="0 0 24 24">
-        <circle cx="12" cy="9" r="4"/>
-        <path d="M9 9c0 0-1.5 1-1.5 3s1.5 3 1.5 3M15 9c0 0 1.5 1 1.5 3s-1.5 3-1.5 3"/>
-        <line x1="12" y1="16" x2="12" y2="21"/>
-        <polyline points="9 19 12 22 15 19"/>
-      </svg>
-    </div>
-    <div class="stat-value">1M+</div>
-    <div class="stat-label">Points Earned</div>
-  </div>
+        <div class="stat-card">
+          <div class="stat-icon">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="9" r="4"/>
+              <path d="M9 9c0 0-1.5 1-1.5 3s1.5 3 1.5 3M15 9c0 0 1.5 1 1.5 3s-1.5 3-1.5 3"/>
+              <line x1="12" y1="16" x2="12" y2="21"/>
+              <polyline points="9 19 12 22 15 19"/>
+            </svg>
+          </div>
+          <div class="stat-value">1M+</div>
+          <div class="stat-label">Points Earned</div>
+        </div>
 
-</div>
+      </div>
     </div>
 
   </section>
@@ -117,6 +198,27 @@
     })();
   </script>
 
+  <!-- ══════════════ SEARCH RESULTS ══════════════ -->
+  <section id="searchResultsSection">
+    <div class="container">
+      <div class="search-result-header">
+        <h2>Results for <em id="searchTermDisplay"></em></h2>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span class="search-count" id="searchCount">0 found</span>
+          <button class="clear-search-btn" onclick="clearSearch()">
+            <i class="fas fa-times" style="margin-right:5px;"></i>Clear Search
+          </button>
+        </div>
+      </div>
+      <div class="dest-grid" id="searchResultsGrid"></div>
+      <div class="no-results" id="noResults" style="display:none;">
+        <div class="no-results-icon">🔍</div>
+        <h3>No destinations found</h3>
+        <p>Try "Bali", "Paris", "Tokyo" or a category like "Beach" or "Adventure"</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ══════════════ FEATURED DESTINATIONS ══════════════ -->
   <section class="section-pad" id="destinations">
     <div class="container">
@@ -129,7 +231,9 @@
 
       <div class="dest-grid">
 
-        <div class="dest-card fade-up delay-1">
+        <div class="dest-card fade-up delay-1"
+             data-name="Bali, Indonesia"
+             data-tags="bali indonesia beach asia tropical island">
           <div class="dest-card-img">
             <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80" alt="Bali">
             <span class="card-badge badge-teal">Beach</span>
@@ -149,7 +253,9 @@
           </div>
         </div>
 
-        <div class="dest-card fade-up delay-2">
+        <div class="dest-card fade-up delay-2"
+             data-name="Paris, France"
+             data-tags="paris france city europe eiffel romance luxury">
           <div class="dest-card-img">
             <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&q=80" alt="Paris">
             <span class="card-badge badge-gold">City</span>
@@ -169,7 +275,9 @@
           </div>
         </div>
 
-        <div class="dest-card fade-up delay-3">
+        <div class="dest-card fade-up delay-3"
+             data-name="Swiss Alps, Switzerland"
+             data-tags="swiss switzerland alps mountains europe snow hiking hill station">
           <div class="dest-card-img">
             <img src="https://images.unsplash.com/photo-1472791108553-c9405341e398?w=600&q=80" alt="Switzerland">
             <span class="card-badge badge" style="background:#dcfce7;color:#166534">Hill Station</span>
@@ -189,7 +297,9 @@
           </div>
         </div>
 
-        <div class="dest-card fade-up delay-1">
+        <div class="dest-card fade-up delay-1"
+             data-name="Maldives Islands"
+             data-tags="maldives islands beach ocean resort luxury tropical overwater">
           <div class="dest-card-img">
             <img src="https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=600&q=80" alt="Maldives">
             <span class="card-badge badge-teal">Beach</span>
@@ -209,7 +319,9 @@
           </div>
         </div>
 
-        <div class="dest-card fade-up delay-2">
+        <div class="dest-card fade-up delay-2"
+             data-name="Tokyo, Japan"
+             data-tags="tokyo japan city asia culture anime food technology urban">
           <div class="dest-card-img">
             <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80" alt="Tokyo">
             <span class="card-badge badge-gold">City</span>
@@ -229,7 +341,9 @@
           </div>
         </div>
 
-        <div class="dest-card fade-up delay-3">
+        <div class="dest-card fade-up delay-3"
+             data-name="Queenstown, New Zealand"
+             data-tags="queenstown new zealand adventure bungee skydive nature south pacific">
           <div class="dest-card-img">
             <img src="https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=600&q=80" alt="Queenstown">
             <span class="card-badge badge" style="background:#ffe4e6;color:#9f1239">Adventure</span>
@@ -373,7 +487,6 @@
           <ul>
             <li><a href="main_community.html">Community</a></li>
             <li><a href="">Popular places</a></li>
-            
           </ul>
         </div>
 
@@ -425,74 +538,170 @@
       document.getElementById('navLinks').classList.toggle('open');
     });
 
-    /* ── Hero Search ── */
-    function handleSearch() {
-      const q = document.getElementById('heroSearch').value.trim();
-      if (q) showToast('Searching for: ' + q, 'info');
+    /* ══════════════════════════════
+       DESTINATION DATA
+    ══════════════════════════════ */
+    const destinations = [
+      { name:'Bali, Indonesia',         loc:'Indonesia',   badge:'Beach',        badgeClass:'badge-teal', badgeStyle:'',                                img:'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80', rating:4.8, reviews:'2,340', price:'$45/night',  link:'community.html?place=bali',       tags:'bali indonesia beach asia tropical island' },
+      { name:'Paris, France',           loc:'France',      badge:'City',         badgeClass:'badge-gold', badgeStyle:'',                                img:'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&q=80', rating:4.9, reviews:'5,621', price:'$120/night', link:'community.html?place=paris',      tags:'paris france city europe eiffel romance luxury' },
+      { name:'Swiss Alps, Switzerland', loc:'Switzerland', badge:'Hill Station', badgeClass:'badge',      badgeStyle:'background:#dcfce7;color:#166534', img:'https://images.unsplash.com/photo-1472791108553-c9405341e398?w=600&q=80', rating:4.7, reviews:'1,980', price:'$200/night', link:'community.html?place=swiss',      tags:'swiss switzerland alps mountains europe snow hiking hill station' },
+      { name:'Maldives Islands',        loc:'Maldives',    badge:'Beach',        badgeClass:'badge-teal', badgeStyle:'',                                img:'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=600&q=80', rating:5.0, reviews:'4,210', price:'$350/night', link:'community.html?place=maldives',   tags:'maldives islands beach ocean resort luxury tropical overwater' },
+      { name:'Tokyo, Japan',            loc:'Japan',       badge:'City',         badgeClass:'badge-gold', badgeStyle:'',                                img:'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80', rating:4.8, reviews:'6,800', price:'$80/night',  link:'community.html?place=tokyo',      tags:'tokyo japan city asia culture anime food technology urban' },
+      { name:'Queenstown, New Zealand', loc:'New Zealand', badge:'Adventure',    badgeClass:'badge',      badgeStyle:'background:#ffe4e6;color:#9f1239', img:'https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=600&q=80', rating:4.9, reviews:'3,102', price:'$90/night',  link:'community.html?place=queenstown', tags:'queenstown new zealand adventure bungee skydive nature south pacific' }
+    ];
+
+    function renderStars(r) {
+      let s = '';
+      for (let i = 1; i <= 5; i++) {
+        if (r >= i) s += '<i class="fas fa-star"></i>';
+        else if (r >= i - 0.5) s += '<i class="fas fa-star-half-alt"></i>';
+        else s += '<i class="far fa-star"></i>';
+      }
+      return s;
     }
+
+    function buildResultCard(d) {
+      return `<div class="dest-card">
+        <div class="dest-card-img">
+          <img src="${d.img}" alt="${d.name}" loading="lazy">
+          <span class="card-badge ${d.badgeClass}" ${d.badgeStyle ? `style="${d.badgeStyle}"` : ''}>${d.badge}</span>
+          <button class="save-btn" onclick="toggleSave(this)"><i class="far fa-heart"></i></button>
+        </div>
+        <div class="dest-card-body">
+          <h3 class="dest-title">${d.name}</h3>
+          <p class="dest-loc"><i class="fas fa-map-marker-alt"></i> ${d.loc}</p>
+          <div class="rating">
+            <span class="stars">${renderStars(d.rating)}</span>
+            <strong>${d.rating}</strong>
+            <span class="review-count">(${d.reviews} reviews)</span>
+          </div>
+          <div class="dest-footer">
+            <span class="dest-price">From <strong>${d.price}</strong></span>
+            <a href="${d.link}" class="btn btn-primary btn-sm">View Details</a>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    /* ══════════════════════════════
+       SEARCH
+    ══════════════════════════════ */
+    function doSearch(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) return;
+
+      document.getElementById('autocompleteList').classList.remove('open');
+
+      const matched = destinations.filter(d =>
+        d.name.toLowerCase().includes(q) ||
+        d.loc.toLowerCase().includes(q)  ||
+        d.tags.toLowerCase().includes(q) ||
+        d.badge.toLowerCase().includes(q)
+      );
+
+      const section = document.getElementById('searchResultsSection');
+      section.classList.add('visible');
+      document.getElementById('searchTermDisplay').textContent = '"' + query.trim() + '"';
+      document.getElementById('searchCount').textContent = matched.length + ' found';
+
+      const grid  = document.getElementById('searchResultsGrid');
+      const noRes = document.getElementById('noResults');
+      if (matched.length === 0) { grid.innerHTML = ''; noRes.style.display = 'block'; }
+      else { noRes.style.display = 'none'; grid.innerHTML = matched.map(buildResultCard).join(''); }
+
+      setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+
+      // Highlight matching cards in main grid
+      document.querySelectorAll('#destinations .dest-card').forEach(card => {
+        const isMatch = (card.dataset.name || '').toLowerCase().includes(q) ||
+                        (card.dataset.tags || '').toLowerCase().includes(q);
+        card.classList.toggle('search-match', isMatch);
+        card.classList.toggle('search-dim', !isMatch);
+      });
+    }
+
+    function clearSearch() {
+      document.getElementById('heroSearch').value = '';
+      document.getElementById('searchResultsSection').classList.remove('visible');
+      document.querySelectorAll('#destinations .dest-card').forEach(c => {
+        c.classList.remove('search-match', 'search-dim');
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* original function name kept so onclick="handleSearch()" still works */
+    function handleSearch() { doSearch(document.getElementById('heroSearch').value); }
+
     document.getElementById('heroSearch').addEventListener('keypress', e => {
       if (e.key === 'Enter') handleSearch();
     });
 
-    /* ── Save toggle ── */
-    // ✅ NEW — saves to localStorage so dashboard can read it
-function toggleSave(btn) {
-  const card  = btn.closest('.dest-card');
-  const name  = card.querySelector('.dest-title').textContent.trim();
-  const img   = card.querySelector('img').src;
-  const loc   = card.querySelector('.dest-loc').textContent.replace(/[^\w\s,]/g, '').trim();
-  const badge = card.querySelector('.card-badge')?.textContent.trim() || '';
+    /* ── Autocomplete ── */
+    document.getElementById('heroSearch').addEventListener('input', function () {
+      const q  = this.value.trim().toLowerCase();
+      const ac = document.getElementById('autocompleteList');
+      if (!q) { ac.classList.remove('open'); return; }
 
-  let wishlist = JSON.parse(localStorage.getItem('tm_wishlist') || '[]');
-  const idx = wishlist.findIndex(d => d.name === name);
+      const sugg = destinations.filter(d =>
+        d.name.toLowerCase().includes(q) ||
+        d.tags.toLowerCase().includes(q) ||
+        d.loc.toLowerCase().includes(q)
+      );
+      if (!sugg.length) { ac.classList.remove('open'); return; }
 
-  if (idx === -1) {
-    wishlist.push({ name, img, loc, badge });
-    localStorage.setItem('tm_wishlist', JSON.stringify(wishlist));
-    btn.classList.add('saved');
-    btn.querySelector('i').className = 'fas fa-heart';
-    showToast('❤️ Added to Wishlist!', 'success');
-  } else {
-    wishlist.splice(idx, 1);
-    localStorage.setItem('tm_wishlist', JSON.stringify(wishlist));
-    btn.classList.remove('saved');
-    btn.querySelector('i').className = 'far fa-heart';
-    showToast('Removed from Wishlist', 'info');
-  }
-}
+      ac.innerHTML = sugg.map(d => `
+        <div class="autocomplete-item"
+             onclick="doSearch('${d.name}');document.getElementById('heroSearch').value='${d.name}';">
+          <i class="fas fa-map-marker-alt ac-icon"></i>
+          <span>${d.name}</span>
+          <span class="ac-badge">${d.badge}</span>
+        </div>`).join('');
+      ac.classList.add('open');
+    });
 
-    /* ── Counter animation ── */
-    function animateCounters() {
-      document.querySelectorAll('.counter').forEach(el => {
-        const target = parseInt(el.dataset.target, 10);
-        let current = 0;
-        const step = target / 80;
-        const timer = setInterval(() => {
-          current = Math.min(current + step, target);
-          el.textContent = Math.floor(current).toLocaleString();
-          if (current >= target) clearInterval(timer);
-        }, 16);
-      });
+    document.addEventListener('click', e => {
+      if (!e.target.closest('#heroSearch') && !e.target.closest('#autocompleteList'))
+        document.getElementById('autocompleteList').classList.remove('open');
+    });
+
+    /* ── Save / Wishlist (original logic unchanged) ── */
+    function toggleSave(btn) {
+      const card  = btn.closest('.dest-card');
+      const name  = card.querySelector('.dest-title').textContent.trim();
+      const img   = card.querySelector('img').src;
+      const loc   = card.querySelector('.dest-loc').textContent.replace(/[^\w\s,]/g, '').trim();
+      const badge = card.querySelector('.card-badge')?.textContent.trim() || '';
+
+      let wishlist = JSON.parse(localStorage.getItem('tm_wishlist') || '[]');
+      const idx = wishlist.findIndex(d => d.name === name);
+
+      if (idx === -1) {
+        wishlist.push({ name, img, loc, badge });
+        localStorage.setItem('tm_wishlist', JSON.stringify(wishlist));
+        btn.classList.add('saved');
+        btn.querySelector('i').className = 'fas fa-heart';
+        showToast('❤️ Added to Wishlist!', 'success');
+      } else {
+        wishlist.splice(idx, 1);
+        localStorage.setItem('tm_wishlist', JSON.stringify(wishlist));
+        btn.classList.remove('saved');
+        btn.querySelector('i').className = 'far fa-heart';
+        showToast('Removed from Wishlist', 'info');
+      }
     }
 
-    /* ── Intersection Observer ── */
+    /* ── Intersection Observer (original) ── */
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
       });
     }, { threshold: 0.1 });
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-    /* Hero loads immediately */
     setTimeout(() => {
       document.querySelectorAll('.hero .fade-up').forEach(el => el.classList.add('visible'));
-      animateCounters();
     }, 150);
 
-    /* ── Toast ── */
+    /* ── Toast (original) ── */
     function showToast(msg, type) {
       const icons = { success: 'check-circle', error: 'times-circle', info: 'info-circle' };
       const toast = document.createElement('div');
@@ -501,21 +710,6 @@ function toggleSave(btn) {
       document.getElementById('toastContainer').appendChild(toast);
       setTimeout(() => toast.classList.add('show'), 10);
       setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3000);
-    }
-
-    /* Add to wishlist */
-    function addToWishlist(destination) {
-      // Get the current wishlist from localStorage
-      let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-
-      // Add the new destination if it's not already in the wishlist
-      if (!wishlist.includes(destination)) {
-        wishlist.push(destination);
-        localStorage.setItem('wishlist', JSON.stringify(wishlist));
-        alert(`${destination} has been added to your wishlist!`);
-      } else {
-        alert(`${destination} is already in your wishlist.`);
-      }
     }
   </script>
 </body>
