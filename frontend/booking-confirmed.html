@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Booking Confirmed - Travel Mate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<script src="tm-auth.js"></script>
+<style>
+:root{--primary:#22c55e;--primary-dark:#16a34a;--bg:#f0fdf4;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#1f2937;}
+.confirm-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 24px 60px;}
+
+/* SUCCESS ANIMATION */
+.success-ring{
+  width:100px;height:100px;border-radius:50%;
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.8rem;margin:0 auto 20px;
+  box-shadow:0 0 0 0 rgba(34,197,94,.4);
+  animation:pulse 2s ease infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(34,197,94,.4);}
+  70%{box-shadow:0 0 0 20px rgba(34,197,94,0);}
+  100%{box-shadow:0 0 0 0 rgba(34,197,94,0);}
+}
+.confirm-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);color:#111827;margin-bottom:8px;text-align:center;}
+.confirm-sub{color:#6b7280;font-size:0.95rem;text-align:center;max-width:420px;margin:0 auto 32px;line-height:1.7;}
+
+/* BOOKING CARD */
+.booking-card{
+  background:#fff;border-radius:24px;width:100%;max-width:560px;
+  box-shadow:0 8px 40px rgba(0,0,0,.1);overflow:hidden;margin-bottom:24px;
+}
+.bc-header{
+  background:linear-gradient(135deg,#064e3b,#065f46);
+  padding:24px 28px;display:flex;align-items:center;gap:16px;
+}
+.bc-guide-av{
+  width:60px;height:60px;border-radius:50%;object-fit:cover;
+  border:3px solid #86efac;flex-shrink:0;
+}
+.bc-guide-name{font-family:'Playfair Display',serif;font-size:1.1rem;color:#fff;margin-bottom:3px;}
+.bc-guide-spec{font-size:0.82rem;color:#86efac;font-weight:600;}
+.bc-badge{
+  margin-left:auto;background:rgba(34,197,94,.2);color:#86efac;
+  padding:5px 14px;border-radius:20px;font-size:0.78rem;font-weight:700;
+  border:1px solid rgba(134,239,172,.3);white-space:nowrap;
+  display:flex;align-items:center;gap:5px;
+}
+
+.bc-body{padding:24px 28px;}
+.bc-ref{
+  background:var(--bg);border:1.5px dashed #86efac;border-radius:12px;
+  padding:12px 18px;text-align:center;margin-bottom:22px;
+}
+.bc-ref-label{font-size:0.75rem;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.bc-ref-num{font-size:1.1rem;font-weight:800;color:var(--primary);letter-spacing:.08em;}
+
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px;}
+.detail-item{background:#f9fafb;border-radius:12px;padding:14px 16px;}
+.detail-label{font-size:0.72rem;font-weight:700;color:#9ca3af;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.detail-label i{color:var(--primary);}
+.detail-val{font-size:0.92rem;font-weight:700;color:#111827;}
+
+.price-breakdown{border:1px solid #f3f4f6;border-radius:14px;padding:16px 18px;margin-bottom:22px;}
+.pb-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f9fafb;font-size:0.88rem;}
+.pb-row:last-child{border-bottom:none;padding-top:10px;margin-top:4px;}
+.pb-row.total{font-weight:800;font-size:1rem;color:#111827;}
+.pb-row.total span:last-child{color:var(--primary);}
+.pb-label{color:#6b7280;}
+
+.status-bar{
+  display:flex;align-items:center;gap:0;margin-bottom:24px;
+  background:#f9fafb;border-radius:14px;padding:16px 18px;
+}
+.status-step{flex:1;text-align:center;position:relative;}
+.status-step::after{
+  content:'';position:absolute;top:14px;right:-50%;width:100%;
+  height:2px;background:#e5e7eb;z-index:0;
+}
+.status-step:last-child::after{display:none;}
+.status-dot{
+  width:28px;height:28px;border-radius:50%;margin:0 auto 6px;
+  display:flex;align-items:center;justify-content:center;font-size:0.75rem;
+  font-weight:700;position:relative;z-index:1;
+}
+.status-dot.done{background:var(--primary);color:#fff;}
+.status-dot.active{background:#fef3c7;color:#d97706;border:2px solid #d97706;}
+.status-dot.pending{background:#f3f4f6;color:#9ca3af;}
+.status-lbl{font-size:0.7rem;font-weight:600;color:#6b7280;}
+.status-lbl.done{color:var(--primary);}
+
+/* ACTIONS */
+.action-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;max-width:560px;width:100%;}
+.btn-primary-c{
+  background:var(--primary);color:#fff;border:none;padding:12px 26px;
+  border-radius:50px;font-size:0.9rem;font-weight:700;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary-c:hover{background:var(--primary-dark);transform:translateY(-2px);}
+.btn-outline-c{
+  background:#fff;color:#374151;border:1.5px solid #e5e7eb;padding:12px 22px;
+  border-radius:50px;font-size:0.9rem;font-weight:600;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-outline-c:hover{border-color:var(--primary);color:var(--primary);}
+
+/* TIPS */
+.tips-card{
+  background:#fff;border-radius:20px;max-width:560px;width:100%;
+  padding:24px 28px;box-shadow:0 4px 20px rgba(0,0,0,.06);
+  border:1px solid #f3f4f6;margin-bottom:24px;
+}
+.tips-title{font-weight:700;font-size:0.95rem;color:#111827;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.tip-row{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid #f9fafb;}
+.tip-row:last-child{border-bottom:none;}
+.tip-icon{width:32px;height:32px;border-radius:10px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:0.95rem;flex-shrink:0;}
+.tip-text{font-size:0.84rem;color:#4b5563;line-height:1.6;}
+
+footer{background:#0f1f1a;padding:40px 24px 24px;width:100%;}
+.footer-inner{max-width:1100px;margin:0 auto;}
+.footer-bottom{font-size:0.8rem;color:rgba(255,255,255,.35);text-align:center;}
+</style>
+</head>
+<body>
+
+<nav class="navbar transparent" id="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="main_community.html">Community</a></li>
+      <li><a href="findguides.html">Find Guides</a></li>
+      <li><a href="destinations.html">Destinations</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div id="pointsCounter" class="badge badge-teal">0 pts</div>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="confirm-page">
+  <div class="success-ring">&#10003;</div>
+  <h1 class="confirm-title">Booking Confirmed!</h1>
+  <p class="confirm-sub">Your guide has been notified and your trip is being prepared. Get ready for an amazing experience! 🌟</p>
+
+  <div class="booking-card" id="bookingCard">
+    <div class="bc-header">
+      <img class="bc-guide-av" id="guideAvatar" src="" alt="">
+      <div>
+        <div class="bc-guide-name" id="guideName">—</div>
+        <div class="bc-guide-spec" id="guideSpec">—</div>
+      </div>
+      <div class="bc-badge">&#10003; Confirmed</div>
+    </div>
+    <div class="bc-body">
+      <!-- Booking reference -->
+      <div class="bc-ref">
+        <div class="bc-ref-label">Booking Reference</div>
+        <div class="bc-ref-num" id="bookingRef">TM-000000</div>
+      </div>
+
+      <!-- Details grid -->
+      <div class="detail-grid">
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-user"></i> Traveller</div>
+          <div class="detail-val" id="detName">—</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-map-marker-alt"></i> Destination</div>
+          <div class="detail-val" id="detDest">—</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-calendar-alt"></i> Travel Date</div>
+          <div class="detail-val" id="detDate">—</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-users"></i> People</div>
+          <div class="detail-val" id="detPeople">—</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-box"></i> Package</div>
+          <div class="detail-val" id="detPkg">—</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-star"></i> Points Earned</div>
+          <div class="detail-val" style="color:var(--primary);">+100 pts 🎉</div>
+        </div>
+      </div>
+
+      <!-- Price breakdown -->
+      <div class="price-breakdown">
+        <div class="pb-row"><span class="pb-label">Package Price</span><span id="pbPrice">₹0</span></div>
+        <div class="pb-row"><span class="pb-label">Service Fee</span><span>₹0 <span style="font-size:0.75rem;color:#9ca3af;">(waived)</span></span></div>
+        <div class="pb-row total"><span>Total Amount</span><span id="pbTotal">₹0</span></div>
+      </div>
+
+      <!-- Status tracker -->
+      <div class="status-bar">
+        <div class="status-step">
+          <div class="status-dot done"><i class="fas fa-check" style="font-size:0.7rem;"></i></div>
+          <div class="status-lbl done">Booked</div>
+        </div>
+        <div class="status-step">
+          <div class="status-dot active">⏳</div>
+          <div class="status-lbl">Pending</div>
+        </div>
+        <div class="status-step">
+          <div class="status-dot pending">✓</div>
+          <div class="status-lbl">Confirmed</div>
+        </div>
+        <div class="status-step">
+          <div class="status-dot pending">🌟</div>
+          <div class="status-lbl">Completed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="action-row">
+    <a href="travel-mate-dashboard.html" class="btn-primary-c"><i class="fas fa-th-large"></i> View Dashboard</a>
+    <a href="findguides.html" class="btn-outline-c"><i class="fas fa-compass"></i> Find More Guides</a>
+    <a href="index.html" class="btn-outline-c"><i class="fas fa-home"></i> Back to Home</a>
+  </div>
+
+  <!-- Tips -->
+  <div class="tips-card" style="margin-top:24px;">
+    <div class="tips-title">&#128161; Tips for Your Trip</div>
+    <div class="tip-row"><div class="tip-icon">📋</div><div class="tip-text">Save your booking reference <strong id="tipRef">TM-000000</strong> — you'll need it to check in with your guide.</div></div>
+    <div class="tip-row"><div class="tip-icon">📱</div><div class="tip-text">Your guide will contact you via email 24 hours before your trip to confirm meeting point and time.</div></div>
+    <div class="tip-row"><div class="tip-icon">🌦️</div><div class="tip-text">Check the weather forecast for your destination a day before. Dress appropriately!</div></div>
+    <div class="tip-row"><div class="tip-icon">⭐</div><div class="tip-text">After your trip, leave a review for your guide to help other travellers in the community.</div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-bottom">&copy; 2026 Travel Mate. College Project.</div>
+  </div>
+</footer>
+
+<script>
+function loadBooking() {
+  /* Try to load from URL param (booking id) or latest booking in localStorage */
+  const params = new URLSearchParams(window.location.search);
+  const bid    = params.get('id');
+  const bookings = JSON.parse(localStorage.getItem('tm_bookings') || '[]');
+
+  let booking = bid
+    ? bookings.find(b => String(b.id) === bid)
+    : bookings[0];
+
+  if (!booking) {
+    /* fallback demo */
+    booking = {
+      id: 1706800000000,
+      guideName:'Ramesh Kumar', guideSpecialty:'Heritage & Culture',
+      guidePhoto:'', name:'Demo User', destination:'Jaipur',
+      date:'2026-03-20', people:2, package:'Full Day', price:1200, status:'Pending'
+    };
+  }
+
+  const ref   = 'TM-' + String(booking.id).slice(-6);
+  const avUrl = booking.guidePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(booking.guideName||'Guide')}&background=dcfce7&color=16a34a&size=60`;
+  const dateStr = booking.date ? new Date(booking.date).toLocaleDateString('en-IN',{weekday:'short',year:'numeric',month:'short',day:'numeric'}) : booking.date;
+
+  document.getElementById('guideAvatar').src        = avUrl;
+  document.getElementById('guideName').textContent  = booking.guideName || '—';
+  document.getElementById('guideSpec').textContent  = booking.guideSpecialty || '—';
+  document.getElementById('bookingRef').textContent = ref;
+  document.getElementById('tipRef').textContent     = ref;
+  document.getElementById('detName').textContent    = booking.name || '—';
+  document.getElementById('detDest').textContent    = booking.destination || '—';
+  document.getElementById('detDate').textContent    = dateStr || '—';
+  document.getElementById('detPeople').textContent  = (booking.people || 1) + ' person(s)';
+  document.getElementById('detPkg').textContent     = booking.package || '—';
+  document.getElementById('pbPrice').textContent    = '₹' + (booking.price || 0);
+  document.getElementById('pbTotal').textContent    = '₹' + (booking.price || 0);
+  document.title = 'Booking ' + ref + ' - Travel Mate';
+}
+
+/* ── Navbar scroll effect ── */
+window.addEventListener('scroll', function () {
+  const navbar = document.getElementById('navbar');
+  // Just toggle between transparent and solid, but both have same green background
+  // This still works for any other styling differences you might want
+  if (window.scrollY > 40) {
+    navbar.classList.remove('transparent');
+    navbar.classList.add('solid');
+  } else {
+    navbar.classList.remove('solid');
+    navbar.classList.add('transparent');
+  }
+});
+loadBooking();
+</script>
+</body>
+</html>

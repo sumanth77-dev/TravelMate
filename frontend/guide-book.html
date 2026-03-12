@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Travel Community — Book Guide</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="tm-auth.js"></script>
+  <style>
+    :root {
+      --bg-background: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-accent: #f1f5f9;
+      --text-foreground: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --primary-light-bg: rgba(34, 197, 94, 0.1);
+      --warning: #eab308;
+    }
+
+    body {
+      background: var(--bg-background);
+      padding-top: 70px;
+    }
+
+    .booking-container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 24px;
+      transition: color 0.2s;
+    }
+
+    .back-button:hover {
+      color: var(--text-foreground);
+    }
+
+    .booking-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .booking-card h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-foreground);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .booking-card .location-sub {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-foreground);
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-background);
+      padding: 10px 12px;
+      font-size: 0.875rem;
+      color: var(--text-foreground);
+      outline: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-light-bg);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .price-summary {
+      background: rgba(100, 116, 139, 0.05);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.875rem;
+    }
+
+    .price-summary .calc {
+      color: var(--text-muted);
+    }
+
+    .price-summary .total {
+      font-weight: 600;
+      color: var(--text-foreground);
+      font-size: 1rem;
+    }
+
+    .btn-submit {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-submit:hover { opacity: 0.9; }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Toast Notification (Simple Implementation) */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text-foreground);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: translateY(100%);
+      transition: all 0.3s;
+      z-index: 1000;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <nav class="navbar solid" id="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="main_community.html">Community</a></li>
+        <li><a href="findguides.html" class="active">Find Guides</a></li>
+      </ul>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div id="pointsCounter" class="badge badge-teal">0 pts</div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="booking-container" id="bookingRoot">
+    <!-- Rendered via JS -->
+  </div>
+
+  <div id="toastMessage" class="toast"></div>
+
+  <script>
+    const guidesData = [
+      { id: "1", name: "Aarav Sharma", location: "Jaipur, Rajasthan", pricePerDay: 2500 },
+      { id: "2", name: "Priya Patel", location: "Jaipur, Rajasthan", pricePerDay: 2000 },
+      { id: "3", name: "Ravi Kumar", location: "Goa", pricePerDay: 3000 },
+      { id: "4", name: "Meera Nair", location: "Kerala", pricePerDay: 1800 },
+      { id: "5", name: "Arjun Reddy", location: "Hampi, Karnataka", pricePerDay: 2200 },
+      { id: "6", name: "Sanya Gupta", location: "Varanasi, UP", pricePerDay: 1500 },
+      { id: "7", name: "Kabir Singh", location: "Manali, HP", pricePerDay: 2800 },
+      { id: "8", name: "Diya Chatterjee", location: "Darjeeling, WB", pricePerDay: 1900 },
+    ];
+
+    let currentGuide = null;
+    let pricePerHour = 0;
+
+    function showToast(msg) {
+      const t = document.getElementById('toastMessage');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function updatePrice() {
+      const dur = Number(document.getElementById('durationInput').value) || 1;
+      const mem = Number(document.getElementById('membersInput').value) || 1;
+      const total = pricePerHour * dur * mem;
+      document.getElementById('displayDuration').textContent = `${dur}h × ${mem} person${mem>1?'s':''}`;
+      document.getElementById('displayTotal').textContent = '₹' + total.toLocaleString();
+    }
+
+    function initBooking() {
+      const urlParams = new URL(window.location.href);
+      let guideId = urlParams.searchParams.get('id') || '1';
+      currentGuide = guidesData.find(g => g.id === guideId);
+      
+      const root = document.getElementById('bookingRoot');
+
+      if (!currentGuide) {
+        root.innerHTML = `<div style="text-align:center;padding:40px;"><p>Guide not found.</p><a href="findguides.html">Back to search</a></div>`;
+        return;
+      }
+
+      pricePerHour = Math.round(currentGuide.pricePerDay / 8);
+
+      // Generate HTML Options
+      const durOptions = [1,2,3,4,5,6,7,8,10,12].map(n => `<option value="${n}">${n} hour${n>1?'s':''}</option>`).join('');
+      const memOptions = [1,2,3,4,5,6,7,8].map(n => `<option value="${n}">${n} member${n>1?'s':''}</option>`).join('');
+
+      // Get Today's Date formatted for minimum input
+      const today = new Date().toISOString().split('T')[0];
+
+      root.innerHTML = `
+        <a href="guide-profile.html?id=${currentGuide.id}" class="back-button">
+          <i class="fas fa-arrow-left"></i> Back
+        </a>
+
+        <div class="booking-card">
+          <h1>Book ${currentGuide.name}</h1>
+          <p class="location-sub">${currentGuide.location}</p>
+
+          <form id="bookingForm">
+            <div class="form-group">
+              <label>Tour Date</label>
+              <input type="date" id="dateInput" class="form-control" min="${today}" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Duration (hours)</label>
+              <select id="durationInput" class="form-control">
+                ${durOptions}
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Members</label>
+              <select id="membersInput" class="form-control">
+                ${memOptions}
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Message to Guide</label>
+              <textarea id="messageInput" class="form-control" placeholder="Tell the guide about your interests or any special requests..."></textarea>
+            </div>
+
+            <div class="price-summary">
+              <span class="calc">₹${pricePerHour.toLocaleString()}/hr × <span id="displayDuration">1h</span></span>
+              <span class="total" id="displayTotal">₹${pricePerHour.toLocaleString()}</span>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+              <i class="fas fa-paper-plane"></i> Send Booking Request
+            </button>
+          </form>
+        </div>
+      `;
+
+      // Defaults
+      document.getElementById('durationInput').value = 2;
+      updatePrice();
+
+      // Events
+      document.getElementById('durationInput').addEventListener('change', updatePrice);
+      document.getElementById('membersInput').addEventListener('change', updatePrice);
+      
+      document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const date = document.getElementById('dateInput').value;
+        if(!date) { showToast("Please select a date"); return; }
+        
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Sending...`;
+
+        const dur = Number(document.getElementById('durationInput').value);
+        const mem = Number(document.getElementById('membersInput').value);
+        const msg = document.getElementById('messageInput').value;
+
+        const newBooking = {
+          id: 'b' + Date.now(),
+          guideId: currentGuide.id,
+          guideName: currentGuide.name,
+          location: currentGuide.location,
+          date: date,
+          duration: dur,
+          members: mem,
+          status: "pending",
+          totalPrice: pricePerHour * dur * mem,
+          message: msg,
+          createdAt: new Date().toISOString().split("T")[0]
+        };
+
+        const existing = JSON.parse(localStorage.getItem('bookings') || '[]');
+        localStorage.setItem('bookings', JSON.stringify([newBooking, ...existing]));
+
+        setTimeout(() => {
+          showToast("Booking request sent!");
+          setTimeout(() => {
+            window.location.href = "guide-bookings.html";
+          }, 800);
+        }, 800);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initBooking);
+  </script>
+</body>
+</html>

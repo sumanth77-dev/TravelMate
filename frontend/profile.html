@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traveller Profile - Travel Mate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<script src="tm-auth.js"></script>
+<style>
+:root{--primary:#22c55e;--primary-dark:#16a34a;--bg:#f0fdf4;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#1f2937;}
+
+.profile-cover{
+  height:260px;
+  background:linear-gradient(135deg,#064e3b 0%,#065f46 55%,#047857 100%);
+  position:relative;overflow:hidden;margin-top:68px;
+}
+.profile-cover::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2322c55e' fill-opacity='0.07'%3E%3Cpath d='M50 50v-10h-5v10h-10v5h10v10h5v-10h10v-5H50zm0-40V0h-5v10H35v5h10v10h5V15h10v-5H50z'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.profile-header{
+  max-width:900px;margin:0 auto;padding:0 24px;
+  position:relative;
+}
+.avatar-wrap{
+  position:absolute;top:-55px;left:24px;
+}
+.profile-avatar{
+  width:110px;height:110px;border-radius:50%;object-fit:cover;
+  border:4px solid #fff;box-shadow:0 4px 20px rgba(0,0,0,.15);display:block;
+}
+.profile-meta-bar{
+  background:#fff;border-bottom:1px solid #f3f4f6;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+  padding:16px 24px 16px calc(24px + 130px);
+  max-width:900px;margin:0 auto;
+  display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.profile-name{font-family:'Playfair Display',serif;font-size:1.5rem;color:#111827;margin-bottom:3px;}
+.profile-sub{font-size:0.85rem;color:#6b7280;}
+.profile-sub span{margin-right:14px;}
+.profile-sub i{color:var(--primary);margin-right:4px;}
+.profile-actions{display:flex;gap:8px;}
+.btn-follow{
+  background:var(--primary);color:#fff;border:none;
+  padding:9px 22px;border-radius:50px;font-size:0.85rem;font-weight:700;
+  cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;
+}
+.btn-follow:hover{background:var(--primary-dark);}
+.btn-follow.following{background:#f0fdf4;color:var(--primary);border:1.5px solid var(--primary);}
+.btn-msg-p{
+  background:#f8fafc;color:#374151;border:1.5px solid #e5e7eb;
+  padding:9px 18px;border-radius:50px;font-size:0.85rem;font-weight:600;
+  cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;
+}
+.btn-msg-p:hover{border-color:var(--primary);color:var(--primary);}
+
+/* STAT STRIP */
+.p-stats{
+  max-width:900px;margin:0 auto;padding:0 24px;
+  display:flex;gap:0;border-bottom:1px solid #f3f4f6;background:#fff;
+}
+.p-stat{
+  padding:16px 24px;text-align:center;border-right:1px solid #f3f4f6;
+  min-width:100px;
+}
+.p-stat:last-child{border-right:none;}
+.p-stat-val{font-size:1.3rem;font-weight:800;color:#111827;}
+.p-stat-lbl{font-size:0.72rem;color:#9ca3af;margin-top:2px;font-weight:500;text-transform:uppercase;}
+
+/* BODY */
+.profile-body{max-width:900px;margin:0 auto;padding:28px 24px 80px;display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start;}
+
+/* TABS */
+.profile-tabs{display:flex;gap:2px;background:#f1f5f9;border-radius:12px;padding:4px;margin-bottom:24px;}
+.ptab{flex:1;border:none;background:transparent;padding:9px;border-radius:9px;font-size:0.84rem;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:#6b7280;transition:all .2s;}
+.ptab.active{background:#fff;color:#111827;box-shadow:0 1px 6px rgba(0,0,0,.08);}
+.ptab-panel{display:none;}
+.ptab-panel.active{display:block;}
+
+/* POST CARDS */
+.post-card-p{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:16px;border:1px solid #f3f4f6;transition:transform .2s;}
+.post-card-p:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1);}
+.post-img{width:100%;height:220px;object-fit:cover;display:block;}
+.post-body-p{padding:16px;}
+.post-loc{font-size:0.78rem;color:var(--primary);font-weight:700;margin-bottom:5px;display:flex;align-items:center;gap:5px;}
+.post-caption{font-size:0.9rem;color:#374151;line-height:1.65;margin-bottom:10px;}
+.post-footer-p{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid #f9fafb;}
+.post-stats{display:flex;gap:14px;font-size:0.8rem;color:#9ca3af;font-weight:500;}
+.post-stats span{display:flex;align-items:center;gap:4px;}
+.stars-sm{color:#f59e0b;font-size:0.8rem;}
+.post-date{font-size:0.75rem;color:#9ca3af;}
+
+/* SIDEBAR */
+.sidebar-section{background:#fff;border-radius:16px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:14px;border:1px solid #f3f4f6;}
+.sidebar-h{font-weight:700;font-size:0.82rem;color:#374151;margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em;}
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.badge-item{text-align:center;padding:12px 6px;background:#f9fafb;border-radius:12px;border:1px solid #f3f4f6;}
+.badge-icon{font-size:1.4rem;margin-bottom:4px;}
+.badge-lbl{font-size:0.68rem;font-weight:700;color:#6b7280;}
+.badge-item.earned{background:var(--bg);border-color:#d1fae5;}
+.badge-item.earned .badge-lbl{color:var(--primary);}
+.dest-chip{display:inline-flex;align-items:center;gap:5px;background:var(--bg);color:var(--primary);padding:5px 12px;border-radius:50px;font-size:0.8rem;font-weight:600;margin:3px;border:1px solid #d1fae5;}
+.follower-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f9fafb;}
+.follower-row:last-child{border-bottom:none;}
+.follower-av{width:34px;height:34px;border-radius:50%;object-fit:cover;}
+.follower-name{font-size:0.85rem;font-weight:600;color:#111827;}
+.follower-role{font-size:0.72rem;color:#9ca3af;}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:40px 20px;color:#9ca3af;}
+.empty-icon{font-size:3rem;margin-bottom:10px;}
+.empty-state h3{color:#374151;font-size:1rem;margin-bottom:6px;}
+.empty-state p{font-size:0.85rem;}
+
+footer{background:#0f1f1a;padding:40px 24px 24px;}
+.footer-inner{max-width:1100px;margin:0 auto;}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px;margin-bottom:28px;}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:#86efac;margin-bottom:10px;}
+.footer-brand p{color:rgba(255,255,255,.5);font-size:0.85rem;line-height:1.7;}
+.footer-col h5{color:#fff;font-weight:700;font-size:0.85rem;margin-bottom:12px;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.footer-col ul li a{color:rgba(255,255,255,.5);font-size:0.85rem;text-decoration:none;transition:color .2s;}
+.footer-col ul li a:hover{color:#86efac;}
+.footer-bottom{padding-top:20px;border-top:1px solid rgba(255,255,255,.08);font-size:0.8rem;color:rgba(255,255,255,.3);text-align:center;}
+
+@media(max-width:700px){
+  .profile-body{grid-template-columns:1fr;}
+  .p-stats{flex-wrap:wrap;}
+  .p-stat{min-width:80px;}
+  .footer-grid{grid-template-columns:1fr;gap:20px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar solid" id="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="main_community.html">Community</a></li>
+      <li><a href="findguides.html">Find Guides</a></li>
+      <li><a href="destinations.html">Destinations</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div id="pointsCounter" class="badge badge-teal">0 pts</div>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- COVER -->
+<div class="profile-cover"></div>
+
+<div class="profile-header">
+  <div class="avatar-wrap">
+    <img class="profile-avatar" id="profileAvatar" src="" alt="">
+  </div>
+</div>
+
+<div class="profile-meta-bar">
+  <div>
+    <div class="profile-name" id="profileName">—</div>
+    <div class="profile-sub">
+      <span><i class="fas fa-map-marker-alt"></i><span id="profileLoc">—</span></span>
+      <span><i class="fas fa-calendar-alt"></i>Joined <span id="profileJoined">—</span></span>
+      <span id="profileRolePill"></span>
+    </div>
+  </div>
+  <div class="profile-actions" id="profileActions"></div>
+</div>
+
+<div class="p-stats" id="profileStats"></div>
+
+<div class="profile-body">
+  <div>
+    <div class="profile-tabs">
+      <button class="ptab active" onclick="switchTab('posts',this)">Posts</button>
+      <button class="ptab" onclick="switchTab('reviews',this)">Reviews</button>
+      <button class="ptab" onclick="switchTab('bookings',this)">Trips</button>
+    </div>
+
+    <div class="ptab-panel active" id="ptab-posts">
+      <div id="postsFeed"></div>
+    </div>
+    <div class="ptab-panel" id="ptab-reviews">
+      <div id="reviewsFeed"></div>
+    </div>
+    <div class="ptab-panel" id="ptab-bookings">
+      <div id="tripsFeed"></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="sidebar-section">
+      <div class="sidebar-h">&#127942; Badges Earned</div>
+      <div class="badge-grid" id="badgeGrid"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-h">&#9992; Destinations Visited</div>
+      <div id="destChips"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-h">&#128101; Followers</div>
+      <div id="followersList"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">&#10022; Travel Mate</div>
+        <p>Your community for authentic travel experiences and unforgettable journeys.</p>
+      </div>
+      <div class="footer-col"><h5>Explore</h5><ul>
+        <li><a href="destinations.html">Destinations</a></li>
+        <li><a href="main_community.html">Community</a></li>
+        <li><a href="findguides.html">Find Guides</a></li>
+      </ul></div>
+      <div class="footer-col"><h5>Company</h5><ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="privacy.html">Privacy</a></li>
+        <li><a href="terms.html">Terms</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 Travel Mate. College Project.</div>
+  </div>
+</footer>
+
+<script>
+const SAMPLE_PROFILES = {
+  'arjun': {name:'Arjun Mehta',role:'User',location:'Mumbai, India',joinedAt:'Jan 2025',pts:2840,followers:142,following:89,bio:'Adventure seeker & photography enthusiast. Exploring India one city at a time. 📸',posts:[{location:'Manali',caption:'The Himalayan sunrise was worth every cold night! Best trek of my life.',image:'https://images.unsplash.com/photo-1543197534-4ded37c12ece?w=600&q=80',rating:5,date:'Feb 2026',likes:48},{location:'Goa',caption:'Lost in the golden sands of North Goa. Beach life is the best life! 🌊',image:'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=600&q=80',rating:4,date:'Jan 2026',likes:62}],destinations:['Manali','Goa','Jaipur','Rishikesh','Ladakh'],badges:['Explorer','Reviewer','Photographer','Adventurer','Globetrotter','Writer']},
+  'priya': {name:'Priya Sharma',role:'User',location:'Delhi, India',joinedAt:'Mar 2025',pts:2610,followers:198,following:112,bio:'Solo traveller & food lover. 22 countries, countless memories. 🌍',posts:[{location:'Paris',caption:'The Eiffel Tower at golden hour — no words needed. Just pure magic.',image:'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80',rating:5,date:'Jan 2026',likes:94},{location:'Maldives',caption:'Woke up to this view every single morning. Paradise found. 🌺',image:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80',rating:5,date:'Dec 2025',likes:127}],destinations:['Paris','Maldives','Bali','Thailand','Japan','Italy'],badges:['Globetrotter','Explorer','Foodie','Reviewer','Photographer','Writer']},
+};
+
+const SAMPLE_FOLLOWERS = [
+  {name:'Keiko Tanaka',role:'User'},{name:'Liam O\'Brien',role:'User'},{name:'Fatima Hassan',role:'Guide'},
+];
+const SAMPLE_BOOKINGS = [
+  {guideName:'Ramesh Kumar',specialty:'Heritage & Culture',destination:'Jaipur',date:'Jan 15, 2026',status:'Completed'},
+  {guideName:'Anita Sharma',specialty:'Adventure & Trek',destination:'Manali',date:'Dec 8, 2025',status:'Completed'},
+];
+
+function loadProfile() {
+  const params  = new URLSearchParams(window.location.search);
+  const nameKey = (params.get('user') || '').toLowerCase().replace(/\s+/g,'');
+  const curUser = TmAuth.getUser();
+
+  /* Try real user first, then sample */
+  let profile = null;
+  let isOwn   = false;
+
+  if (curUser && (!nameKey || nameKey === curUser.name.toLowerCase().replace(/\s+/g,''))) {
+    isOwn = true;
+    const posts     = JSON.parse(localStorage.getItem('tm_posts') || '[]');
+    const bookings  = JSON.parse(localStorage.getItem('tm_bookings') || '[]');
+    const followers = JSON.parse(localStorage.getItem('tm_followers') || '[]');
+    const following = JSON.parse(localStorage.getItem('tm_following') || '[]');
+    const profile_data = JSON.parse(localStorage.getItem('tm_profile') || '{}');
+    profile = {
+      name: curUser.name, role: curUser.role,
+      location: profile_data.location || 'Earth 🌍',
+      joinedAt: new Date(curUser.joinedAt || Date.now()).toLocaleDateString('en-IN',{month:'short',year:'numeric'}),
+      pts: Number(localStorage.getItem('tm_points') || 0),
+      followers: followers.length, following: following.length,
+      bio: profile_data.bio || 'Travel enthusiast on Travel Mate.',
+      posts, destinations: [...new Set(posts.map(p=>p.location).filter(Boolean))],
+      badges: computeBadges(posts.length, Number(localStorage.getItem('tm_points')||0), bookings.length),
+      bookings, isOwn: true
+    };
+  } else if (SAMPLE_PROFILES[nameKey]) {
+    profile = {...SAMPLE_PROFILES[nameKey], bookings: SAMPLE_BOOKINGS};
+  } else {
+    /* fallback */
+    profile = SAMPLE_PROFILES['arjun'];
+  }
+
+  renderProfile(profile, isOwn);
+}
+
+function computeBadges(posts, pts, trips) {
+  const all = [
+    {key:'Explorer',icon:'🗺️',earned:trips>0},
+    {key:'Reviewer',icon:'⭐',earned:posts>0},
+    {key:'Photographer',icon:'📸',earned:posts>0},
+    {key:'Adventurer',icon:'🏔️',earned:trips>2},
+    {key:'Globetrotter',icon:'🌍',earned:pts>500},
+    {key:'Writer',icon:'✍️',earned:pts>200},
+  ];
+  return all.map(b=>b.key);
+}
+
+function renderProfile(p, isOwn) {
+  document.title = p.name + ' - Travel Mate';
+  const avUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=dcfce7&color=16a34a&size=110`;
+  document.getElementById('profileAvatar').src = avUrl;
+  document.getElementById('profileName').textContent = p.name;
+  document.getElementById('profileLoc').textContent  = p.location;
+  document.getElementById('profileJoined').textContent = p.joinedAt;
+
+  const isGuide = p.role === 'Guide';
+  document.getElementById('profileRolePill').innerHTML = isGuide
+    ? `<span style="background:#fef3c7;color:#d97706;padding:2px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;">✦ Guide</span>`
+    : `<span style="background:#dcfce7;color:#16a34a;padding:2px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;">✦ Traveller</span>`;
+
+  /* follow button */
+  const curUser = TmAuth.getUser();
+  if (!isOwn && curUser) {
+    const following = JSON.parse(localStorage.getItem('tm_following')||'[]');
+    const isFollowing = following.includes(p.name);
+    document.getElementById('profileActions').innerHTML = `
+      <button class="btn-follow ${isFollowing?'following':''}" id="followBtn" onclick="toggleFollow('${p.name}')">
+        ${isFollowing?'✓ Following':'+ Follow'}
+      </button>
+      <button class="btn-msg-p"><i class="fas fa-comment-dots"></i> Message</button>`;
+  } else if (isOwn) {
+    document.getElementById('profileActions').innerHTML = `
+      <a href="travel-mate-dashboard.html" style="background:var(--primary);color:#fff;padding:9px 20px;border-radius:50px;font-size:0.85rem;font-weight:700;text-decoration:none;">Edit Profile</a>`;
+  }
+
+  /* stats */
+  const postCount = p.posts ? p.posts.length : 0;
+  document.getElementById('profileStats').innerHTML = `
+    <div class="p-stat"><div class="p-stat-val">${p.pts.toLocaleString()}</div><div class="p-stat-lbl">Points</div></div>
+    <div class="p-stat"><div class="p-stat-val">${postCount}</div><div class="p-stat-lbl">Posts</div></div>
+    <div class="p-stat"><div class="p-stat-val">${(p.destinations||[]).length}</div><div class="p-stat-lbl">Destinations</div></div>
+    <div class="p-stat"><div class="p-stat-val">${p.followers||0}</div><div class="p-stat-lbl">Followers</div></div>
+    <div class="p-stat"><div class="p-stat-val">${p.following||0}</div><div class="p-stat-lbl">Following</div></div>`;
+
+  /* posts */
+  const postsFeed = document.getElementById('postsFeed');
+  if (!p.posts || !p.posts.length) {
+    postsFeed.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><h3>No posts yet</h3><p>This traveller hasn't shared any posts.</p></div>`;
+  } else {
+    postsFeed.innerHTML = p.posts.map(post => {
+      const imgSrc = (post.images && post.images[0]) ? post.images[0] : (post.image || 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80');
+      const stars  = '★'.repeat(post.rating||0)+'☆'.repeat(5-(post.rating||0));
+      return `<div class="post-card-p">
+        <img class="post-img" src="${imgSrc}" alt="${post.location||'post'}">
+        <div class="post-body-p">
+          <div class="post-loc"><i class="fas fa-map-marker-alt"></i>${post.location||'Unknown'}</div>
+          <p class="post-caption">${post.caption||post.blog||''}</p>
+        </div>
+        <div class="post-footer-p">
+          <div class="post-stats">
+            <span>❤ ${post.likes||0}</span>
+            <span class="stars-sm">${stars}</span>
+          </div>
+          <span class="post-date">${post.date||''}</span>
+        </div>
+      </div>`;}).join('');
+  }
+
+  /* reviews tab placeholder */
+  document.getElementById('reviewsFeed').innerHTML = `<div class="empty-state"><div class="empty-icon">⭐</div><h3>No reviews yet</h3><p>Reviews submitted by this traveller will appear here.</p></div>`;
+
+  /* trips */
+  const bookings = p.bookings || [];
+  document.getElementById('tripsFeed').innerHTML = !bookings.length
+    ? `<div class="empty-state"><div class="empty-icon">✈️</div><h3>No trips yet</h3><p>Booked guide trips will appear here.</p></div>`
+    : bookings.map(b => `
+        <div style="background:#fff;border-radius:14px;padding:18px 20px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.05);display:flex;align-items:center;gap:14px;border:1px solid #f3f4f6;">
+          <div style="width:44px;height:44px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">🧳</div>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:0.92rem;color:#111827;">${b.destination}</div>
+            <div style="font-size:0.8rem;color:#6b7280;margin-top:2px;">Guide: ${b.guideName} · ${b.specialty}</div>
+            <div style="font-size:0.75rem;color:#9ca3af;margin-top:2px;">${b.date}</div>
+          </div>
+          <span style="background:${b.status==='Completed'?'#dcfce7':b.status==='Confirmed'?'#dbeafe':'#fef3c7'};color:${b.status==='Completed'?'#16a34a':b.status==='Confirmed'?'#2563eb':'#d97706'};padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;">${b.status}</span>
+        </div>`).join('');
+
+  /* badges */
+  const badgeData = {
+    'Explorer':  {icon:'🗺️',earned:true}, 'Reviewer': {icon:'⭐',earned:true},
+    'Photographer':{icon:'📸',earned:true},'Adventurer':{icon:'🏔️',earned:p.pts>500},
+    'Globetrotter':{icon:'🌍',earned:p.pts>1000},'Writer':  {icon:'✍️',earned:p.pts>200}
+  };
+  document.getElementById('badgeGrid').innerHTML = Object.entries(badgeData).map(([name,d]) => `
+    <div class="badge-item ${d.earned?'earned':''}">
+      <div class="badge-icon">${d.icon}</div>
+      <div class="badge-lbl">${name}</div>
+    </div>`).join('');
+
+  /* destinations */
+  document.getElementById('destChips').innerHTML = (p.destinations||[]).length
+    ? (p.destinations).map(d=>`<span class="dest-chip"><i class="fas fa-map-marker-alt" style="font-size:0.65rem;"></i>${d}</span>`).join('')
+    : '<p style="font-size:0.85rem;color:#9ca3af;">No destinations yet.</p>';
+
+  /* followers */
+  document.getElementById('followersList').innerHTML = SAMPLE_FOLLOWERS.map(f => {
+    const fav = `https://ui-avatars.com/api/?name=${encodeURIComponent(f.name)}&background=f0fdf4&color=16a34a&size=34`;
+    return `<div class="follower-row">
+      <img class="follower-av" src="${fav}" alt="${f.name}">
+      <div><div class="follower-name">${f.name}</div><div class="follower-role">${f.role}</div></div>
+    </div>`;}).join('');
+}
+
+function toggleFollow(name) {
+  const following = JSON.parse(localStorage.getItem('tm_following')||'[]');
+  const idx = following.indexOf(name);
+  if (idx > -1) { following.splice(idx,1); }
+  else { following.push(name); TmAuth.addNotif('👤', `You are now following ${name}!`); }
+  localStorage.setItem('tm_following', JSON.stringify(following));
+  const btn = document.getElementById('followBtn');
+  if (btn) {
+    const isNow = following.includes(name);
+    btn.className = 'btn-follow ' + (isNow?'following':'');
+    btn.textContent = isNow ? '✓ Following' : '+ Follow';
+  }
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.ptab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('ptab-'+tab).classList.add('active');
+}
+
+/* ── Navbar scroll effect ── */
+window.addEventListener('scroll', function () {
+  const navbar = document.getElementById('navbar');
+  // Just toggle between transparent and solid, but both have same green background
+  // This still works for any other styling differences you might want
+  if (window.scrollY > 40) {
+    navbar.classList.remove('transparent');
+    navbar.classList.add('solid');
+  } else {
+    navbar.classList.remove('solid');
+    navbar.classList.add('transparent');
+  }
+});
+
+loadProfile();
+</script>
+</body>
+</html>

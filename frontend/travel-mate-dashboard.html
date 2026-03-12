@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Dashboard - TravelMate</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<script src="tm-auth.js"></script>
+<style>
+  :root {
+    --primary: #26b85e;
+    --primary-dark: #0f766e;
+    --primary-light: #ccfbf1;
+    --bg: #f4f6f8;
+    --white: #ffffff;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --approved-bg: #f0fdf4;
+    --approved-text: #166534;
+    --pending-bg: #fffbeb;
+    --pending-text: #92400e;
+    --positive: #0d9488;
+    --negative: #ef4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+
+  /* MAIN CONTENT */
+  .main {
+    padding-top: 0; /* Removed top padding to eliminate the space */
+    max-width: 1300px;
+    margin: auto;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  /* PROFILE CARD */
+  .profile-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin: 28px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .avatar {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .avatar-circle {
+    width: 88px;
+    height: 88px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+  }
+
+  .camera-btn {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: #f97316;
+    color: white;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  .profile-info {
+    flex: 1;
+  }
+
+  .profile-info h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .profile-location {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .profile-bio {
+    color: #4b5563;
+    font-size: 14px;
+  }
+
+  .profile-stats {
+    display: flex;
+    gap: 12px;
+    margin-left: auto;
+  }
+
+  .stat-box {
+    background: #fafafa;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 28px;
+    text-align: center;
+    min-width: 90px;
+  }
+
+  .stat-icon {
+    font-size: 16px;
+    color: #d97706;
+    margin-bottom: 6px;
+  }
+
+  .stat-icon.star { color: #d97706; }
+  .stat-icon.trophy { color: #d97706; }
+  .stat-icon.arrow { color: #10b981; }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* TABS */
+  .tabs-wrapper {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 6px;
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .tab {
+    flex: 1;
+    padding: 11px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .tab:hover { background: var(--bg); color: var(--text); }
+
+  .tab.active {
+    background: var(--primary);
+    color: white;
+  }
+
+  /* TAB CONTENT */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* OVERVIEW GRID */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr;
+    gap: 20px;
+  }
+
+  .section-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .section-header i {
+    color: var(--primary);
+    font-size: 18px;
+  }
+
+  /* POINTS ACTIVITY */
+  .activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .activity-item:last-child { border-bottom: none; }
+
+  .activity-info p {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .activity-info span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .activity-points {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .activity-points.positive { color: var(--positive); }
+  .activity-points.negative { color: var(--negative); }
+
+  /* RECENT POSTS */
+  .post-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .post-item:last-child { border-bottom: none; }
+
+  .post-item h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .post-meta {
+    display: flex;
+    gap: 14px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .post-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* BOOKINGS */
+  .booking-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .booking-item:last-child { border-bottom: none; }
+
+  .booking-info h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    color: var(--text);
+  }
+
+  .booking-info p {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .badge.approved {
+    background: var(--approved-bg);
+    color: var(--approved-text);
+    border: 1px solid #bbf7d0;
+  }
+
+  .badge.pending {
+    background: var(--pending-bg);
+    color: var(--pending-text);
+    border: 1px solid #fde68a;
+  }
+
+  /* WISHLIST / POSTS / BOOKINGS TABS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .grid-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .grid-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(13,148,136,0.12);
+  }
+
+  .grid-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .grid-card p {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  /* SETTINGS */
+  .settings-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 28px;
+    max-width: 480px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    margin: 48px auto 0 auto;
+  }
+
+  .settings-card h2 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .profile-input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  .profile-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(13,148,136,0.1);
+  }
+
+ /*.save-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 11px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: 0.2s;
+  }
+
+  .save-btn:hover { background: var(--primary-dark); }*/
+
+  @media (max-width: 900px) {
+    .overview-grid { grid-template-columns: 1fr; }
+    .profile-stats { flex-wrap: wrap; margin-left: 0; margin-top: 16px; }
+    .profile-card { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <nav class="navbar transparent" id="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
+      <ul class="nav-links" id="navLinks">
+  <li><a href="index.html">Home</a></li>
+  <li><a href="main_community.html">Community</a></li>
+  <li><a href="findguides.html">Find Guides</a></li>
+  <li><a href="destinations.html">Destinations</a></li>
+  <!-- Dashboard link removed - will be handled by tm-auth.js -->
+</ul>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div id="pointsCounter" class="badge badge-teal">0 pts</div>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+<div class="main">
+  <!-- PROFILE CARD -->
+  <div class="profile-card">
+    <div class="avatar">
+      <div class="avatar-circle" id="dashAvatar">JD</div>
+      <div class="camera-btn"><i class="fas fa-camera"></i></div>
+    </div>
+    <div class="profile-info">
+      <h2 id="dashName">John Doe</h2>
+      <span style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-light);color:var(--primary-dark);padding:5px 14px;border-radius:50px;font-size:0.75rem;font-weight:700;border:1px solid rgba(15,118,110,0.2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;"><i class="fas fa-suitcase-rolling"></i> Explorer</span>
+      <div class="profile-location">
+        <i class="fas fa-map-marker-alt"></i>
+        <span id="dashLocation">New York, USA</span>
+      </div>
+      <p class="profile-bio" id="dashBio">Passionate traveler exploring the world one city at a time ✈️</p>
+    </div>
+    <div class="profile-stats">
+      <div class="stat-box">
+        <div class="stat-icon trophy"><i class="fas fa-trophy"></i></div>
+        <span class="stat-value">1,250</span>
+        <span class="stat-label">Points</span>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon star"><i class="fas fa-star"></i></div>
+        <span class="stat-value">28</span>
+        <span class="stat-label">Reviews</span>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon arrow"><i class="fas fa-chart-line"></i></div>
+        <span class="stat-value">12</span>
+        <span class="stat-label">Trips</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrapper">
+    <button class="tab active">Overview</button>
+    <button class="tab">Wishlist</button>
+    <button class="tab">My Posts</button>
+    <button class="tab">Bookings</button>
+    <button class="tab">Following</button>
+    <button class="tab">Settings</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="tab-content active" id="overview">
+    <div class="overview-grid">
+      <!-- Points Activity -->
+      <div class="section-card">
+        <div class="section-header">
+          <i class="fas fa-trophy"></i> Points Activity
+        </div>
+        <div class="activity-item">
+          <div class="activity-info">
+            <p>Posted review of Bali</p>
+            <span>2 hours ago</span>
+          </div>
+          <span class="activity-points positive">+50</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-info">
+            <p>Uploaded 3 photos</p>
+            <span>1 day ago</span>
+          </div>
+          <span class="activity-points positive">+30</span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-info">
+            <p>Contacted guide in Paris</p>
+            <span>3 days ago</span>
+          </div>
+          <span class="activity-points negative">-100</span>
+        </div>
+      </div>
+
+      <!-- Recent Posts -->
+      <div class="section-card">
+        <div class="section-header">
+          <i class="fas fa-book-open"></i> Recent Posts
+        </div>
+        <div class="post-item">
+          <h4>Sunset at Bali Temple</h4>
+          <div class="post-meta">
+            <span><i class="far fa-heart"></i> 45</span>
+            <span><i class="far fa-comment"></i> 12</span>
+          </div>
+        </div>
+        <div class="post-item">
+          <h4>Hidden gems in Paris</h4>
+          <div class="post-meta">
+            <span><i class="far fa-heart"></i> 89</span>
+            <span><i class="far fa-comment"></i> 23</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Bookings -->
+      <div class="section-card">
+        <div class="section-header">
+          <i class="fas fa-map-marker-alt"></i> Upcoming Bookings
+        </div>
+        <div class="booking-item">
+          <div class="booking-info">
+            <h4>Maria S. – Santorini</h4>
+            <p>Guide Booking</p>
+          </div>
+          <span class="badge approved">Approved</span>
+        </div>
+        <div class="booking-item">
+          <div class="booking-info">
+            <h4>Kenji T. – Tokyo</h4>
+            <p>Guide Booking</p>
+          </div>
+          <span class="badge pending">Pending</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- WISHLIST -->
+  <div class="tab-content" id="wishlist">
+    <div class="card-grid" id="wishlistGrid"></div>
+  </div>
+
+  <!-- MY POSTS -->
+<div class="tab-content" id="my-posts">
+
+  <!-- Create Post Button -->
+  <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
+    <button class="create-post-btn" id="openCreatePost">
+      ＋ Create Post
+    </button>
+  </div>
+
+  <!-- Posts will appear here -->
+  <div class="card-grid" id="posts-grid">
+    <div class="no-posts" style="text-align:center;color:#9ca3af;padding:40px;background:white;border-radius:25px;grid-column:1/-1;">
+      <span style="font-size:40px;display:block;margin-bottom:12px;">✍️</span>
+      <p>No posts yet. Share your travel story!</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- CREATE POST MODAL (place before </body>) -->
+<div id="createPostModal" class="cm-modal" aria-hidden="true">
+  <div class="cm-dialog">
+    <header class="cm-header">
+      <h2>Create Post</h2>
+      <button id="closeCreatePost" class="icon-btn">✕</button>
+    </header>
+    <form id="createPostForm" class="cm-form scrollable-form">
+      <label class="cm-label">Photos</label>
+      <div id="dropZone" class="drop-zone">
+        <input id="fileInput" type="file" accept="image/*" multiple hidden>
+        <div class="drop-inner">
+          <div class="drop-icon">⬆</div>
+          <div class="drop-text">
+            Drag & drop photos or click to browse<br>
+            <small>+10 points per photo uploaded</small>
+          </div>
+        </div>
+      </div>
+      <div id="preview" class="preview-grid"></div>
+      <label class="cm-label">Location</label>
+      <input id="locationInput" class="cm-input" placeholder="Where did you visit?">
+      <label class="cm-label">Caption</label>
+      <textarea id="captionInput" class="cm-textarea" rows="3" placeholder="Share your experience..."></textarea>
+      <label class="cm-label">Rating</label>
+      <div id="rating" class="rating-stars" data-rating="0">
+        <span class="star" data-value="1">☆</span>
+        <span class="star" data-value="2">☆</span>
+        <span class="star" data-value="3">☆</span>
+        <span class="star" data-value="4">☆</span>
+        <span class="star" data-value="5">☆</span>
+      </div>
+      <label class="cm-label">Travel Blog (optional)</label>
+      <textarea id="blogInput" class="cm-textarea" rows="6" placeholder="Write a detailed blog about your experience..."></textarea>
+      <div class="cm-actions">
+        <button type="button" id="publishBtn" class="btn btn-primary btn-lg">Publish Post (+50 points)</button>
+        <button type="button" id="cancelBtn" class="btn btn-white">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+  <!-- BOOKINGS -->
+  <div class="tab-content" id="bookings">
+    <div class="section-card" style="max-width:500px">
+      <div class="section-header"><i class="fas fa-calendar-check"></i> Bookings</div>
+      <div class="booking-item">
+        <div class="booking-info">
+          <h4>Maria S. – Santorini</h4>
+          <p>Guide Booking</p>
+        </div>
+        <span class="badge approved">Approved</span>
+      </div>
+      <div class="booking-item">
+        <div class="booking-info">
+          <h4>Kenji T. – Tokyo</h4>
+          <p>Guide Booking</p>
+        </div>
+        <span class="badge pending">Pending</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOLLOWING -->
+  <div class="tab-content" id="following">
+    <div class="card-grid" id="followingGrid"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="tab-content" id="settings" style="padding-top: 50px; min-height: 500px;">
+    <div class="settings-card">
+      <h2>Settings</h2>
+      <input type="text" class="profile-input" placeholder="Full Name">
+      <input type="email" class="profile-input" placeholder="Email">
+      <input type="text" class="profile-input" placeholder="Phone Number">
+      <button style="background:var(--primary);color:white;border:none;padding:11px 24px;border-radius:20px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;margin-top:4px;display:block;">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── Auth guard: redirect Guide users to guide-dashboard ── */
+  (function() {
+    var u = TmAuth.getUser();
+    if (!u) { window.location.href = 'login.html'; return; }
+    if (u.role === 'Guide') { window.location.href = 'guide-dashboard.html'; return; }
+
+    /* populate profile card */
+    var profile = JSON.parse(localStorage.getItem('tm_profile') || '{}');
+    var initials = u.name.split(' ').map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+    var avEl = document.getElementById('dashAvatar');
+    if (avEl) avEl.textContent = initials;
+    var nameEl = document.getElementById('dashName');
+    if (nameEl) nameEl.textContent = u.name;
+    var locEl = document.getElementById('dashLocation');
+    if (locEl) locEl.textContent = profile.location || 'Location not set';
+    var bioEl = document.getElementById('dashBio');
+    if (bioEl) bioEl.textContent = profile.bio || 'Passionate traveller exploring the world ✈️';
+    var ptsEl = document.getElementById('dashPoints');
+    var currentPts = (Number(localStorage.getItem('tm_points')||0)).toLocaleString();
+    if (ptsEl) {
+      ptsEl.textContent = currentPts;
+    } else {
+      // Fallback search by looking for the stat-label 'Points' then setting its previous sibling value
+      const statLabels = document.querySelectorAll('.stat-label');
+      for(let lab of statLabels) {
+        if(lab.textContent === 'Points') {
+          lab.previousElementSibling.textContent = currentPts;
+          break;
+        }
+      }
+    }
+    
+    var bkEl = document.getElementById('dashBookings');
+    var bks   = JSON.parse(localStorage.getItem('tm_bookings')||'[]');
+    if (bkEl) bkEl.textContent = bks.length;
+  })();
+
+  /* ── Navbar scroll effect ── */
+window.addEventListener('scroll', function () {
+  const navbar = document.getElementById('navbar');
+  // Just toggle between transparent and solid, but both have same green background
+  // This still works for any other styling differences you might want
+  if (window.scrollY > 40) {
+    navbar.classList.remove('transparent');
+    navbar.classList.add('solid');
+  } else {
+    navbar.classList.remove('solid');
+    navbar.classList.add('transparent');
+  }
+});
+  const tabs = document.querySelectorAll('.tab');
+  const contents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      contents[i].classList.add('active');
+    });
+  });
+</script>
+</script>
+<script>
+  (function(){
+    const el = document.getElementById('pointsCounter');
+    if(!el) return;
+    const pts = Number(localStorage.getItem('tm_points') || 0);
+    el.textContent = pts + ' pts';
+  })();
+</script>
+<style>
+  /* ── Wishlist card styles ── */
+  .wishlist-card {
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative;
+  }
+  .wishlist-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(13,148,136,0.15);
+  }
+  .wishlist-card img {
+    width: 100%; height: 155px;
+    object-fit: cover; display: block;
+  }
+  .wish-badge {
+    position: absolute; top: 10px; left: 10px;
+    background: rgba(255,255,255,0.92);
+    color: #0f766e; font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: 20px;
+  }
+  .remove-wish-btn {
+    position: absolute; top: 9px; right: 9px;
+    background: rgba(255,255,255,0.92); border: none;
+    border-radius: 50%; width: 30px; height: 30px;
+    cursor: pointer; color: #ef4444; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.2s, background 0.2s;
+  }
+  .remove-wish-btn:hover { background: #fee2e2; transform: scale(1.15); }
+  .wishlist-card-body { padding: 14px 16px 16px; }
+  .wishlist-card-body h3 { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+  .wishlist-card-body p { font-size: 12px; color: var(--muted); }
+
+  .wishlist-empty {
+    grid-column: 1 / -1; text-align: center;
+    padding: 60px 24px; color: #9ca3af;
+  }
+  .wishlist-empty .empty-icon { font-size: 3.5rem; margin-bottom: 14px; }
+  .wishlist-empty h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
+  .wishlist-empty p { font-size: 14px; margin-bottom: 20px; }
+  .wishlist-empty a {
+    display: inline-block; background: var(--primary); color: white;
+    padding: 11px 24px; border-radius: 50px; text-decoration: none;
+    font-weight: 600; font-size: 14px; transition: background 0.2s;
+  }
+  .wishlist-empty a:hover { background: var(--primary-dark); }
+</style>
+
+<script>
+  /* ── Wishlist: read from localStorage and render ── */
+  function getWishlist() {
+    return JSON.parse(localStorage.getItem('tm_wishlist') || '[]');
+  }
+  function saveWishlist(list) {
+    localStorage.setItem('tm_wishlist', JSON.stringify(list));
+  }
+
+  function renderWishlist() {
+    const grid = document.getElementById('wishlistGrid');
+    if (!grid) return;
+    const wishlist = getWishlist();
+
+    if (wishlist.length === 0) {
+      grid.innerHTML = `
+        <div class="wishlist-empty">
+          <div class="empty-icon">🌍</div>
+          <h3>Your wishlist is empty</h3>
+          <p>Go to the home page and click ❤️ on any destination to save it here.</p>
+          <a href="index.html">Explore Destinations</a>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = wishlist.map((dest, i) => `
+      <div class="wishlist-card">
+        <img src="${dest.img}" alt="${dest.name}"
+             onerror="this.src='https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80'">
+        ${dest.badge ? `<span class="wish-badge">${dest.badge}</span>` : ''}
+        <button class="remove-wish-btn" onclick="removeWish(${i})" title="Remove">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="wishlist-card-body">
+          <h3>${dest.name}</h3>
+          <p>${dest.loc || ''}</p>
+        </div>
+      </div>`).join('');
+  }
+
+  function removeWish(i) {
+    const list = getWishlist();
+    list.splice(i, 1);
+    saveWishlist(list);
+    renderWishlist();
+  }
+
+  renderWishlist();
+
+  /* ── Following: read from localStorage and render ── */
+  function renderFollowing() {
+    const grid = document.getElementById('followingGrid');
+    if (!grid) return;
+    const following = JSON.parse(localStorage.getItem('tm_following') || '[]');
+
+    if (following.length === 0) {
+      grid.innerHTML = `
+        <div class="wishlist-empty">
+          <div class="empty-icon">👥</div>
+          <h3>You aren't following anyone</h3>
+          <p>Go to the community page to find travelers to follow.</p>
+          <a href="main_community.html">Explore Community</a>
+        </div>`;
+      return;
+    }
+
+    grid.innerHTML = following.map((user) => {
+      const escaped = String(user).replace(/[&"'<>]/g, c=>({'&':'&amp;','"':'&quot;','\\\'':'&#39;','<':'&lt;','>':'&gt;'}[c]));
+      return `
+      <div class="wishlist-card" style="padding:24px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;">
+        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user)}&background=dcfce7&color=16a34a&size=80" alt="${escaped}" style="width:72px;height:72px;border-radius:50%;margin:0 auto 12px;border:3px solid #f1f5f9;object-fit:cover;">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--text);">${escaped}</h3>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;"><i class="fas fa-suitcase-rolling" style="color:var(--primary);"></i> Explorer</p>
+        <button onclick="localStorage.setItem('tm_targetUser','${escaped}');window.location.href='user-profile.html'" 
+                style="background:var(--bg);color:var(--text);border:1px solid var(--border);padding:8px 20px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;width:100%;margin-top:auto;" 
+                onmouseover="this.style.background='var(--primary)';this.style.color='#fff';this.style.borderColor='var(--primary)';" 
+                onmouseout="this.style.background='var(--bg)';this.style.color='var(--text)';this.style.borderColor='var(--border)';">
+          View Profile
+        </button>
+      </div>`;
+    }).join('');
+  }
+
+  renderFollowing();
+
+  let selectedImages = [];
+  let currentRating = 0;
+
+  // Open
+  document.getElementById('openCreatePost').addEventListener('click', function () {
+    const modal = document.getElementById('createPostModal');
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  });
+
+  // Close
+  function closeModal() {
+    const modal = document.getElementById('createPostModal');
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    document.getElementById('createPostForm').reset();
+    document.getElementById('preview').innerHTML = '';
+    selectedImages = [];
+    currentRating = 0;
+    document.querySelectorAll('.star').forEach(function (s) {
+      s.classList.remove('active', 'hover');
+      s.textContent = '☆';
+    });
+  }
+
+  document.getElementById('closeCreatePost').addEventListener('click', closeModal);
+  document.getElementById('cancelBtn').addEventListener('click', closeModal);
+  document.getElementById('createPostModal').addEventListener('click', function (e) {
+    if (e.target === this) closeModal();
+  });
+
+  // Drop zone
+  var dropZone = document.getElementById('dropZone');
+  var fileInput = document.getElementById('fileInput');
+
+  dropZone.addEventListener('click', function () { fileInput.click(); });
+  dropZone.addEventListener('dragover', function (e) { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', function () { dropZone.classList.remove('dragover'); });
+  dropZone.addEventListener('drop', function (e) {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', function () { handleFiles(fileInput.files); });
+
+  function handleFiles(files) {
+    Array.from(files).forEach(function (file) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        selectedImages.push(e.target.result);
+        renderPreview();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderPreview() {
+    document.getElementById('preview').innerHTML = selectedImages.map(function (src, i) {
+      return '<div class="preview-item"><img src="' + src + '" alt="preview"><button class="preview-remove" onclick="removeImage(' + i + ')">✕</button></div>';
+    }).join('');
+  }
+
+  function removeImage(i) {
+    selectedImages.splice(i, 1);
+    renderPreview();
+  }
+
+  // Stars
+  document.querySelectorAll('.star').forEach(function (star) {
+    star.addEventListener('mouseenter', function () {
+      var v = parseInt(star.dataset.value);
+      document.querySelectorAll('.star').forEach(function (s) {
+        var sv = parseInt(s.dataset.value);
+        s.classList.remove('active');
+        if (sv <= v) { s.classList.add('hover'); s.textContent = '★'; }
+        else { s.classList.remove('hover'); s.textContent = '☆'; }
+      });
+    });
+    star.addEventListener('mouseleave', function () {
+      document.querySelectorAll('.star').forEach(function (s) {
+        var sv = parseInt(s.dataset.value);
+        s.classList.remove('hover');
+        if (sv <= currentRating) { s.classList.add('active'); s.textContent = '★'; }
+        else { s.classList.remove('active'); s.textContent = '☆'; }
+      });
+    });
+    star.addEventListener('click', function () {
+      currentRating = parseInt(star.dataset.value);
+      document.getElementById('rating').setAttribute('data-rating', currentRating);
+      document.querySelectorAll('.star').forEach(function (s) {
+        var sv = parseInt(s.dataset.value);
+        if (sv <= currentRating) { s.classList.add('active'); s.textContent = '★'; }
+        else { s.classList.remove('active'); s.textContent = '☆'; }
+      });
+    });
+  });
+
+  // Publish
+  document.getElementById('publishBtn').addEventListener('click', function () {
+    var loc = document.getElementById('locationInput').value.trim();
+    var cap = document.getElementById('captionInput').value.trim();
+    if (!loc) { alert('Please enter a location!'); return; }
+    if (!cap) { alert('Please write a caption!'); return; }
+    var pts = 50 + (selectedImages.length * 10);
+    alert('Post published! You earned +' + pts + ' points 🎉');
+    closeModal();
+  });
+
+</script>
+</body>
+</html>

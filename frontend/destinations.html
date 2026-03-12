@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Destinations - Travel Mate</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<script src="tm-auth.js"></script>
+
+<style>
+:root { --primary:#22c55e; --primary-dark:#16a34a; --bg:#f0fdf4; }
+body { font-family:'Plus Jakarta Sans','Poppins',Arial,sans-serif; background:var(--bg); }
+
+/* Page specific overrides */
+.dest-hero {
+  position: relative;
+  height: 400px;
+  background: linear-gradient(rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80') center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  margin-top: 0;
+}
+.dest-hero-content h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.dest-hero-content p {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.9);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Suggestion / Filter buttons */
+.suggestion-btn {
+  margin-right: 12px; margin-bottom: 12px;
+  border-radius: 50px; padding: 10px 24px;
+  font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid #e2e8f0;
+  color: #64748b;
+  background: white;
+}
+.suggestion-btn:hover, .suggestion-btn.active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34,197,94,0.2);
+}
+
+.search-floating-card {
+  max-width: 800px;
+  margin: -40px auto 40px;
+  background: #fff;
+  padding: 16px;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+.search-floating-card input {
+  flex: 1; border: none; outline: none; font-size: 16px; padding: 12px; font-family: 'Plus Jakarta Sans',sans-serif; color: #0f172a;
+}
+.search-floating-card .btn-primary {
+  padding: 14px 36px; border-radius: 14px; font-size: 15px; background: #0f172a; color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.3s;
+}
+.search-floating-card .btn-primary:hover {
+  background: var(--primary);
+}
+</style>
+</head>
+
+<body>
+    <!-- Back Button -->
+    <a href="index.html" class="back-btn" style="position: absolute; top: 24px; left: 24px; z-index: 100; display: flex; align-items: center; gap: 6px; font-weight: 600; color: var(--primary); background: #fff; border-radius: 8px; padding: 7px 16px; box-shadow: 0 2px 8px rgba(34,197,94,.08); text-decoration: none;">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+    <!-- ══════════════ NAVBAR (unified) ══════════════ -->
+    <nav class="navbar transparent" id="navbar">
+        <div class="navbar-inner">
+            <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
+            <ul class="nav-links" id="navLinks">
+  <li><a href="index.html">Home</a></li>
+  <li><a href="main_community.html">Community</a></li>
+  <li><a href="findguides.html">Find Guides</a></li>
+  <li><a href="destinations.html" class="active">Destinations</a></li>
+</ul>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <div id="pointsCounter" class="badge badge-teal">0 pts</div>
+                </div>
+                <button class="hamburger" id="hamburger" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <header class="dest-hero">
+      <div class="dest-hero-content fade-up container">
+        <h1>Explore Destinations 🌍</h1>
+        <p>Discover the world's most beautiful and inspiring places — pristine beaches, towering mountains, vibrant cities, and hidden gems.</p>
+      </div>
+    </header>
+
+    <div class="container pb-5">
+      <!-- Search Bar -->
+      <div class="search-floating-card fade-up delay-1">
+        <i class="fas fa-search" style="color:#64748b; font-size:20px; margin-left:14px;"></i>
+        <input type="text" id="searchInput" placeholder="Search cities, countries, landmarks..." onkeyup="if(event.key==='Enter') searchDestination()">
+        <button class="btn btn-primary" onclick="searchDestination()">Explore</button>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="text-center mb-5 fade-up delay-2" id="filterContainer">
+        <button class="suggestion-btn active" onclick="filterCategory('All', this)">All Places</button>
+        <button class="suggestion-btn" onclick="filterCategory('Beach', this)">🏝️ Beaches</button>
+        <button class="suggestion-btn" onclick="filterCategory('Hill', this)">⛰️ Mountains</button>
+        <button class="suggestion-btn" onclick="filterCategory('City', this)">🏙️ Cities</button>
+        <button class="suggestion-btn" onclick="filterCategory('Adventure', this)">⛺ Adventure</button>
+        <button class="suggestion-btn" onclick="filterCategory('Culture', this)">⛩️ Culture</button>
+      </div>
+
+      <!-- Results Section using global dest-grid -->
+      <div class="dest-grid" id="destinationContainer"></div>
+    </div>
+
+<script>
+    (function(){
+        const el = document.getElementById('pointsCounter');
+        if(!el) return;
+        const pts = Number(localStorage.getItem('tm_points') || 0);
+        el.textContent = pts + ' pts';
+    })();
+
+
+// Mock Data (Frontend Only)
+const destinations = [
+    { name: "Bali, Indonesia", category: "Beach", price: "$45", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4", tagClass: "badge-teal", rating: 4.8, revs: "2,340" },
+    { name: "Paris, France", category: "City", price: "$120", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a", tagClass: "badge-gold", rating: 4.9, revs: "5,621" },
+    { name: "Swiss Alps, Switzerland", category: "Hill", price: "$200", image: "https://images.unsplash.com/photo-1472791108553-c9405341e398", tagClass: "badge-teal", rating: 4.7, revs: "1,980" },
+    { name: "Maldives Islands", category: "Beach", price: "$350", image: "https://images.unsplash.com/photo-1515238152791-8216bfdf89a7", tagClass: "badge-teal", rating: 5.0, revs: "4,210" },
+    { name: "Tokyo, Japan", category: "City", price: "$80", image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf", tagClass: "badge-gold", rating: 4.8, revs: "6,800" },
+    { name: "Queenstown, New Zealand", category: "Adventure", price: "$90", image: "https://images.unsplash.com/photo-1533130061792-64b345e4a833", tagClass: "badge-teal", rating: 4.9, revs: "3,102" },
+    { name: "Kyoto, Japan", category: "Culture", price: "$70", image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e", tagClass: "badge-gold", rating: 4.9, revs: "2,190" },
+    { name: "Machu Picchu, Peru", category: "Adventure", price: "$150", image: "https://images.unsplash.com/photo-1526392060635-9d6019884377", tagClass: "badge-teal", rating: 4.8, revs: "4,500" },
+    { name: "Amalfi Coast, Italy", category: "Beach", price: "$210", image: "https://images.unsplash.com/photo-1621801306184-a169b139ad40", tagClass: "badge-teal", rating: 4.9, revs: "1,200" },
+    { name: "Jaipur, India", category: "Culture", price: "$50", image: "https://images.unsplash.com/photo-1477587458883-47145ed94245?q=80", tagClass: "badge-gold", rating: 4.9, revs: "3,410" },
+    { name: "Goa, India", category: "Beach", price: "$40", image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?q=80", tagClass: "badge-teal", rating: 4.7, revs: "5,800" },
+    { name: "Manali, India", category: "Hill", price: "$35", image: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?q=80", tagClass: "badge-teal", rating: 4.8, revs: "2,980" },
+    { name: "Varanasi, India", category: "Culture", price: "$30", image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80", tagClass: "badge-gold", rating: 4.6, revs: "4,100" }
+];
+
+const container = document.getElementById("destinationContainer");
+
+/* ── Intersection Observer ── */
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+    });
+}, { threshold: 0.1 });
+
+// Show All on Load
+showAll();
+
+function displayDestinations(filteredList) {
+    // 1. Inject Shimmering Skeletons
+    container.innerHTML = Array(6).fill().map(() => `
+      <div class="dest-card" style="padding:15px; background:#fff; border-radius:16px;">
+        <div class="skeleton skeleton-img" style="height:220px; margin-bottom:16px; border-radius:12px;"></div>
+        <div class="skeleton skeleton-title" style="width:70%;"></div>
+        <div class="skeleton skeleton-text" style="width:50%; margin-bottom:16px;"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div class="skeleton skeleton-text" style="width:30%; margin:0;"></div>
+          <div class="skeleton skeleton-title" style="width:25%; margin:0; height:32px; border-radius:50px;"></div>
+        </div>
+      </div>
+    `).join('');
+
+    // 2. Simulate Network Delay
+    setTimeout(() => {
+        if(filteredList.length === 0){
+            container.innerHTML = `
+            <div class="fade-up visible" style='grid-column: 1 / -1; text-align:center; padding: 60px 40px;'>
+              <i class="fas fa-map-marked-alt" style="font-size:3.5rem; color:#cbd5e1; margin-bottom:16px;"></i>
+              <h3 style='color:#475569; margin-bottom:10px;'>No destinations found 🌍</h3>
+              <p style="color:#64748b;">Try searching for a different place or clicking a different category!</p>
+            </div>`;
+            return;
+        }
+
+        let htmlContent = "";
+        filteredList.forEach((dest, i) => {
+            const delay = (i % 3) + 1; 
+            
+            htmlContent += `
+            <div class="dest-card fade-up delay-${delay}">
+              <div class="dest-card-img">
+                <img src="${dest.image}?w=600&q=80" alt="${dest.name}" loading="lazy">
+                <span class="card-badge ${dest.tagClass}">${dest.category}</span>
+                <button class="save-btn" onclick="toggleSave(this); event.stopPropagation();"><i class="far fa-heart"></i></button>
+              </div>
+              <div class="dest-card-body">
+                <h3 class="dest-title">${dest.name}</h3>
+                <p class="dest-loc"><i class="fas fa-map-marker-alt"></i> ${dest.name.split(',').pop().trim()}</p>
+                <div class="rating">
+                  <span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span>
+                  <strong>${dest.rating.toFixed(1)}</strong><span class="review-count">(${dest.revs} reviews)</span>
+                </div>
+                <div class="dest-footer">
+                  <span class="dest-price">From <strong>${dest.price}/night</strong></span>
+                  <a href="community.html?place=${dest.name.split(',')[0].toLowerCase().trim()}" class="btn btn-primary btn-sm">View Details</a>
+                </div>
+              </div>
+            </div>
+            `;
+        });
+
+        container.innerHTML = htmlContent;
+
+        if (typeof observer !== 'undefined') {
+            container.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        }
+    }, 450);
+}
+
+function searchDestination() {
+    let searchValue = document.getElementById("searchInput").value.toLowerCase();
+    
+    // Reset active buttons when searching
+    document.querySelectorAll('.suggestion-btn').forEach(btn => btn.classList.remove('active'));
+
+    let filtered = destinations.filter(dest =>
+        dest.name.toLowerCase().includes(searchValue) || dest.category.toLowerCase().includes(searchValue)
+    );
+
+    displayDestinations(filtered);
+}
+
+function filterCategory(category, element) {
+    // Update active state
+    if(element) {
+      document.querySelectorAll('.suggestion-btn').forEach(btn => btn.classList.remove('active'));
+      element.classList.add('active');
+    }
+    document.getElementById("searchInput").value = ""; // clear search if picking a pill
+
+    if (category === 'All') {
+        displayDestinations(destinations);
+        return;
+    }
+
+    let filtered = destinations.filter(dest =>
+        dest.category === category
+    );
+
+    displayDestinations(filtered);
+}
+
+function showAll() {
+    displayDestinations(destinations);
+}
+
+function toggleSave(btn) {
+    const card  = btn.closest('.dest-card');
+    const name  = card.querySelector('.dest-title').textContent.trim();
+    const img   = card.querySelector('img').src;
+    const loc   = card.querySelector('.dest-loc').textContent.replace(/[^\w\s,]/g, '').trim();
+    const badge = card.querySelector('.card-badge')?.textContent.trim() || '';
+
+    let wishlist = JSON.parse(localStorage.getItem('tm_wishlist') || '[]');
+    const exists = wishlist.findIndex(w => w.name === name);
+
+    const icon = btn.querySelector('i');
+    if (exists > -1) {
+      wishlist.splice(exists, 1);
+      icon.classList.remove('fas'); icon.classList.add('far'); icon.style.color = '';
+    } else {
+      wishlist.push({ name, img, loc, badge });
+      icon.classList.remove('far'); icon.classList.add('fas'); icon.style.color = '#ef4444';
+      if (window.TmAuth && typeof window.TmAuth.addNotif === 'function') {
+         window.TmAuth.addNotif('❤️', `Added ${name} to Wishlist`);
+      }
+    }
+    localStorage.setItem('tm_wishlist', JSON.stringify(wishlist));
+}
+
+/* ── Apply Observer Globally ── */
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+setTimeout(() => {
+    document.querySelectorAll('.dest-hero-content.fade-up').forEach(el => el.classList.add('visible'));
+}, 150);
+
+/* ── Hamburger menu ── */
+const hamburger = document.getElementById('hamburger');
+const navLinks  = document.getElementById('navLinks');
+if (hamburger) {
+    hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+    hamburger.classList.toggle('open');
+    });
+}
+
+/* ── Navbar scroll effect ── */
+window.addEventListener('scroll', function () {
+    const navbar = document.getElementById('navbar');
+    if(!navbar) return;
+    if (window.scrollY > 40) {
+    navbar.classList.remove('transparent');
+    navbar.classList.add('solid');
+    } else {
+    navbar.classList.remove('solid');
+    navbar.classList.add('transparent');
+    }
+});
+</script>
+
+<!-- Toast Container -->
+<div id="toastContainer" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;"></div>
+
+</body>
+</html>

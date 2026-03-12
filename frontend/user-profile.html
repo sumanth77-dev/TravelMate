@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Traveler Profile - TravelMate</title>
+	<link href="style.css" rel="stylesheet">
+	<script src="tm-auth.js"></script>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+	<style>
+		.profile-wrap { padding-top: 0; padding-bottom: 120px; }
+
+		/* ── HERO BANNER ── */
+		.profile-hero {
+			position: relative;
+			background: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=1600&q=80') center/cover;
+			padding: 160px 20px 80px;
+			color: #fff;
+			text-align: center;
+			margin-bottom: 40px;
+		}
+
+		.profile-avatar-wrapper {
+			position: relative;
+			width: 140px;
+			height: 140px;
+			margin: 0 auto 20px;
+		}
+		.profile-avatar {
+			width: 100%;
+			height: 100%;
+			border-radius: 50%;
+			object-fit: cover;
+			border: 4px solid #fff;
+			box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+		}
+		
+		.profile-name {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(2rem, 4vw, 3rem);
+			font-weight: 900;
+			margin-bottom: 8px;
+			text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+		}
+		.profile-bio {
+			font-size: 1.1rem;
+			color: rgba(255,255,255,0.9);
+			max-width: 600px;
+			margin: 0 auto 24px;
+		}
+		
+		.profile-stats {
+			display: flex;
+			gap: 32px;
+			justify-content: center;
+			margin-bottom: 32px;
+		}
+		.stat-block {
+			text-align: center;
+		}
+		.stat-num {
+			display: block;
+			font-size: 1.5rem;
+			font-weight: 700;
+			color: #22c55e;
+			margin-bottom: 2px;
+		}
+		.stat-label {
+			font-size: 0.85rem;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+			color: rgba(255,255,255,0.7);
+		}
+
+		.profile-actions {
+			display: flex;
+			gap: 16px;
+			justify-content: center;
+		}
+
+		.btn-profile {
+			padding: 12px 32px;
+			border-radius: 50px;
+			font-weight: 700;
+			font-size: 15px;
+			cursor: pointer;
+			transition: all .2s;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			border: none;
+		}
+		.btn-profile.follow { background: #22c55e; color: #fff; box-shadow: 0 4px 14px rgba(34,197,94,0.3); }
+		.btn-profile.follow:hover { background: #16a34a; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(34,197,94,0.4); }
+		.btn-profile.message { background: rgba(255,255,255,0.15); color: #fff; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); }
+		.btn-profile.message:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+
+		/* ── CONTENT GRID ── */
+		.profile-content {
+			max-width: 1100px;
+			margin: 0 auto;
+			padding: 0 20px;
+		}
+
+		.section-header {
+			font-family: 'Playfair Display', serif;
+			font-size: 1.8rem;
+			margin-bottom: 24px;
+			color: #0f172a;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.posts-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+			gap: 24px;
+		}
+
+		.empty-state {
+			text-align: center;
+			padding: 60px 20px;
+			background: #fff;
+			border-radius: 16px;
+			border: 2px dashed #e2e8f0;
+		}
+		.empty-state i {
+			font-size: 3rem;
+			color: #cbd5e1;
+			margin-bottom: 16px;
+		}
+		.empty-state h3 {
+			font-size: 1.25rem;
+			color: #475569;
+			margin-bottom: 8px;
+		}
+		
+		/* Reuse Post Card Styles from main_community.html */
+		.post-card { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,.07); overflow:hidden; display: flex; flex-direction: column; height: 100%; transition: transform .2s, box-shadow .2s; }
+		.post-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,.1); }
+		.post-header { display:flex; justify-content:space-between; align-items:flex-start; padding:16px 16px 12px; }
+		.author { display:flex; align-items:center; gap:10px; }
+		.author img { width:40px; height:40px; border-radius:50%; object-fit:cover; }
+		.author-name { font-weight:700; font-size:14px; }
+		.author-meta { font-size:12px; color:#64748b; }
+		.post-image { height: 200px; overflow: hidden; }
+		.post-image img { width:100%; height:100%; object-fit:cover; display:block; transition: transform .5s; }
+		.post-card:hover .post-image img { transform: scale(1.05); }
+		.post-body { padding:16px; flex: 1; display: flex; flex-direction: column; }
+		.post-footer { padding:12px 16px; display:flex; justify-content:space-between; align-items:center; border-top: 1px solid #f1f5f9; background: #faf8f7; }
+		.post-actions { display:flex; gap:6px; align-items:center; }
+		.icon-btn { background: none; border: none; cursor: pointer; font-size: 15px; padding: 6px 10px; border-radius: 8px; transition: background .15s; color: #475569; display: flex; align-items: center; gap: 6px; font-weight: 600; }
+		.icon-btn:hover { background: #f1f5f9; color: #0f172a; }
+		.post-stars { font-size: 16px; color: #f59e0b; letter-spacing: 2px; }
+
+	</style>
+</head>
+<body>
+	<nav class="navbar transparent" id="navbar">
+		<div class="navbar-inner">
+			<a href="index.html" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
+			<ul class="nav-links" id="navLinks">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="main_community.html">Community</a></li>
+				<li><a href="findguides.html">Find Guides</a></li>
+                <li><a href="destinations.html">Destinations</a></li>
+			</ul>
+			<div style="display:flex;align-items:center;gap:12px;">
+				<div id="pointsCounter" class="badge badge-teal">0 pts</div>
+			</div>
+			<button class="hamburger" id="hamburger" aria-label="Menu">
+				<span></span><span></span><span></span>
+			</button>
+		</div>
+	</nav>
+
+	<main class="profile-wrap">
+		
+		<!-- ══════ HERO SECTION ══════ -->
+		<div class="profile-hero">
+			<button onclick="window.location.href='main_community.html'" style="position:absolute; top:90px; left:40px; background:rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.3); padding:8px 16px; border-radius:50px; cursor:pointer; font-weight:600; font-family:'Plus Jakarta Sans', sans-serif; display:flex; gap:8px; align-items:center; backdrop-filter:blur(4px); transition:all 0.2s; z-index:10;" onmouseover="this.style.background='rgba(255,255,255,0.3)';this.style.transform='translateX(-3px)';" onmouseout="this.style.background='rgba(255,255,255,0.15)';this.style.transform='translateX(0)';">
+				<i class="fas fa-arrow-left"></i> Back
+			</button>
+			<div class="profile-avatar-wrapper">
+				<img src="" alt="Profile Avatar" class="profile-avatar" id="profAvatar">
+			</div>
+			<h1 class="profile-name" id="profName">Loading...</h1>
+			<p class="profile-bio" id="profBio">Exploring the world, one city at a time. Sharing my favorite hidden gems and travel tips.</p>
+			
+			<div class="profile-stats">
+				<div class="stat-block">
+					<span class="stat-num" id="statPosts">0</span>
+					<span class="stat-label">Posts</span>
+				</div>
+				<div class="stat-block">
+					<span class="stat-num" id="statFollowers">0</span>
+					<span class="stat-label">Followers</span>
+				</div>
+				<div class="stat-block">
+					<span class="stat-num">142</span>
+					<span class="stat-label">Following</span>
+				</div>
+			</div>
+
+			<div class="profile-actions">
+				<button class="btn-profile follow" id="followBtn"><i class="fas fa-user-plus"></i> Follow User</button>
+				<button class="btn-profile message" onclick="if(!TmAuth.isLogged()){window.location.href='login.html';}else{alert('Messaging feature coming soon!');}"><i class="fas fa-envelope"></i> Message</button>
+			</div>
+		</div>
+
+		<!-- ══════ CONTENT GRID ══════ -->
+		<div class="profile-content">
+			<h2 class="section-header"><i class="fas fa-images" style="color: #22c55e;"></i> Travel Experiences</h2>
+			
+			<div id="postsGrid" class="posts-grid">
+				<!-- Posts injected here via JS -->
+			</div>
+
+			<div id="emptyState" class="empty-state" style="display:none;">
+				<i class="fas fa-camera-retro"></i>
+				<h3>No posts yet.</h3>
+				<p style="color: #64748b;">This traveler hasn't shared any experiences yet.</p>
+			</div>
+		</div>
+	</main>
+
+	<!-- Footer -->
+	<footer>
+		<div class="container footer-grid">
+			<div class="footer-col footer-brand">
+				<div class="footer-logo">&#10022; TravelMate</div>
+				<p>Your ultimate companion for discovering amazing places and unforgettable experiences globally.</p>
+			</div>
+			<div class="footer-col">
+				<h5>Explore</h5>
+				<ul><li><a href="main_community.html">Community</a></li><li><a href="findguides.html">Find Guides</a></li></ul>
+			</div>
+			<div class="footer-col">
+				<h5>Company</h5>
+				<ul><li><a href="#">About Us</a></li><li><a href="#">Careers</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul>
+			</div>
+		</div>
+	</footer>
+
+	<script>
+		// Setup Navbar scroll
+		window.addEventListener('scroll', function () {
+			const navbar = document.getElementById('navbar');
+			if (window.scrollY > 40) {
+				navbar.classList.remove('transparent');
+				navbar.classList.add('solid');
+			} else {
+				navbar.classList.remove('solid');
+				navbar.classList.add('transparent');
+			}
+		});
+
+		function escapeHtml(s){ return String(s).replace(/[&"'<>]/g, c=>({'&':'&amp;','"':'&quot;','\'':'&#39;','<':'&lt;','>':'&gt;'}[c])); }
+
+		document.addEventListener('DOMContentLoaded', () => {
+			// Extract User from Local Storage (Avoid file:// querying issues)
+			const targetUser = localStorage.getItem('tm_targetUser');
+
+			if(!targetUser) {
+				document.getElementById('profName').textContent = "User Not Found";
+				document.getElementById('profBio').textContent = "Please provide a valid user name in the URL.";
+				return;
+			}
+
+			// Render Profile Data
+			document.getElementById('profName').textContent = escapeHtml(targetUser);
+			document.title = `${escapeHtml(targetUser)} - TravelMate Profile`;
+			
+			const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(targetUser)}&background=dcfce7&color=16a34a&size=200`;
+			document.getElementById('profAvatar').src = avatarUrl;
+			
+			// Faux Followers count based on string length to make it deterministic looking
+			document.getElementById('statFollowers').textContent = (targetUser.length * 142) + 38;
+
+			// Fetch Posts
+			const allPosts = JSON.parse(localStorage.getItem('community_posts') || '[]');
+			const userPosts = allPosts.filter(p => (p.author || 'Traveller').toLowerCase() === targetUser.toLowerCase());
+
+			document.getElementById('statPosts').textContent = userPosts.length;
+
+			const grid = document.getElementById('postsGrid');
+			const emptyState = document.getElementById('emptyState');
+
+			if (userPosts.length === 0) {
+				emptyState.style.display = 'block';
+			} else {
+				userPosts.forEach(p => {
+					// Generate Card HTML
+					const imgs = p.images && p.images.length
+						? p.images[0]
+						: `https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80`;
+					const stars = '★'.repeat(p.rating||0)+'☆'.repeat(5-(p.rating||0));
+					
+					let tagsHtml = '';
+					if(p.category) tagsHtml += `<span style="background:#f1f5f9;color:#475569;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;">${escapeHtml(p.category)}</span>`;
+					if(p.budget)   tagsHtml += `<span style="background:#f0fdf4;color:#166534;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;">₹${escapeHtml(p.budget)}</span>`;
+
+					const cardHtml = `
+						<article class="post-card">
+							<header class="post-header">
+								<div class="author">
+									<img src="${avatarUrl}" alt="avatar">
+									<div>
+										<div class="author-name">${escapeHtml(p.author||'Traveller')}</div>
+										<div class="author-meta">${escapeHtml(p.place||p.location||'')} · ${p.date||'just now'}</div>
+									</div>
+								</div>
+							</header>
+							
+							<div class="post-image">
+								<img src="${imgs}" alt="Travel Photo">
+							</div>
+
+							<div class="post-body">
+								<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">${tagsHtml}</div>
+								<h3 style="font-family:'Playfair Display', serif; font-size:1.1rem; margin-bottom:6px; color:#0f172a;">${escapeHtml(p.place||'')}</h3>
+								<p style="font-size:13.5px;line-height:1.5;color:#475569;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(p.caption||'')}</p>
+								<div style="margin-top:auto;">
+									<div class="post-stars" style="font-size:14px;">${stars}</div>
+								</div>
+							</div>
+							
+							<footer class="post-footer">
+								<div class="post-actions">
+									<button class="icon-btn like-btn">❤ <span class="like-count" style="margin-left:4px; font-size:14px; font-weight:700;">${p.likes||0}</span></button>
+								</div>
+								<a href="findguides.html" style="background:#22c55e;color:#fff;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;"><i class="fas fa-compass"></i> Guide</a>
+							</footer>
+						</article>
+					`;
+					grid.insertAdjacentHTML('beforeend', cardHtml);
+				});
+			}
+
+			// Follow Button Logic
+			const followBtn = document.getElementById('followBtn');
+			
+			// Load follows from local storage
+			let followingList = JSON.parse(localStorage.getItem('tm_following') || '[]');
+			let isFollowing = followingList.includes(targetUser.toLowerCase());
+
+			// Initialize button visually based on loaded state
+			if (isFollowing) {
+				followBtn.innerHTML = `<i class="fas fa-check"></i> Following`;
+				followBtn.style.background = '#e2e8f0';
+				followBtn.style.color = '#0f172a';
+				followBtn.style.boxShadow = 'none';
+			} else {
+				followBtn.innerHTML = `<i class="fas fa-user-plus"></i> Follow User`;
+				followBtn.style.background = '#22c55e';
+				followBtn.style.color = '#fff';
+				followBtn.style.boxShadow = '0 4px 14px rgba(34,197,94,0.3)';
+			}
+
+			followBtn.addEventListener('click', () => {
+				// Check if user is logged in
+				if (!TmAuth.isLogged()) {
+					window.location.href = 'login.html';
+					return;
+				}
+
+				isFollowing = !isFollowing;
+				followingList = JSON.parse(localStorage.getItem('tm_following') || '[]');
+				
+				if(isFollowing) {
+					followBtn.innerHTML = `<i class="fas fa-check"></i> Following`;
+					followBtn.style.background = '#e2e8f0';
+					followBtn.style.color = '#0f172a';
+					followBtn.style.boxShadow = 'none';
+					document.getElementById('statFollowers').textContent = parseInt(document.getElementById('statFollowers').textContent) + 1;
+					if(!followingList.includes(targetUser.toLowerCase())) {
+						followingList.push(targetUser.toLowerCase());
+						localStorage.setItem('tm_following', JSON.stringify(followingList));
+					}
+				} else {
+					followBtn.innerHTML = `<i class="fas fa-user-plus"></i> Follow User`;
+					followBtn.style.background = '#22c55e';
+					followBtn.style.color = '#fff';
+					followBtn.style.boxShadow = '0 4px 14px rgba(34,197,94,0.3)';
+					document.getElementById('statFollowers').textContent = parseInt(document.getElementById('statFollowers').textContent) - 1;
+					followingList = followingList.filter(u => u !== targetUser.toLowerCase());
+					localStorage.setItem('tm_following', JSON.stringify(followingList));
+				}
+			});
+		});
+	</script>
+</body>
+</html>

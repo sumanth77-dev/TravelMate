@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Travel Community — Guide Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="tm-auth.js"></script>
+  <style>
+    /* Guide Profile Specific Styles (React Tailwind Conversion) */
+    :root {
+      --bg-background: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-accent: #f1f5f9;
+      --text-foreground: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --primary-light-bg: rgba(34, 197, 94, 0.1);
+      --warning: #eab308;
+    }
+
+    body {
+      background: var(--bg-background);
+      padding-top: 70px; /* Navbar space */
+    }
+
+    .profile-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-bottom: 24px;
+      transition: color 0.2s;
+    }
+
+    .back-button:hover {
+      color: var(--text-foreground);
+    }
+
+    /* Card Layouts */
+    .profile-card, .reviews-card {
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      padding: 24px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 640px) {
+      .profile-card, .reviews-card { padding: 32px; }
+    }
+
+    /* Profile Header Flex */
+    .profile-header-flex {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      text-align: center;
+    }
+
+    @media (min-width: 640px) {
+      .profile-header-flex {
+        flex-direction: row;
+        align-items: flex-start;
+        text-align: left;
+      }
+    }
+
+    .profile-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: var(--bg-accent);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .profile-main-info {
+      flex: 1;
+      width: 100%;
+    }
+
+    .profile-title-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @media (min-width: 640px) {
+      .profile-title-row {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+    }
+
+    .profile-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-foreground);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .profile-location {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    @media (min-width: 640px) {
+      .profile-location { justify-content: flex-start; }
+    }
+
+    .profile-price-block {
+      text-align: center;
+    }
+
+    @media (min-width: 640px) {
+      .profile-price-block { text-align: right; }
+    }
+
+    .profile-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-foreground);
+    }
+    
+    .profile-price-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Meta Details Row */
+    .profile-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 16px;
+      font-size: 0.875rem;
+    }
+
+    @media (min-width: 640px) {
+      .profile-meta-row { justify-content: flex-start; }
+    }
+
+    .profile-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+    }
+
+    .profile-meta-item.rating strong {
+      color: var(--text-foreground);
+    }
+
+    .profile-meta-item.rating i {
+      color: var(--warning);
+    }
+
+    /* Sections */
+    .profile-section {
+      margin-top: 24px;
+    }
+
+    .section-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-foreground);
+      margin-bottom: 8px;
+    }
+
+    .profile-bio {
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    /* Specialties Tags */
+    .specialty-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .specialty-tag {
+      background: var(--bg-accent);
+      color: var(--text-foreground);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    /* Booking Button */
+    .booking-action {
+      margin-top: 32px;
+    }
+
+    .btn-book {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-book:hover {
+      background: var(--primary-dark);
+    }
+
+    .unavailable-box {
+      background: var(--bg-accent);
+      color: var(--text-muted);
+      border-radius: 8px;
+      padding: 12px 24px;
+      text-align: center;
+      font-size: 0.875rem;
+    }
+
+    /* Reviews Section */
+    .reviews-card h2 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-foreground);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin-bottom: 16px;
+    }
+
+    .review-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .review-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 16px;
+    }
+
+    .review-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .review-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-accent);
+      flex-shrink: 0;
+    }
+
+    .review-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .review-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .reviewer-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-foreground);
+    }
+
+    .review-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .review-stars {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin-top: 2px;
+    }
+
+    .review-stars i {
+      font-size: 0.75rem;
+      color: var(--warning);
+    }
+    .review-stars i.empty {
+      color: rgba(100, 116, 139, 0.3);
+    }
+
+    .review-text {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    .error-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .error-state p { color: var(--text-muted); margin-bottom: 16px;}
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <nav class="navbar solid" id="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="main_community.html">Community</a></li>
+        <li><a href="findguides.html">Find Guides</a></li>
+        <li><a href="destinations.html">Destinations</a></li>
+      </ul>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div id="pointsCounter" class="badge badge-teal">0 pts</div>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════════ PROFILE CONTAINER ══════════════ -->
+  <div class="profile-container" id="profileRoot">
+    <!-- RENDERED VIA JS -->
+  </div>
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">&#10022; Travel Mate</div>
+          <p>Your community for authentic travel experiences, honest reviews, and unforgettable journeys worldwide.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Travel Mate. All rights reserved.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Points System & Hamburger
+    (function(){
+      const el = document.getElementById('pointsCounter');
+      if(el) el.textContent = Number(localStorage.getItem('tm_points') || 0) + ' pts';
+      const hamburger = document.getElementById('hamburger');
+      const navLinks  = document.getElementById('navLinks');
+      if (hamburger) hamburger.addEventListener('click', () => { navLinks.classList.toggle('open'); hamburger.classList.toggle('open'); });
+    })();
+
+    /* ══════════════════════════════
+       REACT DATA MIGRATION
+    ══════════════════════════════ */
+    const guidesData = [
+      {
+        id: "1", name: "Aarav Sharma", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=aarav", location: "Jaipur, Rajasthan",
+        languages: ["English", "Hindi", "French"], rating: 4.9, reviewCount: 142, pricePerDay: 2500, experience: 8,
+        specialties: ["Heritage Walks", "Photography Tours", "Food Tours"],
+        bio: "Passionate about Rajasthani heritage with 8 years of guiding experience. I specialize in uncovering hidden gems and local stories that bring history to life.",
+        available: true,
+      },
+      {
+        id: "2", name: "Priya Patel", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=priya", location: "Jaipur, Rajasthan",
+        languages: ["English", "Hindi", "Spanish"], rating: 4.7, reviewCount: 98, pricePerDay: 2000, experience: 5,
+        specialties: ["Cultural Tours", "Art & Crafts", "Temple Visits"],
+        bio: "Art enthusiast and certified guide specializing in Rajasthani culture, art, and traditions. Let me show you the colorful side of Jaipur!",
+        available: true,
+      },
+      {
+        id: "3", name: "Ravi Kumar", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ravi", location: "Goa",
+        languages: ["English", "Hindi", "Portuguese"], rating: 4.8, reviewCount: 210, pricePerDay: 3000, experience: 10,
+        specialties: ["Beach Tours", "Nightlife", "Water Sports"],
+        bio: "Born and raised in Goa, I know every hidden beach and secret spot. From serene sunsets to vibrant nightlife, I've got you covered.",
+        available: true,
+      },
+      {
+        id: "4", name: "Meera Nair", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=meera", location: "Kerala",
+        languages: ["English", "Malayalam", "Hindi"], rating: 4.6, reviewCount: 75, pricePerDay: 1800, experience: 4,
+        specialties: ["Backwater Tours", "Ayurveda", "Nature Walks"],
+        bio: "Explore the God's own country with me. From tranquil backwaters to lush tea gardens, Kerala has endless beauty to offer.",
+        available: true,
+      },
+      {
+        id: "5", name: "Arjun Reddy", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=arjun", location: "Hampi, Karnataka",
+        languages: ["English", "Kannada", "Hindi"], rating: 4.9, reviewCount: 165, pricePerDay: 2200, experience: 7,
+        specialties: ["Archaeology", "Heritage Sites", "Cycling Tours"],
+        bio: "History buff with deep knowledge of Vijayanagara Empire ruins. I make ancient stones tell their stories.",
+        available: false,
+      },
+      {
+        id: "6", name: "Sanya Gupta", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sanya", location: "Varanasi, UP",
+        languages: ["English", "Hindi"], rating: 4.5, reviewCount: 88, pricePerDay: 1500, experience: 6,
+        specialties: ["Spiritual Tours", "Boat Rides", "Street Food"],
+        bio: "Discover the spiritual heart of India. From mesmerizing Ganga Aarti to narrow alleys full of surprises, Varanasi never disappoints.",
+        available: true,
+      },
+      {
+        id: "7", name: "Kabir Singh", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=kabir", location: "Manali, HP",
+        languages: ["English", "Hindi", "Punjabi"], rating: 4.8, reviewCount: 130, pricePerDay: 2800, experience: 9,
+        specialties: ["Trekking", "Adventure Sports", "Camping"],
+        bio: "Adventure is my middle name. From high-altitude treks to river rafting, I'll take you on the thrill ride of a lifetime in the Himalayas.",
+        available: true,
+      },
+      {
+        id: "8", name: "Diya Chatterjee", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=diya", location: "Darjeeling, WB",
+        languages: ["English", "Bengali", "Hindi", "Nepali"], rating: 4.7, reviewCount: 92, pricePerDay: 1900, experience: 5,
+        specialties: ["Tea Garden Tours", "Monastery Visits", "Sunrise Points"],
+        bio: "Let me take you through the misty hills and aromatic tea gardens of Darjeeling. A certified guide with a love for storytelling.",
+        available: true,
+      },
+    ];
+
+    const reviewsData = [
+      { id: "r1", guideId: "1", reviewer: "Neha M.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=neha", rating: 5, comment: "Aarav made our Jaipur trip unforgettable! His knowledge of the old city is incredible.", date: "2026-02-10" },
+      { id: "r2", guideId: "1", reviewer: "Tom W.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=tom", rating: 5, comment: "Best heritage walk I've ever been on. Highly recommended!", date: "2026-01-28" },
+      { id: "r3", guideId: "1", reviewer: "Sneha R.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sneha", rating: 4, comment: "Very knowledgeable and friendly. The food tour was a highlight.", date: "2026-01-15" },
+      { id: "r4", guideId: "2", reviewer: "Amit K.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=amit", rating: 5, comment: "Priya showed us the real artistic side of Jaipur. Amazing experience!", date: "2026-02-05" },
+      { id: "r5", guideId: "2", reviewer: "Lisa C.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=lisa", rating: 4, comment: "Wonderful cultural tour. Priya is very passionate about local art.", date: "2026-01-20" },
+      { id: "r6", guideId: "3", reviewer: "Rahul D.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=rahul", rating: 5, comment: "Ravi knows every hidden beach in Goa. We had the best day ever!", date: "2026-02-12" },
+      { id: "r7", guideId: "3", reviewer: "Sophie L.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sophie", rating: 5, comment: "Perfect guide for adventure lovers. The water sports were thrilling!", date: "2026-01-30" },
+      { id: "r11", guideId: "5", reviewer: "Pooja B.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=pooja", rating: 5, comment: "Arjun brings Hampi's ruins to life! Absolutely fascinating.", date: "2026-02-01" },
+      { id: "r12", guideId: "5", reviewer: "Mark T.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=mark", rating: 5, comment: "The cycling tour through Hampi was the highlight of our India trip.", date: "2026-01-18" },
+      { id: "r13", guideId: "6", reviewer: "Kavita P.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=kavita", rating: 5, comment: "Sanya's Varanasi tour was deeply moving. The Ganga Aarti was magical!", date: "2026-02-14" },
+      { id: "r16", guideId: "7", reviewer: "Nikhil G.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=nikhil", rating: 5, comment: "Kabir took us on an unforgettable trek. The views were breathtaking!", date: "2026-02-11" },
+      { id: "r18", guideId: "8", reviewer: "Suresh M.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=suresh", rating: 5, comment: "Diya's storytelling made the tea garden tour magical.", date: "2026-02-06" },
+    ];
+
+    function formatDate(dateString) {
+      return new Date(dateString).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+    }
+
+    function renderStars(ratingStr) {
+      const rating = Number(ratingStr);
+      let html = '';
+      for (let i = 1; i <= 5; i++) {
+        html += `<i class="fas fa-star ${i <= rating ? '' : 'empty'}"></i>`;
+      }
+      return html;
+    }
+
+    function renderPage() {
+      const urlParams = new URL(window.location.href);
+      // Try to get id, fallback to 1 for demo purposes if not passed correctly
+      let guideId = urlParams.searchParams.get('id');
+      if (!guideId || guideId === 'null') {
+          // If viewing locally without params it will just fallback to Aarav
+          guideId = '1'; 
+      }
+
+      const guide = guidesData.find(g => g.id === guideId);
+      const root = document.getElementById('profileRoot');
+
+      if (!guide) {
+        root.innerHTML = `
+          <div class="error-state">
+            <p>Guide not found.</p>
+            <a href="findguides.html" class="btn btn-outline">Back to search</a>
+          </div>
+        `;
+        return;
+      }
+
+      const guideReviews = reviewsData.filter(r => r.guideId === guide.id);
+
+      root.innerHTML = `
+        <a href="findguides.html" class="back-button">
+          <i class="fas fa-arrow-left"></i> Back
+        </a>
+
+        <!-- Main Profile Card -->
+        <div class="profile-card">
+          <div class="profile-header-flex">
+            <img src="${guide.avatar}" alt="${guide.name}" class="profile-avatar">
+            
+            <div class="profile-main-info">
+              
+              <div class="profile-title-row">
+                <div>
+                  <h1 class="profile-name">${guide.name}</h1>
+                  <div class="profile-location"><i class="fas fa-map-marker-alt"></i> ${guide.location}</div>
+                </div>
+                <div class="profile-price-block">
+                  <div class="profile-price">₹${guide.pricePerDay.toLocaleString()}</div>
+                  <div class="profile-price-sub">per day</div>
+                </div>
+              </div>
+
+              <div class="profile-meta-row">
+                <span class="profile-meta-item rating">
+                  <i class="fas fa-star"></i>
+                  <strong>${guide.rating}</strong>
+                  <span>(${guide.reviewCount} reviews)</span>
+                </span>
+                <span class="profile-meta-item">
+                  <i class="far fa-clock"></i>
+                  ${guide.experience} years exp.
+                </span>
+                <span class="profile-meta-item">
+                  <i class="fas fa-globe"></i>
+                  ${guide.languages.join(", ")}
+                </span>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <h2 class="section-title">About</h2>
+            <p class="profile-bio">${guide.bio}</p>
+          </div>
+
+          <div class="profile-section">
+            <h2 class="section-title">Specialties</h2>
+            <div class="specialty-tags">
+              ${guide.specialties.map(s => `<span class="specialty-tag">${s}</span>`).join('')}
+            </div>
+          </div>
+
+          <div class="booking-action">
+            ${guide.available ? `
+              <a href="guide-book.html?id=${guide.id}" class="btn-book">
+                <i class="far fa-calendar-alt"></i> Book This Guide
+              </a>
+            ` : `
+              <div class="unavailable-box">This guide is currently unavailable</div>
+            `}
+          </div>
+        </div>
+
+        <!-- Reviews Card -->
+        ${guideReviews.length > 0 ? `
+          <div class="reviews-card">
+            <h2>Reviews (${guideReviews.length})</h2>
+            <div class="review-list">
+              ${guideReviews.map(review => `
+                <div class="review-item">
+                  <img src="${review.avatar}" alt="${review.reviewer}" class="review-avatar">
+                  <div class="review-content">
+                    <div class="review-header">
+                      <div class="reviewer-name">${review.reviewer}</div>
+                      <div class="review-date">${formatDate(review.date)}</div>
+                    </div>
+                    <div class="review-stars">
+                      ${renderStars(review.rating)}
+                    </div>
+                    <div class="review-text">${review.comment}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    document.addEventListener('DOMContentLoaded', renderPage);
+  </script>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Travel Community — My Bookings</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="tm-auth.js"></script>
+  <style>
+    :root {
+      --bg-background: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-accent: #f1f5f9;
+      --text-foreground: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --primary-light-bg: rgba(34, 197, 94, 0.1);
+      
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.1);
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.1);
+      --destructive: #ef4444;
+      --destructive-bg: rgba(239, 68, 68, 0.1);
+    }
+
+    body {
+      background: var(--bg-background);
+      padding-top: 70px;
+    }
+
+    .bookings-container {
+      max-width: 672px; /* max-w-2xl */
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-foreground);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .page-sub {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Tabs */
+    .tabs-container {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-accent);
+      padding: 4px;
+      border-radius: 8px;
+      margin-top: 24px;
+      margin-bottom: 24px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover { color: var(--text-foreground); }
+    .tab-btn.active {
+      background: var(--bg-card);
+      color: var(--text-foreground);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    /* Booking Card */
+    .booking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .booking-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .bk-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .bk-title {
+      font-weight: 600;
+      color: var(--text-foreground);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .bk-loc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .bk-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .status-pending { background: var(--warning-bg); color: var(--warning); }
+    .status-approved { background: var(--success-bg); color: var(--success); }
+    .status-rejected { background: var(--destructive-bg); color: var(--destructive); }
+
+    .bk-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+      font-size: 0.875rem;
+    }
+
+    @media (min-width: 480px) {
+      .bk-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .bk-grid-item span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .bk-grid-item p {
+      font-weight: 500;
+      color: var(--text-foreground);
+    }
+
+    .bk-msg {
+      margin-top: 16px;
+      background: rgba(100, 116, 139, 0.05);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .btn-pay {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+      margin-top: 16px;
+    }
+
+    .btn-pay:hover { background: var(--primary-dark); }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 0;
+    }
+    
+    .empty-state i {
+      font-size: 2.5rem;
+      color: rgba(100, 116, 139, 0.3);
+      margin-bottom: 12px;
+    }
+    
+    .empty-state p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════ NAVBAR ══════════════ -->
+  <nav class="navbar solid" id="navbar">
+    <div class="navbar-inner">
+      <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="main_community.html">Community</a></li>
+        <li><a href="findguides.html">Find Guides</a></li>
+        <li><a href="destinations.html">Destinations</a></li>
+      </ul>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div id="pointsCounter" class="badge badge-teal">0 pts</div>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════════ SUB-NAVBAR ══════════════ -->
+  <div class="sub-navbar" style="background: #fff; border-bottom: 1px solid var(--border-color); padding: 0 24px; display: flex; justify-content: flex-end; align-items: center; height: 50px; position: fixed; top: 70px; width: 100%; z-index: 999;">
+    <div class="container" style="display: flex; justify-content: flex-end; gap: 32px; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0;">
+      <a href="findguides.html" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--text-muted); text-decoration: none; position: relative; height: 50px; display: flex; align-items: center; transition: color 0.2s;" onmouseover="this.style.color='var(--text-foreground)'" onmouseout="this.style.color='var(--text-muted)'">Available Guides</a>
+      <a href="guide-bookings.html" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--primary); text-decoration: none; position: relative; height: 50px; display: flex; align-items: center; border-bottom: 2px solid var(--primary);">My Bookings</a>
+    </div>
+  </div>
+
+  <div class="bookings-container" style="padding-top: 80px;">
+    <h1 class="page-title">My Bookings</h1>
+    <p class="page-sub">Track all your guide booking requests</p>
+
+    <div class="tabs-container" id="tabsGroup">
+      <button class="tab-btn active" data-filter="all">All</button>
+      <button class="tab-btn" data-filter="pending">Pending</button>
+      <button class="tab-btn" data-filter="approved">Approved</button>
+      <button class="tab-btn" data-filter="rejected">Rejected</button>
+    </div>
+
+    <div class="booking-list" id="bookingsList">
+      <!-- RENDERED VIA JS -->
+    </div>
+  </div>
+
+  <script>
+    const sampleBookings = [
+      {
+        id: "b1",
+        guideId: "2",
+        guideName: "Priya Patel",
+        location: "Jaipur, Rajasthan",
+        date: "2026-04-15",
+        duration: 4,
+        members: 2,
+        status: "approved",
+        totalPrice: 1000,
+        message: "Looking forward to seeing the local art markets!",
+        createdAt: "2026-03-01",
+      },
+      {
+        id: "b2",
+        guideId: "4",
+        guideName: "Meera Nair",
+        location: "Kerala",
+        date: "2026-05-10",
+        duration: 8,
+        members: 4,
+        status: "pending",
+        totalPrice: 1800,
+        message: "We'd love a peaceful backwater tour.",
+        createdAt: "2026-03-05",
+      },
+    ];
+
+    let allBookings = [];
+    let currentFilter = "all";
+
+    function loadBookings() {
+      const stored = localStorage.getItem("bookings");
+      if (stored) {
+        allBookings = JSON.parse(stored);
+      } else {
+        // If empty, load samples for demo and save them
+        allBookings = sampleBookings;
+        localStorage.setItem("bookings", JSON.stringify(sampleBookings));
+      }
+      renderBookings();
+    }
+
+    function formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+    }
+
+    function getStatusConfig(status) {
+      if(status === 'approved') return { label: 'Approved', icon: 'fa-check-circle', cls: 'status-approved' };
+      if(status === 'rejected') return { label: 'Rejected', icon: 'fa-times-circle', cls: 'status-rejected' };
+      return { label: 'Pending', icon: 'fa-clock', cls: 'status-pending' };
+    }
+
+    function renderBookings() {
+      const container = document.getElementById('bookingsList');
+      const filtered = currentFilter === 'all' ? allBookings : allBookings.filter(b => b.status === currentFilter);
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="far fa-calendar-alt"></i>
+            <p>No bookings found.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(b => {
+        const status = getStatusConfig(b.status);
+        const isApproved = b.status === 'approved';
+
+        return `
+          <div class="booking-card">
+            <div class="bk-header">
+              <div>
+                <h3 class="bk-title">${b.guideName}</h3>
+                <p class="bk-loc">${b.location}</p>
+              </div>
+              <span class="bk-status ${status.cls}">
+                <i class="fas ${status.icon}"></i> ${status.label}
+              </span>
+            </div>
+
+            <div class="bk-grid">
+              <div class="bk-grid-item">
+                <span>Date</span>
+                <p>${formatDate(b.date)}</p>
+              </div>
+              <div class="bk-grid-item">
+                <span>Duration</span>
+                <p>${b.duration}h</p>
+              </div>
+              <div class="bk-grid-item">
+                <span>Members</span>
+                <p>${b.members}</p>
+              </div>
+              <div class="bk-grid-item">
+                <span>Total</span>
+                <p>₹${b.totalPrice.toLocaleString()}</p>
+              </div>
+            </div>
+
+            ${b.message ? `<div class="bk-msg">${b.message}</div>` : ''}
+
+            ${isApproved ? `
+              <a href="guide-payment.html?id=${b.id}" class="btn-pay">
+                <i class="far fa-credit-card"></i> Pay Now
+              </a>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Points System
+      (function(){
+        const el = document.getElementById('pointsCounter');
+        if(el) el.textContent = Number(localStorage.getItem('tm_points') || 0) + ' pts';
+        const hamburger = document.getElementById('hamburger');
+        const navLinks  = document.getElementById('navLinks');
+        if (hamburger) hamburger.addEventListener('click', () => { navLinks.classList.toggle('open'); hamburger.classList.toggle('open'); });
+      })();
+
+      loadBookings();
+
+      // Tab Setup
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+          currentFilter = e.target.dataset.filter;
+          renderBookings();
+        });
+      });
+      
+      // Auto-approve newest pending booking for demo purposes if nothing is approved yet
+      // This helps test the payment flow easily.
+      setTimeout(() => {
+         let updated = false;
+         allBookings.forEach((b, idx) => {
+           if (b.status === 'pending' && idx === 0) { // Just approve the first pending one if we want a quick test
+              // Uncommenting the below would auto-approve
+              b.status = 'approved';
+              updated = true;
+           }
+         });
+         if(updated) {
+           localStorage.setItem("bookings", JSON.stringify(allBookings));
+           if(currentFilter === 'all' || currentFilter === 'approved') renderBookings();
+         }
+      }, 5000);
+
+    });
+  </script>
+</body>
+</html>

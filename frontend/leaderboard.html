@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaderboard - Travel Mate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<script src="tm-auth.js"></script>
+<style>
+:root{--primary:#22c55e;--primary-dark:#16a34a;--bg:#f0fdf4;--gold:#f59e0b;--silver:#94a3b8;--bronze:#d97706;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#1f2937;}
+
+/* HERO */
+.lb-hero{
+  background:linear-gradient(135deg,#064e3b 0%,#065f46 55%,#047857 100%);
+  padding:130px 24px 70px; text-align:center; position:relative; overflow:hidden;
+}
+.lb-hero::before{
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 30% 70%, rgba(245,158,11,.12) 0%, transparent 55%),
+             radial-gradient(ellipse at 70% 30%, rgba(34,197,94,.1) 0%, transparent 55%);
+}
+.hero-tag{
+  display:inline-block; background:rgba(245,158,11,.2); color:#fbbf24;
+  padding:6px 18px; border-radius:50px; font-size:0.8rem; font-weight:600;
+  letter-spacing:.08em; text-transform:uppercase; margin-bottom:16px;
+  border:1px solid rgba(245,158,11,.3); position:relative;
+}
+.lb-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);color:#fff;margin-bottom:10px;position:relative;}
+.lb-hero p{color:rgba(255,255,255,.75);font-size:0.95rem;max-width:460px;margin:0 auto;position:relative;}
+
+/* TABS */
+.lb-tabs{
+  display:flex; justify-content:center; gap:8px;
+  background:rgba(255,255,255,.08); border-radius:50px;
+  padding:5px; max-width:380px; margin:28px auto 0; position:relative;
+}
+.lb-tab{
+  flex:1; border:none; background:transparent; color:rgba(255,255,255,.7);
+  padding:9px 18px; border-radius:50px; font-size:0.85rem; font-weight:600;
+  cursor:pointer; transition:all .2s; font-family:'Plus Jakarta Sans',sans-serif;
+}
+.lb-tab.active{background:#fff; color:#065f46;}
+
+/* BODY */
+.lb-body{max-width:900px;margin:0 auto;padding:50px 24px 80px;}
+
+/* TOP 3 PODIUM */
+.podium{
+  display:flex; align-items:flex-end; justify-content:center;
+  gap:16px; margin-bottom:48px;
+}
+.podium-card{
+  text-align:center; flex:1; max-width:200px;
+  background:#fff; border-radius:20px; padding:24px 16px 20px;
+  box-shadow:0 4px 24px rgba(0,0,0,.08); position:relative;
+  transition:transform .25s;
+}
+.podium-card:hover{transform:translateY(-6px);}
+.podium-card.rank-1{
+  background:linear-gradient(145deg,#fffbeb,#fef3c7);
+  border:2px solid #f59e0b; padding-top:36px;
+  box-shadow:0 8px 32px rgba(245,158,11,.2);
+}
+.podium-card.rank-2{background:linear-gradient(145deg,#f8fafc,#f1f5f9);border:2px solid #94a3b8;}
+.podium-card.rank-3{background:linear-gradient(145deg,#fff7ed,#ffedd5);border:2px solid #d97706;}
+.podium-crown{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:1.8rem;}
+.podium-rank{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:1rem;margin:0 auto 12px;
+}
+.rank-1 .podium-rank{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;}
+.rank-2 .podium-rank{background:linear-gradient(135deg,#94a3b8,#64748b);color:#fff;}
+.rank-3 .podium-rank{background:linear-gradient(135deg,#d97706,#b45309);color:#fff;}
+.podium-avatar{
+  width:64px;height:64px;border-radius:50%;object-fit:cover;
+  margin:0 auto 10px;display:block;
+  border:3px solid #fff; box-shadow:0 2px 12px rgba(0,0,0,.12);
+}
+.podium-name{font-weight:700;font-size:0.95rem;color:#111827;margin-bottom:4px;}
+.podium-pts{font-size:0.82rem;font-weight:700;color:var(--primary);}
+.podium-badge{
+  display:inline-block;padding:3px 10px;border-radius:20px;
+  font-size:0.72rem;font-weight:700;margin-top:6px;
+}
+.rank-1 .podium-badge{background:rgba(245,158,11,.15);color:#d97706;}
+.rank-2 .podium-badge{background:rgba(148,163,184,.15);color:#64748b;}
+.rank-3 .podium-badge{background:rgba(217,119,6,.15);color:#b45309;}
+
+/* LIST TABLE */
+.lb-section-title{
+  font-family:'Playfair Display',serif;font-size:1.3rem;
+  color:#111827;margin-bottom:20px;display:flex;align-items:center;gap:10px;
+}
+.lb-list{display:flex;flex-direction:column;gap:10px;margin-bottom:48px;}
+.lb-row{
+  background:#fff;border-radius:14px;padding:14px 20px;
+  display:flex;align-items:center;gap:14px;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+  transition:transform .2s, box-shadow .2s;
+  border:1px solid #f3f4f6;
+}
+.lb-row:hover{transform:translateX(4px);box-shadow:0 4px 20px rgba(34,197,94,.1);border-color:#d1fae5;}
+.lb-row.is-you{border-left:4px solid var(--primary);background:var(--bg);}
+.lb-num{
+  width:32px;height:32px;border-radius:50%;
+  background:#f1f5f9;color:#64748b;font-weight:700;font-size:0.85rem;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.lb-row-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;border:2px solid #d1fae5;flex-shrink:0;}
+.lb-info{flex:1;min-width:0;}
+.lb-info-name{font-weight:700;font-size:0.92rem;color:#111827;}
+.lb-info-sub{font-size:0.78rem;color:#9ca3af;margin-top:2px;}
+.lb-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{padding:2px 10px;border-radius:20px;font-size:0.72rem;font-weight:600;}
+.chip-green{background:#dcfce7;color:#16a34a;}
+.chip-amber{background:#fef3c7;color:#d97706;}
+.chip-blue{background:#dbeafe;color:#2563eb;}
+.lb-pts{font-size:1rem;font-weight:800;color:var(--primary);white-space:nowrap;}
+
+/* STATS STRIP */
+.stats-strip{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+  margin-bottom:48px;
+}
+.stat-card{
+  background:#fff;border-radius:16px;padding:22px 18px;text-align:center;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #f3f4f6;
+}
+.stat-icon{font-size:1.8rem;margin-bottom:8px;}
+.stat-val{font-size:1.6rem;font-weight:800;color:#111827;}
+.stat-lbl{font-size:0.78rem;color:#9ca3af;margin-top:4px;font-weight:500;}
+
+/* MY RANK CARD */
+.my-rank-card{
+  background:linear-gradient(135deg,#064e3b,#065f46);
+  border-radius:20px;padding:28px 28px;display:flex;align-items:center;gap:20px;
+  margin-bottom:48px;color:#fff;box-shadow:0 8px 32px rgba(6,78,59,.25);
+}
+.my-rank-card .my-avatar{width:60px;height:60px;border-radius:50%;border:3px solid #86efac;flex-shrink:0;}
+.my-rank-title{font-size:0.82rem;color:rgba(255,255,255,.65);margin-bottom:4px;font-weight:500;}
+.my-rank-name{font-size:1.1rem;font-weight:800;margin-bottom:2px;}
+.my-rank-pts{font-size:0.88rem;color:#86efac;font-weight:600;}
+.my-rank-num{margin-left:auto;text-align:center;}
+.my-rank-num .big{font-size:2.5rem;font-weight:900;line-height:1;color:#86efac;}
+.my-rank-num .small{font-size:0.78rem;color:rgba(255,255,255,.6);}
+
+/* SECTION HIDDEN */
+.lb-panel{display:none;}
+.lb-panel.active{display:block;}
+
+footer{background:#0f1f1a;padding:40px 24px 24px;}
+.footer-inner{max-width:1100px;margin:0 auto;}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px;margin-bottom:28px;}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:#86efac;margin-bottom:10px;}
+.footer-brand p{color:rgba(255,255,255,.5);font-size:0.85rem;line-height:1.7;}
+.footer-col h5{color:#fff;font-weight:700;font-size:0.85rem;margin-bottom:12px;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.footer-col ul li a{color:rgba(255,255,255,.5);font-size:0.85rem;text-decoration:none;transition:color .2s;}
+.footer-col ul li a:hover{color:#86efac;}
+.footer-bottom{padding-top:20px;border-top:1px solid rgba(255,255,255,.08);font-size:0.8rem;color:rgba(255,255,255,.3);text-align:center;}
+
+@media(max-width:680px){
+  .podium{gap:8px;}
+  .podium-card{padding:16px 10px;}
+  .stats-strip{grid-template-columns:repeat(2,1fr);}
+  .my-rank-card{flex-wrap:wrap;}
+  .footer-grid{grid-template-columns:1fr;gap:20px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar transparent" id="navbar">
+  <div class="navbar-inner">
+    <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="main_community.html">Community</a></li>
+      <li><a href="findguides.html">Find Guides</a></li>
+      <li><a href="destinations.html">Destinations</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div id="pointsCounter" class="badge badge-teal">0 pts</div>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="lb-hero">
+  <span class="hero-tag">&#127942; Rankings</span>
+  <h1>Leaderboard</h1>
+  <p>The most active explorers, top-rated guides, and community champions of Travel Mate.</p>
+  <div class="lb-tabs">
+    <button class="lb-tab active" onclick="switchTab('travellers',this)">&#9992; Travellers</button>
+    <button class="lb-tab" onclick="switchTab('guides',this)">&#127757; Guides</button>
+  </div>
+</div>
+
+<div class="lb-body">
+
+  <!-- MY RANK CARD (shown when logged in) -->
+  <div class="my-rank-card" id="myRankCard" style="display:none;"></div>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip" id="statsStrip"></div>
+
+  <!-- TRAVELLERS PANEL -->
+  <div class="lb-panel active" id="panel-travellers">
+    <h2 class="lb-section-title">&#127942; Top Travellers</h2>
+    <!-- Podium top 3 -->
+    <div class="podium" id="podiumTravellers"></div>
+    <!-- Rest of list -->
+    <div class="lb-list" id="listTravellers"></div>
+  </div>
+
+  <!-- GUIDES PANEL -->
+  <div class="lb-panel" id="panel-guides">
+    <h2 class="lb-section-title">&#127757; Top Guides</h2>
+    <div class="podium" id="podiumGuides"></div>
+    <div class="lb-list" id="listGuides"></div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">&#10022; Travel Mate</div>
+        <p>Your community for authentic travel experiences, honest reviews, and unforgettable journeys.</p>
+      </div>
+      <div class="footer-col"><h5>Explore</h5><ul>
+        <li><a href="destinations.html">Destinations</a></li>
+        <li><a href="main_community.html">Community</a></li>
+        <li><a href="findguides.html">Find Guides</a></li>
+      </ul></div>
+      <div class="footer-col"><h5>Company</h5><ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="terms.html">Terms of Service</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 Travel Mate. College Project.</div>
+  </div>
+</footer>
+
+<script>
+/* ── Sample + real data merge ── */
+const SAMPLE_TRAVELLERS = [
+  {name:'Arjun Mehta',     email:'arjun@demo.com',   role:'User',  pts:2840, posts:24, reviews:18, bookings:6,  badge:'Explorer'},
+  {name:'Priya Sharma',    email:'priya@demo.com',   role:'User',  pts:2610, posts:19, reviews:22, bookings:5,  badge:'Wanderer'},
+  {name:'Keiko Tanaka',    email:'keiko@demo.com',   role:'User',  pts:2190, posts:15, reviews:14, bookings:8,  badge:'Adventurer'},
+  {name:'Liam O\'Connor',  email:'liam@demo.com',    role:'User',  pts:1880, posts:12, reviews:10, bookings:4,  badge:'Explorer'},
+  {name:'Fatima Hassan',   email:'fatima@demo.com',  role:'User',  pts:1650, posts:10, reviews:16, bookings:3,  badge:'Reviewer'},
+  {name:'Carlos Rivera',   email:'carlos@demo.com',  role:'User',  pts:1420, posts:8,  reviews:9,  bookings:7,  badge:'Traveller'},
+  {name:'Mei Lin',         email:'mei@demo.com',     role:'User',  pts:1190, posts:7,  reviews:11, bookings:2,  badge:'Traveller'},
+];
+
+const SAMPLE_GUIDES = [
+  {name:'Ramesh Kumar',   email:'ramesh@demo.com',  role:'Guide', pts:4200, bookings:34, rating:4.9, specialty:'Heritage & Culture'},
+  {name:'Anita Sharma',   email:'anita@demo.com',   role:'Guide', pts:3850, bookings:28, rating:4.8, specialty:'Adventure & Trek'},
+  {name:'Priya Nair',     email:'priya_g@demo.com', role:'Guide', pts:3410, bookings:22, rating:4.9, specialty:'Wellness & Spiritual'},
+  {name:'Kenji Tanaka',   email:'kenji@demo.com',   role:'Guide', pts:2980, bookings:19, rating:4.7, specialty:'Photography Tours'},
+  {name:'Fatima Al-Hassan',email:'fatimag@demo.com',role:'Guide', pts:2750, bookings:16, rating:4.8, specialty:'Desert & Safari'},
+  {name:'Liam O\'Brien',  email:'liamg@demo.com',   role:'Guide', pts:2310, bookings:14, rating:4.6, specialty:'Wildlife & Eco'},
+];
+
+function buildAll() {
+  const stored   = JSON.parse(localStorage.getItem('tm_users') || '[]');
+  const curUser  = TmAuth.getUser();
+
+  /* merge real users with sample data */
+  const realTrav = stored.filter(u => u.role === 'User').map(u => ({
+    name: u.name, email: u.email, role: 'User',
+    pts: Number(localStorage.getItem('tm_points') || 0),
+    posts: (JSON.parse(localStorage.getItem('tm_posts')||'[]')).length,
+    reviews: 0, bookings: (JSON.parse(localStorage.getItem('tm_bookings')||'[]')).length,
+    badge: 'Traveller', isReal: true
+  }));
+  const realGuides = stored.filter(u => u.role === 'Guide').map(u => ({
+    name: u.name, email: u.email, role: 'Guide',
+    pts: Number(localStorage.getItem('tm_points') || 0),
+    bookings: (JSON.parse(localStorage.getItem('tm_bookings')||'[]')).length,
+    rating: 5.0, specialty: 'Local Expert', isReal: true
+  }));
+
+  const travellers = [...realTrav, ...SAMPLE_TRAVELLERS].sort((a,b)=>b.pts-a.pts);
+  const guides     = [...realGuides, ...SAMPLE_GUIDES].sort((a,b)=>b.pts-a.pts);
+
+  /* Stats strip */
+  const totalPosts    = travellers.reduce((s,u)=>s+(u.posts||0),0);
+  const totalBookings = [...travellers,...guides].reduce((s,u)=>s+(u.bookings||0),0);
+  document.getElementById('statsStrip').innerHTML = `
+    <div class="stat-card"><div class="stat-icon">&#128101;</div><div class="stat-val">${travellers.length}</div><div class="stat-lbl">Travellers</div></div>
+    <div class="stat-card"><div class="stat-icon">&#127757;</div><div class="stat-val">${guides.length}</div><div class="stat-lbl">Guides</div></div>
+    <div class="stat-card"><div class="stat-icon">&#128247;</div><div class="stat-val">${totalPosts}</div><div class="stat-lbl">Posts Shared</div></div>
+    <div class="stat-card"><div class="stat-icon">&#128197;</div><div class="stat-val">${totalBookings}</div><div class="stat-lbl">Bookings Made</div></div>`;
+
+  /* My rank card */
+  if (curUser) {
+    const list  = curUser.role === 'Guide' ? guides : travellers;
+    const myIdx = list.findIndex(u => u.email === curUser.email || u.name === curUser.name);
+    const rank  = myIdx === -1 ? list.length + 1 : myIdx + 1;
+    const myPts = myIdx === -1 ? Number(localStorage.getItem('tm_points')||0) : list[myIdx].pts;
+    const avUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(curUser.name)}&background=22c55e&color=fff&size=60`;
+    document.getElementById('myRankCard').style.display = 'flex';
+    document.getElementById('myRankCard').innerHTML = `
+      <img class="my-avatar" src="${avUrl}" alt="${curUser.name}">
+      <div>
+        <div class="my-rank-title">Your Current Rank</div>
+        <div class="my-rank-name">${curUser.name}</div>
+        <div class="my-rank-pts">&#9733; ${myPts} points</div>
+      </div>
+      <div class="my-rank-num">
+        <div class="big">#${rank}</div>
+        <div class="small">of ${list.length}</div>
+      </div>`;
+  }
+
+  buildPodium('podiumTravellers', travellers.slice(0,3));
+  buildList('listTravellers', travellers.slice(3), 4, curUser, 'traveller');
+  buildPodium('podiumGuides', guides.slice(0,3));
+  buildList('listGuides', guides.slice(3), 4, curUser, 'guide');
+}
+
+function avatarUrl(name){ return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=dcfce7&color=16a34a&size=64`; }
+
+function buildPodium(containerId, top3) {
+  const order = [1,0,2]; /* silver, gold, bronze display order */
+  const ranks = ['🥇','🥈','🥉'];
+  const labels= ['1st','2nd','3rd'];
+  const classes=['rank-1','rank-2','rank-3'];
+  const crowns= ['👑','',''];
+  const el = document.getElementById(containerId);
+  const cards = [1,0,2].map(i => {
+    const u = top3[i]; if(!u) return '';
+    const chip = u.specialty ? `<span class="podium-badge">${u.specialty}</span>` :
+                 u.badge     ? `<span class="podium-badge">${u.badge}</span>` : '';
+    const sub  = u.specialty ? `${u.bookings} bookings · ⭐ ${u.rating}` : `${u.posts||0} posts · ${u.reviews||0} reviews`;
+    return `
+      <div class="podium-card ${classes[i]}">
+        ${crowns[i] ? `<div class="podium-crown">${crowns[i]}</div>` : ''}
+        <div class="podium-rank">${i+1}</div>
+        <img class="podium-avatar" src="${avatarUrl(u.name)}" alt="${u.name}">
+        <div class="podium-name">${u.name}</div>
+        <div class="podium-pts">&#9733; ${u.pts.toLocaleString()} pts</div>
+        <div style="font-size:0.78rem;color:#6b7280;margin-top:4px;">${sub}</div>
+        ${chip}
+      </div>`;
+  });
+  el.innerHTML = cards.join('');
+}
+
+function buildList(containerId, users, startRank, curUser, type) {
+  const el = document.getElementById(containerId);
+  if (!users.length) { el.innerHTML = '<p style="text-align:center;color:#9ca3af;padding:20px;">No more entries yet.</p>'; return; }
+  el.innerHTML = users.map((u,i) => {
+    const rank   = startRank + i;
+    const isYou  = curUser && (u.email === curUser.email || u.name === curUser.name);
+    const sub    = type === 'guide' ? `${u.bookings} bookings · ⭐ ${u.rating}` : `${u.posts||0} posts · ${u.reviews||0} reviews`;
+    const chips  = type === 'guide'
+      ? `<span class="chip chip-amber">${u.specialty||'Guide'}</span>`
+      : `<span class="chip chip-green">${u.badge||'Traveller'}</span><span class="chip chip-blue">${u.bookings||0} trips</span>`;
+    return `
+      <div class="lb-row${isYou?' is-you':''}">
+        <div class="lb-num">${rank}</div>
+        <img class="lb-row-avatar" src="${avatarUrl(u.name)}" alt="${u.name}">
+        <div class="lb-info">
+          <div class="lb-info-name">${u.name}${isYou?' <span style="color:#22c55e;font-size:0.75rem;">(You)</span>':''}</div>
+          <div class="lb-info-sub">${sub}</div>
+          <div class="lb-chips" style="margin-top:5px;">${chips}</div>
+        </div>
+        <div class="lb-pts">&#9733; ${u.pts.toLocaleString()}</div>
+      </div>`;
+  }).join('');
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.lb-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.lb-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+
+window.addEventListener('scroll', function() {
+  document.getElementById('navbar').className = window.scrollY > 40 ? 'navbar solid' : 'navbar page-bg';
+});
+document.getElementById('hamburger').addEventListener('click', function() {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+buildAll();
+</script>
+</body>
+</html>
