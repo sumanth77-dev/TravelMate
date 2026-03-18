@@ -5,31 +5,34 @@
 const TmAuth = (() => {
   const KEY = 'tm_user';
 
-  const getUser  = () => JSON.parse(localStorage.getItem(KEY) || 'null');
-  const isLogged = () => !!getUser();
+  const getUser = () => JSON.parse(localStorage.getItem(KEY) || 'null');
+  const getToken = () => localStorage.getItem('tm_token');
+  const isLogged = () => !!getUser() && !!getToken();
 
-  const login = (name, email, role, avatar) => {
-    const user = { name, email, role, avatar: avatar || null, joinedAt: Date.now() };
+  const login = (name, email, role, avatar, token, id) => {
+    const user = { id, name, email, role, avatar: avatar || null, joinedAt: Date.now() };
     localStorage.setItem(KEY, JSON.stringify(user));
+    if (token) localStorage.setItem('tm_token', token);
     return user;
   };
 
   const logout = () => {
     localStorage.removeItem(KEY);
+    localStorage.removeItem('tm_token');
     window.location.href = 'index.html';
   };
 
   /* ── Notifications helpers ── */
   const getNotifs = () => JSON.parse(localStorage.getItem('tm_notifications') || '[]');
-  const addNotif  = (icon, text) => {
+  const addNotif = (icon, text) => {
     const notifs = getNotifs();
-    notifs.unshift({ id: Date.now(), icon, text, time: new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}), read: false });
+    notifs.unshift({ id: Date.now(), icon, text, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), read: false });
     if (notifs.length > 30) notifs.pop();
     localStorage.setItem('tm_notifications', JSON.stringify(notifs));
     updateNotifBadge();
   };
   const markAllRead = () => {
-    const notifs = getNotifs().map(n => ({...n, read:true}));
+    const notifs = getNotifs().map(n => ({ ...n, read: true }));
     localStorage.setItem('tm_notifications', JSON.stringify(notifs));
     updateNotifBadge();
   };
@@ -74,18 +77,18 @@ const TmAuth = (() => {
         if (!a) return;
         const href = a.getAttribute('href') || '';
         const isAuth = href.includes('login.html') || href.includes('signup.html') ||
-                       href.includes('travel-mate-dashboard') || href.includes('guide-dashboard');
-        if (isAuth && !li.getAttribute('data-auth')) { li.style.display='none'; li.setAttribute('data-auth','hidden'); }
+          href.includes('travel-mate-dashboard') || href.includes('guide-dashboard');
+        if (isAuth && !li.getAttribute('data-auth')) { li.style.display = 'none'; li.setAttribute('data-auth', 'hidden'); }
       });
 
       if (user) {
-        const isGuide  = user.role === 'Guide';
+        const isGuide = user.role === 'Guide';
         const dashHref = isGuide ? 'guide-dashboard.html' : 'travel-mate-dashboard.html';
         const avatarSrc = user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=22c55e&color=fff&size=32`;
 
         /* Profile icon only - links to dashboard */
         const profileLi = document.createElement('li');
-        profileLi.setAttribute('data-auth','user');
+        profileLi.setAttribute('data-auth', 'user');
         profileLi.innerHTML = `
           <a href="${dashHref}" style="display:flex;align-items:center;gap:6px;text-decoration:none; padding:0.44rem 0.88rem;">
             <img src="${avatarSrc}" alt="${user.name}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid #86efac;">
@@ -94,7 +97,7 @@ const TmAuth = (() => {
 
         /* Logout button - small and subtle */
         const logoutLi = document.createElement('li');
-        logoutLi.setAttribute('data-auth','user');
+        logoutLi.setAttribute('data-auth', 'user');
         logoutLi.innerHTML = `
           <a href="#" onclick="TmAuth.logout();return false;"
              style="background:rgba(239,68,68,.15);color:#fca5a5;padding:4px 12px;border-radius:20px;
@@ -106,7 +109,7 @@ const TmAuth = (() => {
 
         /* Notification bell li */
         const bellLi = document.createElement('li');
-        bellLi.setAttribute('data-auth','user');
+        bellLi.setAttribute('data-auth', 'user');
         bellLi.style.cssText = 'position:relative;margin-left:8px;';
         bellLi.innerHTML = `
           <button onclick="TmAuth.toggleNotifPanel()" title="Notifications"
@@ -121,10 +124,10 @@ const TmAuth = (() => {
         ul.appendChild(bellLi);
 
       } else {
-        ['login.html|Login','signup.html|Register'].forEach(pair => {
-          const [href,label] = pair.split('|');
+        ['login.html|Login', 'signup.html|Register'].forEach(pair => {
+          const [href, label] = pair.split('|');
           const li = document.createElement('li');
-          li.setAttribute('data-auth','guest');
+          li.setAttribute('data-auth', 'guest');
           li.innerHTML = `<a href="${href}">${label}</a>`;
           ul.appendChild(li);
         });
@@ -174,7 +177,7 @@ const TmAuth = (() => {
   };
 
   const _renderNotifs = () => {
-    const list   = document.getElementById('tmNotifList');
+    const list = document.getElementById('tmNotifList');
     if (!list) return;
     const notifs = getNotifs();
     if (!notifs.length) {
@@ -185,11 +188,11 @@ const TmAuth = (() => {
     }
     list.innerHTML = notifs.map(n => `
       <div style="display:flex;align-items:flex-start;gap:12px;padding:11px 18px;
-                  background:${n.read?'#fff':'#f0fdf4'};border-left:3px solid ${n.read?'transparent':'#22c55e'};
+                  background:${n.read ? '#fff' : '#f0fdf4'};border-left:3px solid ${n.read ? 'transparent' : '#22c55e'};
                   transition:background .2s;cursor:default;">
         <span style="font-size:1.3rem;flex-shrink:0;margin-top:1px;">${n.icon}</span>
         <div style="flex:1;min-width:0;">
-          <p style="font-size:0.85rem;color:#1f2937;line-height:1.5;margin:0 0 3px;font-weight:${n.read?'400':'600'};">${n.text}</p>
+          <p style="font-size:0.85rem;color:#1f2937;line-height:1.5;margin:0 0 3px;font-weight:${n.read ? '400' : '600'};">${n.text}</p>
           <span style="font-size:0.75rem;color:#9ca3af;">${n.time}</span>
         </div>
       </div>`).join('');
@@ -202,15 +205,17 @@ const TmAuth = (() => {
     guardDashboard(); applyNav();
   }
 
-  return { getUser, isLogged, login, logout, applyNav,
-           addNotif, getNotifs, markAllRead, unreadCount, toggleNotifPanel, updateNotifBadge };
+  return {
+    getUser, isLogged, login, logout, applyNav,
+    addNotif, getNotifs, markAllRead, unreadCount, toggleNotifPanel, updateNotifBadge
+  };
 })();
 
 /* ══════════════════════════════════════════
    GLOBAL TOAST NOTIFICATIONS
    ══════════════════════════════════════════ */
 window.TmToast = {
-  initContainer: function() {
+  initContainer: function () {
     if (!document.getElementById('tm-toast-container')) {
       const container = document.createElement('div');
       container.id = 'tm-toast-container';
@@ -218,24 +223,24 @@ window.TmToast = {
     }
     return document.getElementById('tm-toast-container');
   },
-  show: function(msg, type = 'success') {
+  show: function (msg, type = 'success') {
     const container = this.initContainer();
     const toast = document.createElement('div');
     toast.className = `tm-toast toast-${type}`;
-    
+
     let icon = '<i class="fas fa-check-circle" style="color:#10b981;"></i>';
     if (type === 'error') icon = '<i class="fas fa-exclamation-circle" style="color:#ef4444;"></i>';
     if (type === 'warning') icon = '<i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i>';
-    
+
     toast.innerHTML = `
       <div class="tm-toast-icon">${icon}</div>
       <div class="tm-toast-content">${msg}</div>
       <button class="tm-toast-close" onclick="this.parentElement.remove()">&times;</button>
     `;
-    
+
     container.appendChild(toast);
     requestAnimationFrame(() => toast.classList.add('show'));
-    
+
     setTimeout(() => {
       toast.classList.remove('show');
       setTimeout(() => toast.remove(), 350);
@@ -246,10 +251,10 @@ window.TmToast = {
 /* ══════════════════════════════════════════
    GLOBAL ERROR BOUNDARY
    ══════════════════════════════════════════ */
-window.addEventListener('error', function(e) {
+window.addEventListener('error', function (e) {
   if (e.message && e.message.includes("ResizeObserver")) return; // Ignore harmless browser layout errors
   if (window.TmToast) window.TmToast.show(`System Error: ${e.message}`, 'error');
 });
-window.addEventListener('unhandledrejection', function(e) {
+window.addEventListener('unhandledrejection', function (e) {
   if (window.TmToast) window.TmToast.show(`Promise Failed: ${e.reason || 'Unknown logic error'}`, 'error');
 });

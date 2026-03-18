@@ -331,30 +331,44 @@ function togglePassword(){
   }
 }
 
-/* ── Working Login ── */
-document.querySelector('form').addEventListener('submit', function(e){
+/* ── Working Login via API ── */
+document.querySelector('form').addEventListener('submit', async function(e){
   e.preventDefault();
   const email    = this.querySelector('[type=email]').value.trim();
   const password = this.querySelector('[type=password]').value;
   const role     = document.querySelector('.role-toggle button.active').textContent.trim();
+  const submitBtn = this.querySelector('button[type="submit"]');
 
   if(!email || !password){
     showError('Please fill in all fields.');
     return;
   }
 
-  /* check if user exists in localStorage */
-  const users = JSON.parse(localStorage.getItem('tm_users') || '[]');
-  const match = users.find(u => u.email === email && u.password === password && u.role === role);
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Logging in...';
 
-  if(!match){
-    showError('Invalid credentials. Please check your email, password, and role.');
-    return;
+  try {
+    const res = await fetch('http://localhost:5000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, role })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || 'Login failed');
+    }
+
+    // Server returns: { id, full_name, email, role, token }
+    TmAuth.login(data.full_name, data.email, data.role, null, data.token, data.id);
+    showSuccess('Login successful! Redirecting...');
+    setTimeout(() => window.location.href = data.role === 'Guide' ? 'guide-dashboard.html' : 'travel-mate-dashboard.html', 1000);
+  } catch (error) {
+    showError(error.message);
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Login';
   }
-
-  TmAuth.login(match.name, match.email, match.role, null);
-  showSuccess('Login successful! Redirecting...');
-  setTimeout(() => window.location.href = match.role === 'Guide' ? 'guide-dashboard.html' : 'travel-mate-dashboard.html', 1000);
 });
 
 function showError(msg){

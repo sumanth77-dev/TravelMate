@@ -1,76 +1,83 @@
-/* CREATE DATABASE travel_explorer; 
-    
-    */
+CREATE DATABASE IF NOT EXISTS travel_explorer;
+USE travel_explorer;
 
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    phone_number VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('User', 'Guide', 'Admin') DEFAULT 'User',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
-  `role` enum('traveler','guide','admin') DEFAULT 'traveler',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE IF NOT EXISTS guides (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    city_location VARCHAR(255),
+    languages_spoken VARCHAR(255),
+    years_of_experience INT,
+    guide_type VARCHAR(100),
+    short_bio TEXT,
+    profile_photo VARCHAR(255),
+    government_id_path VARCHAR(255),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
+CREATE TABLE IF NOT EXISTS guide_expertise (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    guide_id INT NOT NULL,
+    areas_you_guide TEXT,
+    special_skills TEXT,
+    FOREIGN KEY (guide_id) REFERENCES guides(id) ON DELETE CASCADE
+);
 
+CREATE TABLE IF NOT EXISTS guide_pricing (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    guide_id INT NOT NULL,
+    price_per_day DECIMAL(10,2),
+    max_group_size INT,
+    FOREIGN KEY (guide_id) REFERENCES guides(id) ON DELETE CASCADE
+);
 
-DROP TABLE IF EXISTS `guides`;
-CREATE TABLE `guides` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int DEFAULT NULL,
-  `city` varchar(100) DEFAULT NULL,
-  `languages` varchar(200) DEFAULT NULL,
-  `experience` int DEFAULT NULL,
-  `bio` text,
-  `profile_image` varchar(255) DEFAULT NULL,
-  `price_per_hour` decimal(10,2) DEFAULT NULL,
-  `status` enum('pending','approved','rejected') DEFAULT 'pending',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `guides_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE IF NOT EXISTS guide_availability (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    guide_id INT NOT NULL,
+    available_days VARCHAR(255),
+    available_timings VARCHAR(255),
+    FOREIGN KEY (guide_id) REFERENCES guides(id) ON DELETE CASCADE
+);
 
+CREATE TABLE IF NOT EXISTS guide_verification (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    guide_id INT NOT NULL,
+    accepted_terms BOOLEAN DEFAULT FALSE,
+    accepted_guide_policy BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (guide_id) REFERENCES guides(id) ON DELETE CASCADE
+);
 
-DROP TABLE IF EXISTS `availability`;
-CREATE TABLE `availability` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `guide_id` int DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  `start_time` time DEFAULT NULL,
-  `end_time` time DEFAULT NULL,
-  `is_booked` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `guide_id` (`guide_id`),
-  CONSTRAINT `availability_ibfk_1` FOREIGN KEY (`guide_id`) REFERENCES `guides` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE IF NOT EXISTS bookings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    guide_id INT NOT NULL,
+    booking_date DATE NOT NULL,
+    group_size INT NOT NULL,
+    duration INT NOT NULL,
+    message TEXT,
+    total_price DECIMAL(10,2) NOT NULL,
+    status ENUM('pending', 'confirmed', 'completed', 'cancelled') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (guide_id) REFERENCES guides(id) ON DELETE CASCADE
+);
 
-
-CREATE TABLE `bookings` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `guide_id` int NOT NULL,
-  `traveler_id` int NOT NULL,
-  `date` date NOT NULL,
-  `duration` int NOT NULL,
-  `members` int NOT NULL,
-  `message` text,
-  `total_price` decimal(10,2) NOT NULL,
-  `status` enum('Pending','Accepted','Rejected') DEFAULT 'Pending',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `availability_id` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `guide_id` (`guide_id`),
-  KEY `traveler_id` (`traveler_id`),
-  KEY `fk_availability` (`availability_id`),
-  CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`guide_id`) REFERENCES `guides` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`traveler_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_availability` FOREIGN KEY (`availability_id`) REFERENCES `availability` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
-
-
-
+CREATE TABLE IF NOT EXISTS reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    guide_id INT NOT NULL,
+    rating INT CHECK(rating >= 1 AND rating <= 5),
+    review_text TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (guide_id) REFERENCES guides(id) ON DELETE CASCADE
+);

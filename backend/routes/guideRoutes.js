@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const guideController = require('../controllers/guideController');
+const { getGuides, getGuideById } = require('../controllers/guideController');
 
-router.post('/', guideController.createGuide);
-router.get('/', guideController.getAllGuides);
-router.get('/:id', guideController.getGuideById);
-router.put('/:id', guideController.updateGuide);
+// Guide Registration is handled in /auth/register to enforce atomic db writes
+
+router.route('/')
+    .get(getGuides);
+
+router.route('/:id')
+    .get(getGuideById);
 
 module.exports = router;

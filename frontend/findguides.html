@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Travel Community — Find Guides</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="tm-auth.js"></script>
   <style>
@@ -24,7 +27,7 @@
     body {
       background: var(--bg-background);
     }
-    
+
     .guide-hero {
       position: relative;
       background: var(--bg-card);
@@ -33,7 +36,7 @@
       text-align: center;
       color: var(--text-foreground);
     }
-    
+
     .icon-container {
       margin: 0 auto 16px;
       display: flex;
@@ -46,13 +49,14 @@
       color: var(--primary);
       font-size: 24px;
     }
-    
+
     .guide-hero h1 {
       font-size: clamp(2rem, 4vw, 2.5rem);
       font-weight: 700;
       color: var(--text-foreground);
       margin-bottom: 12px;
-      font-family: 'Plus Jakarta Sans', sans-serif; /* Override Playfair for this specific hero to match React */
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      /* Override Playfair for this specific hero to match React */
     }
 
     .guide-hero-sub {
@@ -97,7 +101,7 @@
       border-color: var(--primary);
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
-    
+
     .primary-search-input::placeholder {
       color: var(--text-muted);
     }
@@ -190,7 +194,7 @@
       border: none;
       cursor: pointer;
     }
-    
+
     .filter-clear:hover {
       color: var(--text-foreground);
     }
@@ -209,11 +213,15 @@
     }
 
     @media (min-width: 640px) {
-      .filter-panel { grid-template-columns: repeat(2, 1fr); }
+      .filter-panel {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
-    
+
     @media (min-width: 1024px) {
-      .filter-panel { grid-template-columns: repeat(4, 1fr); }
+      .filter-panel {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
 
     .filter-panel.open {
@@ -253,12 +261,17 @@
     }
 
     @media (min-width: 640px) {
-      .guide-grid { grid-template-columns: repeat(2, 1fr); }
+      .guide-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
+
     @media (min-width: 1024px) {
-      .guide-grid { grid-template-columns: repeat(3, 1fr); }
+      .guide-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
-    
+
     .guide-card-react {
       display: block;
       border-radius: 12px;
@@ -271,18 +284,18 @@
       text-decoration: none;
       color: inherit;
     }
-    
+
     .guide-card-react:hover {
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       transform: translateY(-2px);
     }
-    
+
     .card-react-flex {
       display: flex;
       align-items: flex-start;
       gap: 16px;
     }
-    
+
     .card-react-avatar {
       height: 56px;
       width: 56px;
@@ -291,19 +304,19 @@
       background: var(--bg-accent);
       object-fit: cover;
     }
-    
+
     .card-react-content {
       min-width: 0;
       flex: 1;
     }
-    
+
     .card-react-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
     }
-    
+
     .card-react-name {
       font-size: 1rem;
       font-weight: 600;
@@ -314,11 +327,11 @@
       transition: color 0.2s;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    
+
     .guide-card-react:hover .card-react-name {
       color: var(--primary);
     }
-    
+
     .status-unavailable {
       flex-shrink: 0;
       border-radius: 99px;
@@ -327,7 +340,7 @@
       font-size: 0.65rem;
       color: var(--text-muted);
     }
-    
+
     .card-react-meta {
       margin-top: 4px;
       display: flex;
@@ -336,20 +349,20 @@
       font-size: 0.75rem;
       color: var(--text-muted);
     }
-    
+
     .card-react-meta span {
       display: flex;
       align-items: center;
       gap: 4px;
     }
-    
+
     .card-react-tags {
       margin-top: 8px;
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
     }
-    
+
     .card-react-tag {
       border-radius: 6px;
       background: var(--bg-accent);
@@ -357,42 +370,42 @@
       font-size: 0.75rem;
       color: var(--text-foreground);
     }
-    
+
     .card-react-footer {
       margin-top: 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    
+
     .card-react-rating {
       display: flex;
       align-items: center;
       gap: 4px;
     }
-    
+
     .card-react-rating i {
       color: var(--warning);
       font-size: 0.875rem;
     }
-    
+
     .card-react-rating strong {
       font-size: 0.875rem;
       font-weight: 500;
       color: var(--text-foreground);
     }
-    
+
     .card-react-rating span {
       font-size: 0.75rem;
       color: var(--text-muted);
     }
-    
+
     .card-react-price {
       font-size: 0.875rem;
       font-weight: 600;
       color: var(--text-foreground);
     }
-    
+
     .card-react-price span {
       font-size: 0.75rem;
       font-weight: 400;
@@ -406,7 +419,8 @@
 
     .no-results-panel i {
       font-size: 2.5rem;
-      color: var(--border-color); /* Light gray for MapPin placeholder */
+      color: var(--border-color);
+      /* Light gray for MapPin placeholder */
       margin-bottom: 12px;
     }
 
@@ -416,11 +430,19 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(-4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- ══════════════ NAVBAR ══════════════ -->
@@ -443,10 +465,17 @@
   </nav>
 
   <!-- ══════════════ SUB-NAVBAR ══════════════ -->
-  <div class="sub-navbar" style="background: #fff; border-bottom: 1px solid var(--border-color); padding: 0 24px; display: flex; justify-content: flex-end; align-items: center; height: 50px; position: fixed; top: 70px; width: 100%; z-index: 999;">
-    <div class="container" style="display: flex; justify-content: flex-end; gap: 32px; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0;">
-      <a href="findguides.html" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--primary); text-decoration: none; position: relative; height: 50px; display: flex; align-items: center; border-bottom: 2px solid var(--primary);">Available Guides</a>
-      <a href="guide-bookings.html" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--text-muted); text-decoration: none; position: relative; height: 50px; display: flex; align-items: center; transition: color 0.2s;" onmouseover="this.style.color='var(--text-foreground)'" onmouseout="this.style.color='var(--text-muted)'">My Bookings</a>
+  <div class="sub-navbar"
+    style="background: #fff; border-bottom: 1px solid var(--border-color); padding: 0 24px; display: flex; justify-content: flex-end; align-items: center; height: 50px; position: fixed; top: 70px; width: 100%; z-index: 999;">
+    <div class="container"
+      style="display: flex; justify-content: flex-end; gap: 32px; width: 100%; max-width: 1200px; margin: 0 auto; padding: 0;">
+      <a href="findguides.html"
+        style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--primary); text-decoration: none; position: relative; height: 50px; display: flex; align-items: center; border-bottom: 2px solid var(--primary);">Available
+        Guides</a>
+      <a href="guide-bookings.html"
+        style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--text-muted); text-decoration: none; position: relative; height: 50px; display: flex; align-items: center; transition: color 0.2s;"
+        onmouseover="this.style.color='var(--text-foreground)'" onmouseout="this.style.color='var(--text-muted)'">My
+        Bookings</a>
     </div>
   </div>
 
@@ -457,16 +486,13 @@
         <i class="fas fa-users"></i>
       </div>
       <h1>Find Your Perfect Guide</h1>
-      <p class="guide-hero-sub">Discover experienced local guides for your next adventure. Search by destination to get started.</p>
-      
+      <p class="guide-hero-sub">Discover experienced local guides for your next adventure. Search by destination to get
+        started.</p>
+
       <div class="primary-search-container">
         <i class="fas fa-search"></i>
-        <input 
-          type="text" 
-          id="heroSearchInput" 
-          class="primary-search-input" 
-          placeholder="Search a place... e.g. Jaipur, Goa, Kerala"
-          autocomplete="off">
+        <input type="text" id="heroSearchInput" class="primary-search-input"
+          placeholder="Search a place... e.g. Jaipur, Goa, Kerala" autocomplete="off">
       </div>
     </div>
   </section>
@@ -474,7 +500,7 @@
   <!-- ══════════════ MAIN SECTION (React Design) ══════════════ -->
   <section class="guide-main-section">
     <div class="container">
-      
+
       <div class="results-header">
         <div>
           <h2 id="searchHeading">All Guides</h2>
@@ -582,16 +608,16 @@
 
   <script>
     // Points System
-    (function(){
+    (function () {
       const el = document.getElementById('pointsCounter');
-      if(!el) return;
+      if (!el) return;
       const pts = Number(localStorage.getItem('tm_points') || 0);
       el.textContent = pts + ' pts';
     })();
 
     // Hamburger Menu
     const hamburger = document.getElementById('hamburger');
-    const navLinks  = document.getElementById('navLinks');
+    const navLinks = document.getElementById('navLinks');
     if (hamburger) {
       hamburger.addEventListener('click', () => {
         navLinks.classList.toggle('open');
@@ -605,7 +631,7 @@
         if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
       });
     }, { threshold: 0.1 });
-    
+
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     setTimeout(() => {
       document.querySelectorAll('.guide-hero.fade-up').forEach(el => el.classList.add('visible'));
@@ -614,7 +640,7 @@
     /* ══════════════════════════════
        REACT DATA MIGRATION
     ══════════════════════════════ */
-    const guidesData = [
+    let guidesData = [
       {
         id: "1",
         name: "Aarav Sharma",
@@ -751,11 +777,11 @@
 
     const allLanguages = ["English", "Hindi", "French", "Spanish", "Portuguese", "Malayalam", "Kannada", "Punjabi", "Bengali", "Nepali", "Italian", "Japanese"];
     const allSpecialties = [
-      "Heritage Walks", "Photography Tours", "Food Tours", "Cultural Tours", 
-      "Art & Crafts", "Temple Visits", "Beach Tours", "Nightlife", 
-      "Water Sports", "Backwater Tours", "Ayurveda", "Nature Walks", 
-      "Archaeology", "Heritage Sites", "Cycling Tours", "Spiritual Tours", 
-      "Boat Rides", "Street Food", "Trekking", "Adventure Sports", 
+      "Heritage Walks", "Photography Tours", "Food Tours", "Cultural Tours",
+      "Art & Crafts", "Temple Visits", "Beach Tours", "Nightlife",
+      "Water Sports", "Backwater Tours", "Ayurveda", "Nature Walks",
+      "Archaeology", "Heritage Sites", "Cycling Tours", "Spiritual Tours",
+      "Boat Rides", "Street Food", "Trekking", "Adventure Sports",
       "Camping", "Tea Garden Tours", "Monastery Visits", "Sunrise Points"
     ];
 
@@ -773,7 +799,7 @@
     /* ══════════════════════════════
        FILTER & RENDER LOGIC
     ══════════════════════════════ */
-    
+
     function toggleFilters() {
       const panel = document.getElementById('filterPanel');
       panel.classList.toggle('open');
@@ -781,11 +807,11 @@
 
     function checkActiveFilters(searchQ, lang, minR, maxP, spec) {
       const isActive = lang !== "" || minR > 0 || maxP < 10000 || spec !== "";
-      
+
       const btn = document.getElementById('toggleFiltersBtn');
       const dot = document.getElementById('filterActiveDot');
       const clearBtn = document.getElementById('clearFiltersBtn');
-      
+
       if (isActive) {
         btn.classList.add('active');
         dot.style.display = 'flex';
@@ -813,7 +839,7 @@
     function renderGuides(guides) {
       const container = document.getElementById('guidesContainer');
       const countDisplay = document.getElementById('guideCountDisplay');
-      
+
       // Inject Shimmering Skeletons
       container.innerHTML = Array(4).fill().map(() => `
         <div class="guide-card-react" style="padding:20px; border:1px solid #e5e7eb; border-radius:16px;">
@@ -828,11 +854,11 @@
         </div>
       `).join('');
       countDisplay.textContent = 'Searching guides...';
-      
+
       // Simulate network request
       setTimeout(() => {
         countDisplay.textContent = `${guides.length} guide${guides.length !== 1 ? 's' : ''} found`;
-        
+
         if (guides.length === 0) {
           container.innerHTML = `
             <div class="no-results-panel fade-up" style="grid-column: 1 / -1; padding: 40px; text-align: center;">
@@ -841,15 +867,15 @@
               <p>We couldn't find any guides matching your criteria.</p>
             </div>
           `;
-          if(typeof observer !== 'undefined') container.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+          if (typeof observer !== 'undefined') container.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
           return;
         }
 
         const html = guides.map((guide, index) => {
           const unavailableBadge = !guide.available ? `<span class="status-unavailable">Unavailable</span>` : '';
-          
+
           return `
-            <a href="guide-profile.html" class="guide-card-react fade-up delay-${(index%3)+1}">
+            <a href="guide-profile.html" class="guide-card-react fade-up delay-${(index % 3) + 1}">
               <div class="card-react-flex">
                 <img src="${guide.avatar}" alt="${guide.name}" class="card-react-avatar" loading="lazy">
                 <div class="card-react-content">
@@ -884,9 +910,9 @@
             </a>
           `;
         }).join('');
-        
+
         container.innerHTML = html;
-        if(typeof observer !== 'undefined') container.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        if (typeof observer !== 'undefined') container.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
       }, 400);
     }
 
@@ -896,7 +922,7 @@
       const minRating = Number(document.getElementById('filterMinRating').value);
       const maxPrice = Number(document.getElementById('filterMaxPrice').value);
       const specTxt = document.getElementById('filterSpecialty').value;
-      
+
       const heading = document.getElementById('searchHeading');
       if (searchTxt) {
         heading.innerHTML = `Guides near <span>${searchTxt}</span>`;
@@ -911,12 +937,12 @@
         if (searchTxt && !g.location.toLowerCase().includes(searchTxt)) {
           return false;
         }
-        
+
         // Language Filter
         if (langTxt && !g.languages.includes(langTxt)) {
           return false;
         }
-        
+
         // Rating Filter
         if (minRating > 0 && g.rating < minRating) {
           return false;
@@ -931,13 +957,13 @@
         if (specTxt && !g.specialties.includes(specTxt)) {
           return false;
         }
-        
+
         return true;
       });
-      
+
       renderGuides(filtered);
     }
-    
+
     // Event Listeners
     document.getElementById('heroSearchInput').addEventListener('input', runFilters);
     document.getElementById('filterLang').addEventListener('change', runFilters);
@@ -946,9 +972,32 @@
     document.getElementById('filterSpecialty').addEventListener('change', runFilters);
 
     // Initial render
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/guides');
+        if (response.ok) {
+          const data = await response.json();
+          const apiGuides = data.map(g => ({
+            id: g.id.toString(),
+            name: g.full_name,
+            avatar: g.profile_photo ? 'http://localhost:5000/' + g.profile_photo : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + encodeURIComponent(g.full_name),
+            location: g.city_location || "Not specified",
+            languages: g.languages_spoken ? g.languages_spoken.split(',').map(s => s.trim()) : [],
+            rating: 4.5,
+            reviewCount: Math.floor(Math.random() * 100),
+            pricePerDay: Number(g.price_per_day) || 0,
+            specialties: g.special_skills ? g.special_skills.split(',').map(s => s.trim()) : [],
+            available: true
+          }));
+          if (apiGuides.length > 0) {
+            guidesData = apiGuides;
+          }
+        }
+      } catch (e) { console.error('API Error:', e); }
+
       renderGuides(guidesData);
     });
   </script>
 </body>
+
 </html>

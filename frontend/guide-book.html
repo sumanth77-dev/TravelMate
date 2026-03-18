@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Travel Community — Book Guide</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="tm-auth.js"></script>
   <style>
@@ -51,7 +54,7 @@
       border-radius: 16px;
       border: 1px solid var(--border-color);
       padding: 24px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
 
     .booking-card h1 {
@@ -92,7 +95,7 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-    
+
     .form-control:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 2px var(--primary-light-bg);
@@ -142,8 +145,14 @@
       transition: opacity 0.2s;
     }
 
-    .btn-submit:hover { opacity: 0.9; }
-    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-submit:hover {
+      opacity: 0.9;
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
     /* Toast Notification (Simple Implementation) */
     .toast {
@@ -163,13 +172,14 @@
       z-index: 1000;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    
+
     .toast.show {
       opacity: 1;
       transform: translateY(0);
     }
   </style>
 </head>
+
 <body>
 
   <!-- ══════════════ NAVBAR ══════════════ -->
@@ -219,16 +229,32 @@
       const dur = Number(document.getElementById('durationInput').value) || 1;
       const mem = Number(document.getElementById('membersInput').value) || 1;
       const total = pricePerHour * dur * mem;
-      document.getElementById('displayDuration').textContent = `${dur}h × ${mem} person${mem>1?'s':''}`;
+      document.getElementById('displayDuration').textContent = `${dur}h × ${mem} person${mem > 1 ? 's' : ''}`;
       document.getElementById('displayTotal').textContent = '₹' + total.toLocaleString();
     }
 
-    function initBooking() {
+    async function initBooking() {
       const urlParams = new URL(window.location.href);
       let guideId = urlParams.searchParams.get('id') || '1';
-      currentGuide = guidesData.find(g => g.id === guideId);
-      
+
       const root = document.getElementById('bookingRoot');
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/guides/${guideId}`);
+        if (response.ok) {
+          const g = await response.json();
+          currentGuide = {
+            id: g.id,
+            name: g.full_name,
+            location: g.city_location || "Not specified",
+            pricePerDay: Number(g.price_per_day) || 2000
+          };
+        }
+      } catch (e) { console.error('API Error:', e); }
+
+      if (!currentGuide) {
+        currentGuide = guidesData.find(g => g.id == guideId);
+      }
 
       if (!currentGuide) {
         root.innerHTML = `<div style="text-align:center;padding:40px;"><p>Guide not found.</p><a href="findguides.html">Back to search</a></div>`;
@@ -238,8 +264,8 @@
       pricePerHour = Math.round(currentGuide.pricePerDay / 8);
 
       // Generate HTML Options
-      const durOptions = [1,2,3,4,5,6,7,8,10,12].map(n => `<option value="${n}">${n} hour${n>1?'s':''}</option>`).join('');
-      const memOptions = [1,2,3,4,5,6,7,8].map(n => `<option value="${n}">${n} member${n>1?'s':''}</option>`).join('');
+      const durOptions = [1, 2, 3, 4, 5, 6, 7, 8, 10, 12].map(n => `<option value="${n}">${n} hour${n > 1 ? 's' : ''}</option>`).join('');
+      const memOptions = [1, 2, 3, 4, 5, 6, 7, 8].map(n => `<option value="${n}">${n} member${n > 1 ? 's' : ''}</option>`).join('');
 
       // Get Today's Date formatted for minimum input
       const today = new Date().toISOString().split('T')[0];
@@ -297,13 +323,19 @@
       // Events
       document.getElementById('durationInput').addEventListener('change', updatePrice);
       document.getElementById('membersInput').addEventListener('change', updatePrice);
-      
-      document.getElementById('bookingForm').addEventListener('submit', function(e) {
+
+      document.getElementById('bookingForm').addEventListener('submit', async function (e) {
         e.preventDefault();
-        
+
+        if (!TmAuth.isLogged()) {
+          showToast("Please login to book a guide.");
+          setTimeout(() => window.location.href = "login.html", 1500);
+          return;
+        }
+
         const date = document.getElementById('dateInput').value;
-        if(!date) { showToast("Please select a date"); return; }
-        
+        if (!date) { showToast("Please select a date"); return; }
+
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
         btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Sending...`;
@@ -312,33 +344,40 @@
         const mem = Number(document.getElementById('membersInput').value);
         const msg = document.getElementById('messageInput').value;
 
-        const newBooking = {
-          id: 'b' + Date.now(),
-          guideId: currentGuide.id,
-          guideName: currentGuide.name,
-          location: currentGuide.location,
-          date: date,
-          duration: dur,
-          members: mem,
-          status: "pending",
-          totalPrice: pricePerHour * dur * mem,
-          message: msg,
-          createdAt: new Date().toISOString().split("T")[0]
-        };
+        try {
+          const res = await fetch('http://localhost:5000/api/bookings', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${TmAuth.getToken()}`
+            },
+            body: JSON.stringify({
+              guide_id: currentGuide.id,
+              booking_date: date,
+              group_size: mem,
+              duration: dur,
+              message: msg,
+              total_price: pricePerHour * dur * mem
+            })
+          });
 
-        const existing = JSON.parse(localStorage.getItem('bookings') || '[]');
-        localStorage.setItem('bookings', JSON.stringify([newBooking, ...existing]));
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message || 'Booking failed');
 
-        setTimeout(() => {
-          showToast("Booking request sent!");
+          showToast("Booking request sent successfully!");
           setTimeout(() => {
-            window.location.href = "guide-bookings.html";
-          }, 800);
-        }, 800);
+            window.location.href = "travel-mate-dashboard.html"; // We should ideally redirect to bookings dashboard
+          }, 1000);
+        } catch (error) {
+          showToast(error.message);
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fas fa-paper-plane"></i> Send Booking Request`;
+        }
       });
     }
 
     document.addEventListener('DOMContentLoaded', initBooking);
   </script>
 </body>
+
 </html>

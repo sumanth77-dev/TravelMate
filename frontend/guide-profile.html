@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Travel Community — Guide Profile</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="tm-auth.js"></script>
   <style>
@@ -23,7 +26,8 @@
 
     body {
       background: var(--bg-background);
-      padding-top: 70px; /* Navbar space */
+      padding-top: 70px;
+      /* Navbar space */
     }
 
     .profile-container {
@@ -48,17 +52,22 @@
     }
 
     /* Card Layouts */
-    .profile-card, .reviews-card {
+    .profile-card,
+    .reviews-card {
       background: var(--bg-card);
       border-radius: 16px;
       border: 1px solid var(--border-color);
       padding: 24px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
       margin-bottom: 24px;
     }
 
     @media (min-width: 640px) {
-      .profile-card, .reviews-card { padding: 32px; }
+
+      .profile-card,
+      .reviews-card {
+        padding: 32px;
+      }
     }
 
     /* Profile Header Flex */
@@ -125,7 +134,9 @@
     }
 
     @media (min-width: 640px) {
-      .profile-location { justify-content: flex-start; }
+      .profile-location {
+        justify-content: flex-start;
+      }
     }
 
     .profile-price-block {
@@ -133,7 +144,9 @@
     }
 
     @media (min-width: 640px) {
-      .profile-price-block { text-align: right; }
+      .profile-price-block {
+        text-align: right;
+      }
     }
 
     .profile-price {
@@ -141,7 +154,7 @@
       font-weight: 700;
       color: var(--text-foreground);
     }
-    
+
     .profile-price-sub {
       font-size: 0.75rem;
       color: var(--text-muted);
@@ -159,7 +172,9 @@
     }
 
     @media (min-width: 640px) {
-      .profile-meta-row { justify-content: flex-start; }
+      .profile-meta-row {
+        justify-content: flex-start;
+      }
     }
 
     .profile-meta-item {
@@ -319,6 +334,7 @@
       font-size: 0.75rem;
       color: var(--warning);
     }
+
     .review-stars i.empty {
       color: rgba(100, 116, 139, 0.3);
     }
@@ -334,9 +350,14 @@
       text-align: center;
       padding: 60px 20px;
     }
-    .error-state p { color: var(--text-muted); margin-bottom: 16px;}
+
+    .error-state p {
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- ══════════════ NAVBAR ══════════════ -->
@@ -380,11 +401,11 @@
 
   <script>
     // Points System & Hamburger
-    (function(){
+    (function () {
       const el = document.getElementById('pointsCounter');
-      if(el) el.textContent = Number(localStorage.getItem('tm_points') || 0) + ' pts';
+      if (el) el.textContent = Number(localStorage.getItem('tm_points') || 0) + ' pts';
       const hamburger = document.getElementById('hamburger');
-      const navLinks  = document.getElementById('navLinks');
+      const navLinks = document.getElementById('navLinks');
       if (hamburger) hamburger.addEventListener('click', () => { navLinks.classList.toggle('open'); hamburger.classList.toggle('open'); });
     })();
 
@@ -478,29 +499,72 @@
       return html;
     }
 
-    function renderPage() {
+    async function renderPage() {
       const urlParams = new URL(window.location.href);
-      // Try to get id, fallback to 1 for demo purposes if not passed correctly
       let guideId = urlParams.searchParams.get('id');
       if (!guideId || guideId === 'null') {
-          // If viewing locally without params it will just fallback to Aarav
-          guideId = '1'; 
+        guideId = '1';
       }
 
-      const guide = guidesData.find(g => g.id === guideId);
       const root = document.getElementById('profileRoot');
+      let guide = null;
+      let guideReviews = [];
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/guides/${guideId}`);
+        if (response.ok) {
+          const g = await response.json();
+          guide = {
+            id: g.id.toString(),
+            name: g.full_name,
+            avatar: g.profile_photo ? 'http://localhost:5000/' + g.profile_photo : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + encodeURIComponent(g.full_name),
+            location: g.city_location || "Not specified",
+            languages: g.languages_spoken ? g.languages_spoken.split(',').map(s => s.trim()) : [],
+            rating: 4.5,
+            reviewCount: 0,
+            pricePerDay: Number(g.price_per_day) || 0,
+            experience: g.years_of_experience || 0,
+            specialties: g.special_skills ? g.special_skills.split(',').map(s => s.trim()) : [],
+            bio: g.short_bio || "",
+            available: true
+          };
+        }
+
+        const revResponse = await fetch(`http://localhost:5000/api/reviews/${guideId}`);
+        if (revResponse.ok) {
+          const revData = await revResponse.json();
+          guideReviews = revData.map(r => ({
+            id: r.id.toString(),
+            guideId: r.guide_id.toString(),
+            reviewer: r.user_name || "Guest",
+            avatar: r.user_photo ? 'http://localhost:5000/' + r.user_photo : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + encodeURIComponent(r.user_name || "Guest"),
+            rating: r.rating,
+            comment: r.review_text,
+            date: r.created_at
+          }));
+          guide.reviewCount = guideReviews.length;
+          if (guideReviews.length > 0) {
+            guide.rating = (guideReviews.reduce((sum, r) => sum + r.rating, 0) / guideReviews.length).toFixed(1);
+          }
+        }
+      } catch (e) {
+        console.error('API Error:', e);
+      }
+
+      if (!guide) {
+        guide = guidesData.find(g => g.id === guideId);
+        guideReviews = reviewsData.filter(r => r.guideId === guideId);
+      }
 
       if (!guide) {
         root.innerHTML = `
           <div class="error-state">
             <p>Guide not found.</p>
-            <a href="findguides.html" class="btn btn-outline">Back to search</a>
+            <a href="findguides.html" class="btn btn-outline" style="padding: 10px 20px; border: 1px solid var(--border-color); border-radius: 8px; text-decoration: none; color: var(--text-foreground);">Back to search</a>
           </div>
         `;
         return;
       }
-
-      const guideReviews = reviewsData.filter(r => r.guideId === guide.id);
 
       root.innerHTML = `
         <a href="findguides.html" class="back-button">
@@ -596,4 +660,5 @@
     document.addEventListener('DOMContentLoaded', renderPage);
   </script>
 </body>
+
 </html>

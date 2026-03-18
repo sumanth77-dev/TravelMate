@@ -1,236 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign Up - Travel Mate</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - Travel Mate</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="tm-auth.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="tm-auth.js"></script>
 
-<style>
-:root{
-  --primary:#22c55e;
-  --primary-dark:#16a34a;
-  --bg:#f0fdf4;
-}
+  <style>
+    :root {
+      --primary: #22c55e;
+      --primary-dark: #16a34a;
+      --bg: #f0fdf4;
+    }
 
-body{
-  font-family:'Poppins',sans-serif;
-  background:var(--bg);
-  padding-top:70px;
-}
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      padding-top: 70px;
+    }
 
-.auth-wrapper {
-  min-height: calc(100vh - 70px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 24px;
-}
+    .auth-wrapper {
+      min-height: calc(100vh - 70px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
 
-/* Navbar */
-.custom-navbar{
-  background:#ffffff;
-  box-shadow:0 4px 20px rgba(0,0,0,0.05);
-}
-.custom-navbar .navbar-brand{
-  color:var(--primary);
-  font-weight:700;
-}
-.custom-navbar .nav-link{
-  color:#333;
-  font-weight:500;
-  transition:0.3s;
-}
-.custom-navbar .nav-link:hover{
-  color:var(--primary);
-}
+    /* Navbar */
+    .custom-navbar {
+      background: #ffffff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
 
-/* Card */
-.signup-card{
-  background:white;
-  width:100%;
-  max-width:450px;
-  padding:40px;
-  border-radius:30px;
-  box-shadow:0 15px 40px rgba(34,197,94,0.15);
-  animation:fadeUp 0.6s ease;
-  transition: max-width 0.4s ease;
-}
+    .custom-navbar .navbar-brand {
+      color: var(--primary);
+      font-weight: 700;
+    }
 
-.signup-card.is-guide {
-  max-width: 700px;
-}
+    .custom-navbar .nav-link {
+      color: #333;
+      font-weight: 500;
+      transition: 0.3s;
+    }
 
-.section-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--primary-dark);
-  margin-top: 24px;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #eee;
-}
+    .custom-navbar .nav-link:hover {
+      color: var(--primary);
+    }
 
-.guide-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-@media (min-width: 600px) {
-  .guide-grid { grid-template-columns: 1fr 1fr; }
-}
+    /* Card */
+    .signup-card {
+      background: white;
+      width: 100%;
+      max-width: 450px;
+      padding: 40px;
+      border-radius: 30px;
+      box-shadow: 0 15px 40px rgba(34, 197, 94, 0.15);
+      animation: fadeUp 0.6s ease;
+      transition: max-width 0.4s ease;
+    }
 
-@keyframes fadeUp{
-  from{opacity:0; transform:translateY(30px);}
-  to{opacity:1; transform:translateY(0);}
-}
+    .signup-card.is-guide {
+      max-width: 700px;
+    }
 
-.brand{
-  text-align:center;
-  font-weight:600;
-  font-size:24px;
-  color:var(--primary);
-}
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin-top: 24px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+    }
 
-.subtitle{
-  text-align:center;
-  color:#777;
-  font-size:14px;
-  margin-bottom:25px;
-}
+    .guide-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
 
-/* Role Toggle */
-.role-toggle{
-  display:flex;
-  background:#e6f9ee;
-  border-radius:50px;
-  padding:5px;
-  margin-bottom:25px;
-}
+    @media (min-width: 600px) {
+      .guide-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
 
-.role-toggle button{
-  flex:1;
-  border:none;
-  background:transparent;
-  padding:8px;
-  border-radius:50px;
-  font-weight:500;
-  cursor:pointer;
-  transition:0.3s;
-}
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
 
-.role-toggle button.active{
-  background:var(--primary);
-  color:white;
-  box-shadow:0 5px 15px rgba(34,197,94,0.3);
-}
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-/* Inputs */
-.form-control{
-  border-radius:15px;
-  padding:12px;
-  border:1px solid #ddd;
-}
+    .brand {
+      text-align: center;
+      font-weight: 600;
+      font-size: 24px;
+      color: var(--primary);
+    }
 
-.form-control:focus{
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(34,197,94,0.2);
-}
+    .subtitle {
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
 
-.password-wrapper{
-  position:relative;
-}
+    /* Role Toggle */
+    .role-toggle {
+      display: flex;
+      background: #e6f9ee;
+      border-radius: 50px;
+      padding: 5px;
+      margin-bottom: 25px;
+    }
 
-.show-pass{
-  position:absolute;
-  right:15px;
-  top:50%;
-  transform:translateY(-50%);
-  cursor:pointer;
-  font-size:14px;
-  color:#888;
-}
+    .role-toggle button {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 8px;
+      border-radius: 50px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-/* Button */
-.signup-btn{
-  width:100%;
-  background:var(--primary);
-  border:none;
-  padding:12px;
-  border-radius:50px;
-  font-weight:600;
-  color:white;
-  transition:0.3s;
-}
+    .role-toggle button.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
+    }
 
-.signup-btn:hover{
-  background:var(--primary-dark);
-  transform:translateY(-3px);
-  box-shadow:0 10px 20px rgba(34,197,94,0.3);
-}
+    /* Inputs */
+    .form-control {
+      border-radius: 15px;
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
 
-/* Divider */
-.divider {
-  text-align: center;
-  margin: 25px 0;
-  position: relative;
-}
-.divider::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: #ddd;
-  z-index: 1;
-}
-.divider span {
-  position: relative;
-  z-index: 2;
-  background: white;
-  padding: 0 15px;
-  color: #777;
-  font-weight: 500;
-  font-size: 14px;
-}
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+    }
 
-/* Google */
-.google-btn{
-  width:100%;
-  background:white;
-  border:1px solid #ddd;
-  border-radius:50px;
-  padding:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  font-weight:500;
-  transition:0.3s;
-}
-.google-btn:hover{
-  background:#f8f9fa;
-  transform:translateY(-2px);
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
-}
+    .password-wrapper {
+      position: relative;
+    }
 
-.footer-text{
-  text-align:center;
-  margin-top:20px;
-  font-size:14px;
-}
-.footer-text a{
-  color:var(--primary);
-  text-decoration:none;
-  font-weight:500;
-}
-</style>
+    .show-pass {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 14px;
+      color: #888;
+    }
+
+    /* Button */
+    .signup-btn {
+      width: 100%;
+      background: var(--primary);
+      border: none;
+      padding: 12px;
+      border-radius: 50px;
+      font-weight: 600;
+      color: white;
+      transition: 0.3s;
+    }
+
+    .signup-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
+    }
+
+    /* Divider */
+    .divider {
+      text-align: center;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .divider::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #ddd;
+      z-index: 1;
+    }
+
+    .divider span {
+      position: relative;
+      z-index: 2;
+      background: white;
+      padding: 0 15px;
+      color: #777;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    /* Google */
+    .google-btn {
+      width: 100%;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 50px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .google-btn:hover {
+      background: #f8f9fa;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .footer-text {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .footer-text a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
 </head>
 
 <body>
@@ -254,241 +272,272 @@ body{
     </div>
   </nav>
 
-<div class="auth-wrapper">
-  <div class="signup-card" id="signupCard">
+  <div class="auth-wrapper">
+    <div class="signup-card" id="signupCard">
 
-    <div class="brand">Travel Mate</div>
-    <div class="subtitle">Create your account</div>
+      <div class="brand">Travel Mate</div>
+      <div class="subtitle">Create your account</div>
 
-    <!-- Role -->
-    <div class="role-toggle">
-      <button class="active" onclick="selectRole(this, 'User')">User</button>
-      <button onclick="selectRole(this, 'Guide')">Guide</button>
-    </div>
-
-    <form id="signupForm">
-      <div class="section-title">1️⃣ Basic Information</div>
-      <div class="guide-grid mb-3">
-        <div>
-          <input type="text" class="form-control" id="name" placeholder="Full Name" required>
-        </div>
-        <div>
-          <input type="email" class="form-control" id="email" placeholder="Email Address" required>
-        </div>
-        <div>
-          <input type="tel" class="form-control" id="phone" placeholder="Phone Number" required>
-        </div>
-        <div></div>
+      <!-- Role -->
+      <div class="role-toggle">
+        <button class="active" onclick="selectRole(this, 'User')">User</button>
+        <button onclick="selectRole(this, 'Guide')">Guide</button>
       </div>
 
-      <div class="guide-grid mb-3">
-        <div class="password-wrapper">
-          <input type="password" id="password" class="form-control" placeholder="Password" required>
-          <span class="show-pass" onclick="togglePassword('password')">Show</span>
+      <form id="signupForm">
+        <div class="section-title">1️⃣ Basic Information</div>
+        <div class="guide-grid mb-3">
+          <div>
+            <input type="text" class="form-control" id="name" placeholder="Full Name" required>
+          </div>
+          <div>
+            <input type="email" class="form-control" id="email" placeholder="Email Address" required>
+          </div>
+          <div>
+            <input type="tel" class="form-control" id="phone" placeholder="Phone Number" required>
+          </div>
+          <div></div>
         </div>
-        <div class="password-wrapper">
-          <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password" required>
-          <span class="show-pass" onclick="togglePassword('confirmPassword')">Show</span>
+
+        <div class="guide-grid mb-3">
+          <div class="password-wrapper">
+            <input type="password" id="password" class="form-control" placeholder="Password" required>
+            <span class="show-pass" onclick="togglePassword('password')">Show</span>
+          </div>
+          <div class="password-wrapper">
+            <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password" required>
+            <span class="show-pass" onclick="togglePassword('confirmPassword')">Show</span>
+          </div>
         </div>
+
+        <!-- GUIDE SPECIFIC FIELDS HIDDEN BY DEFAULT -->
+        <div id="guideFields" class="d-none">
+
+          <div class="section-title">2️⃣ Guide Details</div>
+          <div class="guide-grid mb-3">
+            <input type="text" class="form-control" id="gCity" placeholder="City / Location">
+            <input type="text" class="form-control" id="gLanguages" placeholder="Languages Spoken (comma separated)">
+            <input type="number" class="form-control" id="gExperience" placeholder="Years of Experience" min="0">
+            <select class="form-control" id="gType">
+              <option value="">Select Guide Type...</option>
+              <option value="Local">Local Guide</option>
+              <option value="Adventure">Adventure Guide</option>
+              <option value="Cultural">Cultural Guide</option>
+              <option value="Food">Food Guide</option>
+            </select>
+          </div>
+
+          <div class="section-title">3️⃣ Travel Expertise</div>
+          <div class="mb-3">
+            <input type="text" class="form-control mb-3" id="gAreas"
+              placeholder="Areas you guide (e.g. temples, beaches, specific regions)">
+            <input type="text" class="form-control" id="gSkills"
+              placeholder="Special skills (e.g. photography, history expert)">
+          </div>
+
+          <div class="section-title">4️⃣ Pricing</div>
+          <div class="guide-grid mb-3">
+            <input type="number" class="form-control" id="gPrice" placeholder="Price per Day (₹)" min="0">
+            <input type="number" class="form-control" id="gGroupSize" placeholder="Max Group Size" min="1">
+          </div>
+
+          <div class="section-title">5️⃣ Verification</div>
+          <div class="guide-grid mb-3">
+            <div>
+              <label class="form-label text-muted small mb-1">Government ID Upload</label>
+              <input type="file" class="form-control" id="gIdFile" accept="image/*,.pdf">
+            </div>
+            <div>
+              <label class="form-label text-muted small mb-1">Profile Photo Upload</label>
+              <input type="file" class="form-control" id="gPhotoFile" accept="image/*">
+            </div>
+          </div>
+          <div class="mb-3">
+            <textarea class="form-control" id="gBio" rows="3" placeholder="Short bio / introduction..."></textarea>
+          </div>
+
+          <div class="section-title">6️⃣ Availability</div>
+          <div class="guide-grid mb-3">
+            <input type="text" class="form-control" id="gDays" placeholder="Available Days (e.g. Mon-Fri)">
+            <input type="text" class="form-control" id="gTimings" placeholder="Available Timings (e.g. 9 AM - 6 PM)">
+          </div>
+
+          <div class="section-title">7️⃣ Safety & Policy</div>
+          <div class="mb-4" style="font-size:0.85rem; color:#555;">
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" id="gTerm1">
+              <label class="form-check-label" for="gTerm1">I accept the TravelMate Terms & Conditions.</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="gTerm2">
+              <label class="form-check-label" for="gTerm2">I agree to abide by TravelMate Guide Policies and verify all
+                information provided is accurate.</label>
+            </div>
+          </div>
+
+        </div> <!-- End Guide Fields -->
+
+        <button type="submit" class="signup-btn mt-2">Sign Up</button>
+      </form>
+
+      <div class="divider"><span>OR</span></div>
+
+      <button class="google-btn" onclick="simulateGoogleAuth()">
+        <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="18">
+        Continue with Google
+      </button>
+
+      <div class="footer-text">
+        Already have an account? <a href="login.html">Login</a>
       </div>
 
-      <!-- GUIDE SPECIFIC FIELDS HIDDEN BY DEFAULT -->
-      <div id="guideFields" class="d-none">
-        
-        <div class="section-title">2️⃣ Guide Details</div>
-        <div class="guide-grid mb-3">
-          <input type="text" class="form-control" id="gCity" placeholder="City / Location">
-          <input type="text" class="form-control" id="gLanguages" placeholder="Languages Spoken (comma separated)">
-          <input type="number" class="form-control" id="gExperience" placeholder="Years of Experience" min="0">
-          <select class="form-control" id="gType">
-            <option value="">Select Guide Type...</option>
-            <option value="Local">Local Guide</option>
-            <option value="Adventure">Adventure Guide</option>
-            <option value="Cultural">Cultural Guide</option>
-            <option value="Food">Food Guide</option>
-          </select>
-        </div>
-
-        <div class="section-title">3️⃣ Travel Expertise</div>
-        <div class="mb-3">
-          <input type="text" class="form-control mb-3" id="gAreas" placeholder="Areas you guide (e.g. temples, beaches, specific regions)">
-          <input type="text" class="form-control" id="gSkills" placeholder="Special skills (e.g. photography, history expert)">
-        </div>
-
-        <div class="section-title">4️⃣ Pricing</div>
-        <div class="guide-grid mb-3">
-          <input type="number" class="form-control" id="gPrice" placeholder="Price per Day (₹)" min="0">
-          <input type="number" class="form-control" id="gGroupSize" placeholder="Max Group Size" min="1">
-        </div>
-
-        <div class="section-title">5️⃣ Verification</div>
-        <div class="guide-grid mb-3">
-          <div>
-            <label class="form-label text-muted small mb-1">Government ID Upload</label>
-            <input type="file" class="form-control" id="gIdFile" accept="image/*,.pdf">
-          </div>
-          <div>
-            <label class="form-label text-muted small mb-1">Profile Photo Upload</label>
-            <input type="file" class="form-control" id="gPhotoFile" accept="image/*">
-          </div>
-        </div>
-        <div class="mb-3">
-          <textarea class="form-control" id="gBio" rows="3" placeholder="Short bio / introduction..."></textarea>
-        </div>
-
-        <div class="section-title">6️⃣ Availability</div>
-        <div class="guide-grid mb-3">
-          <input type="text" class="form-control" id="gDays" placeholder="Available Days (e.g. Mon-Fri)">
-          <input type="text" class="form-control" id="gTimings" placeholder="Available Timings (e.g. 9 AM - 6 PM)">
-        </div>
-
-        <div class="section-title">7️⃣ Safety & Policy</div>
-        <div class="mb-4" style="font-size:0.85rem; color:#555;">
-          <div class="form-check mb-2">
-            <input class="form-check-input" type="checkbox" id="gTerm1">
-            <label class="form-check-label" for="gTerm1">I accept the TravelMate Terms & Conditions.</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="gTerm2">
-            <label class="form-check-label" for="gTerm2">I agree to abide by TravelMate Guide Policies and verify all information provided is accurate.</label>
-          </div>
-        </div>
-
-      </div> <!-- End Guide Fields -->
-
-      <button type="submit" class="signup-btn mt-2">Sign Up</button>
-    </form>
-
-    <div class="divider"><span>OR</span></div>
-
-    <button class="google-btn" onclick="simulateGoogleAuth()">
-      <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="18">
-      Continue with Google
-    </button>
-
-    <div class="footer-text">
-      Already have an account? <a href="login.html">Login</a>
     </div>
-
   </div>
-</div>
 
-<script>
-  /* redirect away if already logged in */
-  (function(){
-    if(TmAuth.isLogged()) window.location.href = 'index.html';
-  })();
+  <script>
+    /* redirect away if already logged in */
+    (function () {
+      if (TmAuth.isLogged()) window.location.href = 'index.html';
+    })();
 
-function selectRole(btn, roleName){
-  document.querySelectorAll('.role-toggle button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  
-  const card = document.getElementById('signupCard');
-  const guideFields = document.getElementById('guideFields');
-  
-  if(roleName === 'Guide') {
-    card.classList.add('is-guide');
-    guideFields.classList.remove('d-none');
-    // make guide terms required
-    document.getElementById('gTerm1').required = true;
-    document.getElementById('gTerm2').required = true;
-    document.getElementById('gCity').required = true;
-  } else {
-    card.classList.remove('is-guide');
-    guideFields.classList.add('d-none');
-    document.getElementById('gTerm1').required = false;
-    document.getElementById('gTerm2').required = false;
-    document.getElementById('gCity').required = false;
-  }
-}
+    function selectRole(btn, roleName) {
+      document.querySelectorAll('.role-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
 
-function togglePassword(id){
-  const input=document.getElementById(id);
-  input.type=input.type==="password"?"text":"password";
-}
+      const card = document.getElementById('signupCard');
+      const guideFields = document.getElementById('guideFields');
 
-document.getElementById("signupForm").addEventListener("submit",function(e){
-  e.preventDefault();
-  const name     = document.getElementById('name').value.trim();
-  const email    = document.getElementById('email').value.trim();
-  const phone    = document.getElementById('phone').value.trim();
-  const password = document.getElementById('password').value;
-  const confirm  = document.getElementById('confirmPassword').value;
-  const role     = document.querySelector('.role-toggle button.active').textContent.trim();
+      if (roleName === 'Guide') {
+        card.classList.add('is-guide');
+        guideFields.classList.remove('d-none');
+        // make guide terms required
+        document.getElementById('gTerm1').required = true;
+        document.getElementById('gTerm2').required = true;
+        document.getElementById('gCity').required = true;
+      } else {
+        card.classList.remove('is-guide');
+        guideFields.classList.add('d-none');
+        document.getElementById('gTerm1').required = false;
+        document.getElementById('gTerm2').required = false;
+        document.getElementById('gCity').required = false;
+      }
+    }
 
-  if(!name || !email || !password || !confirm || !phone){
-    showMsg('Please fill in all basic fields.', 'error'); return;
-  }
-  if(password !== confirm){
-    showMsg('Passwords do not match.', 'error'); return;
-  }
-  if(password.length < 6){
-    showMsg('Password must be at least 6 characters.', 'error'); return;
-  }
+    function togglePassword(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === "password" ? "text" : "password";
+    }
 
-  /* Construct user object */
-  let newUser = { name, email, phone, password, role };
+    document.getElementById("signupForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm = document.getElementById('confirmPassword').value;
+      const role = document.querySelector('.role-toggle button.active').textContent.trim();
+      const submitBtn = this.querySelector('button[type="submit"]');
 
-  /* Append guide-specific fields if applicable */
-  if (role === 'Guide') {
-    newUser.guideProfile = {
-      city: document.getElementById('gCity').value,
-      languages: document.getElementById('gLanguages').value,
-      experience: document.getElementById('gExperience').value,
-      type: document.getElementById('gType').value,
-      areas: document.getElementById('gAreas').value,
-      skills: document.getElementById('gSkills').value,
-      pricePerDay: document.getElementById('gPrice').value,
-      groupSize: document.getElementById('gGroupSize').value,
-      bio: document.getElementById('gBio').value,
-      days: document.getElementById('gDays').value,
-      timings: document.getElementById('gTimings').value
-      // Note: File uploads (ID, Photo) would normally be handled via FormData and an API upload.
-      // For local demo, we just acknowledge the text fields.
-    };
-  }
+      if (!name || !email || !password || !confirm || !phone) {
+        showMsg('Please fill in all basic fields.', 'error'); return;
+      }
+      if (password !== confirm) {
+        showMsg('Passwords do not match.', 'error'); return;
+      }
+      if (password.length < 6) {
+        showMsg('Password must be at least 6 characters.', 'error'); return;
+      }
 
-  /* save to users list */
-  const users = JSON.parse(localStorage.getItem('tm_users') || '[]');
-  if(users.find(u => u.email === email && u.role === role)){
-    showMsg('An account with this email already exists for this role.', 'error'); return;
-  }
-  users.push(newUser);
-  localStorage.setItem('tm_users', JSON.stringify(users));
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Registering...';
 
-  /* auto-login */
-  TmAuth.login(name, email, role, null);
-  showMsg('Account created successfully! Redirecting...', 'success');
-  setTimeout(() => window.location.href = 'index.html', 1000);
-});
+      try {
+        let response, data;
 
-function showMsg(msg, type){
-  if(window.TmToast) window.TmToast.show(msg, type);
-  else alert(msg);
-}
+        if (role === 'Guide') {
+          const formData = new FormData();
+          formData.append('full_name', name);
+          formData.append('email', email);
+          formData.append('phone_number', phone);
+          formData.append('password', password);
+          formData.append('role', role);
 
-function simulateGoogleAuth() {
-  const role = document.querySelector('.role-toggle button.active').textContent.trim();
-  
-  // Create a mock Google user if they don't exist
-  const googleUser = {
-    name: "Google Explorer",
-    email: "explorer@gmail.com",
-    role: role,
-    password: "hidden_google_oauth_token"
-  };
+          formData.append('city_location', document.getElementById('gCity').value);
+          formData.append('languages_spoken', document.getElementById('gLanguages').value);
+          formData.append('years_of_experience', document.getElementById('gExperience').value || 0);
+          formData.append('guide_type', document.getElementById('gType').value);
+          formData.append('areas_you_guide', document.getElementById('gAreas').value);
+          formData.append('special_skills', document.getElementById('gSkills').value);
+          formData.append('price_per_day', document.getElementById('gPrice').value || 0);
+          formData.append('max_group_size', document.getElementById('gGroupSize').value || 1);
+          formData.append('short_bio', document.getElementById('gBio').value);
+          formData.append('available_days', document.getElementById('gDays').value);
+          formData.append('available_timings', document.getElementById('gTimings').value);
+          formData.append('accepted_terms', document.getElementById('gTerm1').checked);
+          formData.append('accepted_guide_policy', document.getElementById('gTerm2').checked);
 
-  const users = JSON.parse(localStorage.getItem('tm_users') || '[]');
-  if(!users.find(u => u.email === googleUser.email && u.role === role)) {
-    users.push(googleUser);
-    localStorage.setItem('tm_users', JSON.stringify(users));
-  }
-  
-  showMsg('Google Authentication successful! Redirecting...', 'success');
-  TmAuth.login(googleUser.name, googleUser.email, googleUser.role, null);
-  setTimeout(() => window.location.href = 'index.html', 1000);
-}
-</script>
+          const idFile = document.getElementById('gIdFile').files[0];
+          const photoFile = document.getElementById('gPhotoFile').files[0];
+
+          if (idFile) formData.append('government_id_upload', idFile);
+          if (photoFile) formData.append('profile_photo', photoFile);
+
+          response = await fetch('http://localhost:5000/api/auth/register', {
+            method: 'POST',
+            body: formData
+          });
+        } else {
+          response = await fetch('http://localhost:5000/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ full_name: name, email, phone_number: phone, password, role })
+          });
+        }
+
+        data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Registration failed');
+        }
+
+        TmAuth.login(data.full_name, data.email, data.role, null, data.token, data.id);
+        showMsg('Account created successfully! Redirecting...', 'success');
+        setTimeout(() => window.location.href = data.role === 'Guide' ? 'guide-dashboard.html' : 'travel-mate-dashboard.html', 1000);
+      } catch (err) {
+        showMsg(err.message, 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign Up';
+      }
+    });
+
+    function showMsg(msg, type) {
+      if (window.TmToast) window.TmToast.show(msg, type);
+      else alert(msg);
+    }
+
+    function simulateGoogleAuth() {
+      const role = document.querySelector('.role-toggle button.active').textContent.trim();
+
+      // Create a mock Google user if they don't exist
+      const googleUser = {
+        name: "Google Explorer",
+        email: "explorer@gmail.com",
+        role: role,
+        password: "hidden_google_oauth_token"
+      };
+
+      const users = JSON.parse(localStorage.getItem('tm_users') || '[]');
+      if (!users.find(u => u.email === googleUser.email && u.role === role)) {
+        users.push(googleUser);
+        localStorage.setItem('tm_users', JSON.stringify(users));
+      }
+
+      showMsg('Google Authentication successful! Redirecting...', 'success');
+      TmAuth.login(googleUser.name, googleUser.email, googleUser.role, null);
+      setTimeout(() => window.location.href = 'index.html', 1000);
+    }
+  </script>
 
 </body>
+
 </html>
