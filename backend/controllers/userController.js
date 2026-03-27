@@ -14,10 +14,10 @@ const getUserProfile = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
     try {
-        const { full_name, email, phone_number } = req.body;
+        const { full_name, email, phone_number, location, bio } = req.body;
         await db.query(
-            'UPDATE users SET full_name = ?, email = ?, phone_number = ? WHERE id = ?',
-            [full_name, email, phone_number, req.user.id]
+            'UPDATE users SET full_name = ?, email = ?, phone_number = ?, location = ?, bio = ? WHERE id = ?',
+            [full_name, email, phone_number, location, bio, req.user.id]
         );
 
         const updatedUser = await User.findById(req.user.id);

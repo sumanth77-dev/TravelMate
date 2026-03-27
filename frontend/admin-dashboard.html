@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Travel Community — Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Include shared auth logic -->
+    <script src="tm-auth.js"></script>
+    <!-- Optional Toast Library -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <style>
+        /* Admin Dashboard specific styling borrowing from travel-mate-dashboard.html */
+        body {
+            background-color: #f8fafc;
+            padding-top: 70px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+
+        @media (min-width: 992px) {
+            .dashboard-container {
+                grid-template-columns: 280px 1fr;
+                align-items: start;
+            }
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-profile {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .admin-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 auto 16px;
+        }
+
+        .admin-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .admin-email {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .sidebar-nav a:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .sidebar-nav a.active {
+            background: #22c55e;
+            color: white;
+        }
+
+        .sidebar-nav a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px;
+            margin-top: 24px;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #fef2f2;
+        }
+
+        .main-content {
+            min-width: 0;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stats Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .kpi-title {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .kpi-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 24px;
+            background: #f8fafc;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        td {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.875rem;
+            color: #334155;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-approved {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+            transition: 0.2s;
+            margin-right: 4px;
+        }
+
+        .btn-approve {
+            color: #16a34a;
+            background: #f0fdf4;
+        }
+
+        .btn-approve:hover {
+            background: #dcfce7;
+        }
+
+        .btn-reject {
+            color: #dc2626;
+            background: #fef2f2;
+        }
+
+        .btn-reject:hover {
+            background: #fee2e2;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            padding: 32px;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #0f172a;
+        }
+
+        .modal-header {
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        .modal-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .modal-body-full {
+            grid-column: span 2;
+        }
+
+        .mdetail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .mdetail-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .mdetail-value {
+            font-size: 0.875rem;
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            padding-top: 24px;
+            border-top: 2px solid #f1f5f9;
+        }
+
+        .btn-modal {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+
+        .btn-modal-approve {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-modal-approve:hover {
+            background: #15803d;
+        }
+
+        .btn-modal-reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-modal-reject:hover {
+            background: #dc2626;
+        }
+
+        .clickable-row {
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .clickable-row:hover {
+            background: #f8fafc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar solid" id="navbar">
+        <div class="navbar-inner">
+            <a href="index.html" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <aside class="sidebar fade-up delay-1">
+            <div class="admin-profile">
+                <div class="admin-avatar" id="adminAvatar">A</div>
+                <h2 class="admin-name" id="adminName">Admin User</h2>
+                <p class="admin-email" id="adminEmail">admin@travelmate.com</p>
+            </div>
+            <ul class="sidebar-nav">
+                <li><a class="active" onclick="switchTab('dashboard', this)"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+                <li><a onclick="switchTab('guides', this)"><i class="fas fa-id-badge"></i> Guides</a></li>
+                <li><a onclick="switchTab('users', this)"><i class="fas fa-users"></i> Users</a></li>
+                <li><a onclick="switchTab('bookings', this)"><i class="fas fa-book"></i> Bookings</a></li>
+            </ul>
+            <button class="logout-btn" onclick="TmAuth.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </aside>
+
+        <main class="main-content fade-up delay-2">
+            <!-- DASHBOARD TAB -->
+            <section id="tab-dashboard" class="tab-content active">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-title">Total Users <i class="fas fa-users"></i></div>
+                        <div class="kpi-value" id="kpiUsers">0</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Total Guides <i class="fas fa-id-badge"></i></div>
+                        <div class="kpi-value" id="kpiGuides">0</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Pending Approvals <i class="fas fa-clock"></i></div>
+                        <div class="kpi-value" id="kpiPending" style="color:#d97706;">0</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-title">Total Bookings <i class="fas fa-ticket-alt"></i></div>
+                        <div class="kpi-value" id="kpiBookings">0</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GUIDES TAB -->
+            <section id="tab-guides" class="tab-content">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Guide Management</h2>
+                        <button onclick="fetchGuides()"
+                            style="background:none;border:none;color:var(--primary);cursor:pointer;"><i
+                                class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="guidesTableBody">
+                                <tr>
+                                    <td colspan="4" style="text-align:center;">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- USERS TAB -->
+            <section id="tab-users" class="tab-content">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>User Management</h2>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td colspan="4" style="text-align:center;">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BOOKINGS TAB -->
+            <section id="tab-bookings" class="tab-content">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Platform Bookings</h2>
+                    </div>
+                    <div style="overflow-x:auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Traveller</th>
+                                    <th>Guide</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingsTableBody">
+                                <tr>
+                                    <td colspan="5" style="text-align:center;">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- GUIDE DETAILS MODAL -->
+    <div class="modal-overlay" id="guideModalOverlay">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeGuideModal()"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <h2 class="modal-title" id="mGName">Guide Details</h2>
+            </div>
+            <div class="modal-body">
+                <div class="mdetail-item"><span class="mdetail-label">Email</span><span class="mdetail-value"
+                        id="mGEmail"></span></div>
+                <div class="mdetail-item"><span class="mdetail-label">Phone</span><span class="mdetail-value"
+                        id="mGPhone"></span></div>
+                <div class="mdetail-item"><span class="mdetail-label">Location</span><span class="mdetail-value"
+                        id="mGLocation"></span></div>
+                <div class="mdetail-item"><span class="mdetail-label">Status</span><span class="mdetail-value"
+                        id="mGStatus"></span></div>
+                <div class="mdetail-item"><span class="mdetail-label">Experience</span><span class="mdetail-value"
+                        id="mGExperience"></span></div>
+                <div class="mdetail-item"><span class="mdetail-label">Price / Day</span><span class="mdetail-value"
+                        id="mGPrice"></span></div>
+                <div class="mdetail-item modal-body-full">
+                    <span class="mdetail-label">Description (Bio)</span>
+                    <span class="mdetail-value" id="mGBio"
+                        style="line-height:1.6; font-size:0.8rem; color:#475569;"></span>
+                </div>
+            </div>
+            <div class="modal-footer" id="mGFooter">
+                <!-- Actions injected here dynamically depending on approval status -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(msg, type = 'success') {
+            if (typeof Toastify !== 'undefined') {
+                Toastify({
+                    text: msg,
+                    duration: 3000,
+                    gravity: "bottom",
+                    position: "right",
+                    backgroundColor: type === 'error' ? "#ef4444" : "#22c55e"
+                }).showToast();
+            } else {
+                alert(msg);
+            }
+        }
+
+        const API_URL = 'http://localhost:5000/api/admin';
+
+        async function apiFetch(endpoint, options = {}) {
+            const token = TmAuth.getToken();
+            if (!options.headers) options.headers = {};
+            options.headers['Authorization'] = `Bearer ${token}`;
+            options.headers['Content-Type'] = 'application/json';
+
+            const res = await fetch(`${API_URL}${endpoint}`, options);
+            if (!res.ok) {
+                let msg = 'API Request Failed';
+                try { const d = await res.json(); msg = d.message || msg; } catch (e) { }
+                throw new Error(msg);
+            }
+            return await res.json();
+        }
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            el.classList.add('active');
+        }
+
+        /* ── DATA FETCHING ── */
+        async function fetchAnalytics() {
+            try {
+                const data = await apiFetch('/analytics');
+                document.getElementById('kpiUsers').textContent = data.users;
+                document.getElementById('kpiGuides').textContent = data.guidesTotal;
+                document.getElementById('kpiPending').textContent = data.guidesPending;
+                document.getElementById('kpiBookings').textContent = data.bookings;
+            } catch (err) {
+                console.error(err); showToast(err.message, 'error');
+            }
+        }
+
+        async function fetchUsers() {
+            try {
+                const users = await apiFetch('/users');
+                const html = users.map(u => `
+          <tr>
+            <td style="font-weight:600;">${u.full_name}</td>
+            <td>${u.email}</td>
+            <td><span class="status-badge" style="background:#f1f5f9;color:#334155;">${u.role}</span></td>
+            <td>${new Date(u.created_at).toLocaleDateString()}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="4" style="text-align:center;">No users found.</td></tr>';
+                document.getElementById('usersTableBody').innerHTML = html;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function fetchBookings() {
+            try {
+                const bookings = await apiFetch('/bookings');
+                const html = bookings.map(b => {
+                    let badge = 'status-pending';
+                    if (b.status === 'completed') badge = 'status-approved';
+                    else if (b.status === 'cancelled') badge = '';
+                    return `
+          <tr>
+            <td>#${b.id}</td>
+            <td style="font-weight:500;">${b.traveller_name}</td>
+            <td style="font-weight:500;">${b.guide_name}</td>
+            <td>₹${b.total_price}</td>
+            <td><span class="status-badge ${badge}">${b.status.toUpperCase()}</span></td>
+          </tr>
+        `}).join('') || '<tr><td colspan="5" style="text-align:center;">No bookings found.</td></tr>';
+                document.getElementById('bookingsTableBody').innerHTML = html;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        let __guidesCache = [];
+
+        async function fetchGuides() {
+            try {
+                const guides = await apiFetch('/guides');
+                __guidesCache = guides;
+                const html = guides.map(g => {
+                    const isApproved = g.is_approved === 1 || g.is_approved === true || g.is_approved === '1';
+                    return `
+          <tr class="clickable-row" onclick="openGuideModal(${g.id})">
+            <td>
+              <div style="font-weight:600;">${g.full_name}</div>
+              <div style="font-size:0.75rem;color:#64748b;">${g.email}</div>
+            </td>
+            <td>${g.city_location || 'N/A'}</td>
+            <td>
+              <span class="status-badge ${isApproved ? 'status-approved' : 'status-pending'}">
+                ${isApproved ? 'Approved' : 'Pending'}
+              </span>
+            </td>
+            <td onclick="event.stopPropagation()">
+              ${!isApproved ? `<button class="action-btn btn-approve" onclick="approveGuide(${g.id})" title="Approve"><i class="fas fa-check"></i></button>` : ''}
+              <button class="action-btn btn-reject" onclick="rejectGuide(${g.id})" title="${isApproved ? 'Revoke/Delete' : 'Reject'}"><i class="fas fa-times"></i></button>
+            </td>
+          </tr>
+        `}).join('') || '<tr><td colspan="4" style="text-align:center;">No guides found.</td></tr>';
+                document.getElementById('guidesTableBody').innerHTML = html;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        /* ── MODAL ACTIONS ── */
+        function openGuideModal(id) {
+            const g = __guidesCache.find(x => x.id === id);
+            if (!g) return;
+            const isApproved = g.is_approved === 1 || g.is_approved === true || g.is_approved === '1';
+
+            document.getElementById('mGName').textContent = g.full_name;
+            document.getElementById('mGEmail').textContent = g.email;
+            document.getElementById('mGPhone').textContent = g.phone_number || 'N/A';
+            document.getElementById('mGLocation').textContent = g.city_location || 'N/A';
+            document.getElementById('mGExperience').textContent = g.years_of_experience ? g.years_of_experience + ' years' : 'N/A';
+            document.getElementById('mGPrice').textContent = g.price_per_day ? '₹' + g.price_per_day : 'N/A';
+            document.getElementById('mGBio').textContent = g.short_bio || 'No description provided.';
+
+            const statusHtml = `<span class="status-badge ${isApproved ? 'status-approved' : 'status-pending'}">${isApproved ? 'Approved' : 'Pending'}</span>`;
+            document.getElementById('mGStatus').innerHTML = statusHtml;
+
+            let footerHtml = '';
+            if (!isApproved) {
+                footerHtml += `<button class="btn-modal btn-modal-approve" onclick="approveGuide(${g.id}, true)"><i class="fas fa-check"></i> Approve</button>`;
+            }
+            footerHtml += `<button class="btn-modal btn-modal-reject" onclick="rejectGuide(${g.id}, true)"><i class="fas fa-times"></i> ${isApproved ? 'Revoke' : 'Reject'}</button>`;
+            document.getElementById('mGFooter').innerHTML = footerHtml;
+
+            document.getElementById('guideModalOverlay').classList.add('active');
+        }
+
+        function closeGuideModal() {
+            document.getElementById('guideModalOverlay').classList.remove('active');
+        }
+
+        /* ── ACTIONS ── */
+        async function approveGuide(id, fromModal = false) {
+            if (!confirm("Approve this guide?")) return;
+            try {
+                await apiFetch(`/guides/${id}/approve`, { method: 'PUT' });
+                showToast('Guide approved successfully');
+                if (fromModal) closeGuideModal();
+                fetchGuides(); fetchAnalytics();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        async function rejectGuide(id, fromModal = false) {
+            if (!confirm("Are you sure you want to reject/remove this guide?")) return;
+            try {
+                await apiFetch(`/guides/${id}/reject`, { method: 'DELETE' });
+                showToast('Guide rejected successfully');
+                if (fromModal) closeGuideModal();
+                fetchGuides(); fetchAnalytics();
+            } catch (e) { showToast(e.message, 'error'); }
+        }
+
+        /* ── INIT ── */
+        document.addEventListener('DOMContentLoaded', () => {
+            const u = TmAuth.getUser();
+            if (!u || u.role !== 'Admin') {
+                window.location.href = 'index.html'; return;
+            }
+
+            // Inject admin details
+            document.getElementById('adminName').textContent = u.name;
+            document.getElementById('adminEmail').textContent = u.email;
+            document.getElementById('adminAvatar').textContent = u.name[0].toUpperCase();
+
+            // Fire fetches
+            fetchAnalytics();
+            fetchUsers();
+            fetchGuides();
+            fetchBookings();
+
+            // Animations
+            document.querySelectorAll('.fade-up').forEach(el => {
+                setTimeout(() => el.classList.add('visible'), 50);
+            });
+        });
+    </script>
+</body>
+
+</html>

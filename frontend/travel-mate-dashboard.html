@@ -686,6 +686,8 @@
           <input type="email" id="settingsEmail" class="profile-input" placeholder="Email" required disabled
             title="Cannot change email">
           <input type="text" id="settingsPhone" class="profile-input" placeholder="Phone Number">
+          <input type="text" id="settingsLocation" class="profile-input" placeholder="Location, e.g. New York, USA">
+          <textarea id="settingsBio" class="profile-input" rows="3" placeholder="Tell us about yourself..."></textarea>
           <button type="submit" id="settingsSaveBtn"
             style="background:var(--primary);color:white;border:none;padding:11px 24px;border-radius:20px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:0.2s;margin-top:4px;display:block;">Save
             Changes</button>
@@ -721,6 +723,15 @@
             if (sEmail) sEmail.value = data.email;
             var sPhone = document.getElementById('settingsPhone');
             if (sPhone) sPhone.value = data.phone_number || '';
+            var sLoc = document.getElementById('settingsLocation');
+            if (sLoc) sLoc.value = data.location || '';
+            var sBio = document.getElementById('settingsBio');
+            if (sBio) sBio.value = data.bio || '';
+
+            var locEl = document.getElementById('dashLocation');
+            if (locEl) locEl.textContent = data.location || 'Location not set';
+            var bioEl = document.getElementById('dashBio');
+            if (bioEl) bioEl.textContent = data.bio || 'Passionate traveller exploring the world ✈️';
           }
         }).catch(console.error);
 
@@ -742,7 +753,9 @@
             body: JSON.stringify({
               full_name: document.getElementById('settingsName').value,
               email: document.getElementById('settingsEmail').value,
-              phone_number: document.getElementById('settingsPhone').value
+              phone_number: document.getElementById('settingsPhone').value,
+              location: document.getElementById('settingsLocation').value,
+              bio: document.getElementById('settingsBio').value
             })
           })
             .then(res => res.json())
@@ -763,12 +776,7 @@
         });
       }
 
-      /* populate profile card */
-      var profile = JSON.parse(localStorage.getItem('tm_profile') || '{}');
-      var locEl = document.getElementById('dashLocation');
-      if (locEl) locEl.textContent = profile.location || 'Location not set';
-      var bioEl = document.getElementById('dashBio');
-      if (bioEl) bioEl.textContent = profile.bio || 'Passionate traveller exploring the world ✈️';
+      /* populate profile stats */
       var ptsEl = document.getElementById('dashPoints');
       var currentPts = (Number(localStorage.getItem('tm_points') || 0)).toLocaleString();
       if (ptsEl) {

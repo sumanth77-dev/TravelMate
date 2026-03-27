@@ -12,7 +12,7 @@ const Review = {
 
     findByGuideId: async (guideId) => {
         const query = `
-      SELECT r.*, u.full_name AS user_name, u.profile_photo AS user_photo 
+      SELECT r.*, u.full_name AS user_name, NULL AS user_photo 
       FROM reviews r
       JOIN users u ON r.user_id = u.id
       WHERE r.guide_id = ?

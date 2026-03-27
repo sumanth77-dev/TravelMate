@@ -19,6 +19,7 @@ const TmAuth = (() => {
   const logout = () => {
     localStorage.removeItem(KEY);
     localStorage.removeItem('tm_token');
+    localStorage.removeItem('tm_active_role');
     window.location.href = 'index.html';
   };
 
@@ -48,10 +49,20 @@ const TmAuth = (() => {
   /* ── redirect by role if on wrong dashboard ── */
   const guardDashboard = () => {
     const u = getUser(); const path = window.location.pathname;
-    if (path.includes('travel-mate-dashboard') && u && u.role === 'Guide') { window.location.href = 'guide-dashboard.html'; return; }
-    if (path.includes('guide-dashboard')) {
-      if (!u) { window.location.href = 'login.html'; return; }
-      if (u.role !== 'Guide') { window.location.href = 'travel-mate-dashboard.html'; }
+
+    // Only map guards across explicit internal dash layers
+    if (path.includes('dashboard')) {
+      if (path.includes('admin-dashboard')) {
+        if (!u || u.role !== 'Admin') { window.location.href = 'index.html'; return; }
+      } else {
+        if (u && u.role === 'Admin') { window.location.href = 'admin-dashboard.html'; return; }
+
+        if (path.includes('travel-mate-dashboard') && u && u.role === 'Guide') { window.location.href = 'guide-dashboard.html'; return; }
+        if (path.includes('guide-dashboard')) {
+          if (!u) { window.location.href = 'login.html'; return; }
+          if (u.role !== 'Guide' && u.role !== 'Both') { window.location.href = 'travel-mate-dashboard.html'; }
+        }
+      }
     }
   };
 
@@ -82,9 +93,18 @@ const TmAuth = (() => {
       });
 
       if (user) {
-        const isGuide = user.role === 'Guide';
-        const dashHref = isGuide ? 'guide-dashboard.html' : 'travel-mate-dashboard.html';
+        const activeRole = localStorage.getItem('tm_active_role') || user.role;
+        const isGuide = activeRole === 'Guide';
+        const dashHref = user.role === 'Admin' ? 'admin-dashboard.html' : (isGuide ? 'guide-dashboard.html' : 'travel-mate-dashboard.html');
         const avatarSrc = user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=22c55e&color=fff&size=32`;
+
+        /* Explicit "Admin Panel" link if Admin */
+        if (user.role === 'Admin') {
+          const adminBtn = document.createElement('li');
+          adminBtn.setAttribute('data-auth', 'user');
+          adminBtn.innerHTML = `<a href="admin-dashboard.html" style="font-weight:700; color:#16a34a;"><i class="fas fa-shield-alt"></i> Admin Panel</a>`;
+          ul.appendChild(adminBtn);
+        }
 
         /* Profile icon only - links to dashboard */
         const profileLi = document.createElement('li');
@@ -200,13 +220,48 @@ const TmAuth = (() => {
 
   /* auto-run on DOMContentLoaded */
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { guardDashboard(); applyNav(); });
+    /* ── Init ── */
+    document.addEventListener('DOMContentLoaded', () => {
+      guardDashboard();
+      applyNav();
+
+      // Cross-Layout Administrative Notification Listener
+      const currUser = getUser();
+      if (currUser && currUser.role === 'Admin') {
+        fetch('http://localhost:5000/api/admin/analytics', { headers: { 'Authorization': 'Bearer ' + getToken() } })
+          .then(res => res.json())
+          .then(data => {
+            if (data.guidesPending > 0) {
+              const c = data.guidesPending;
+              document.querySelectorAll('.tm-notif-badge').forEach(b => {
+                b.innerHTML = `<i class="fas fa-exclamation" style="font-size:8px;"></i> ${c}`;
+                b.style.display = 'flex';
+              });
+              const panel = document.getElementById('tmNotifList');
+              if (panel) {
+                panel.innerHTML = `<a href="admin-dashboard.html" style="text-decoration:none;">
+                          <div style="padding:16px 18px;border-bottom:1px solid #f3f4f6;display:flex;gap:14px;background:#fefce8;transition:background 0.2s;">
+                              <div style="width:36px;height:36px;border-radius:12px;background:#fef9c3;color:#ca8a04;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">
+                                  <i class="fas fa-user-shield"></i>
+                              </div>
+                              <div>
+                                  <p style="margin:0 0 4px;font-size:0.9rem;color:#1f2937;font-weight:700;">Action Required</p>
+                                  <p style="margin:0 0 6px;font-size:0.8rem;color:#4b5563;">${c} Guides are currently waiting for your internal approval matrices.</p>
+                                  <span style="font-size:0.7rem;color:#9ca3af;font-weight:600;"><i class="fas fa-circle" style="color:#ef4444;font-size:6px;vertical-align:middle;margin-right:2px;"></i> Live Updates</span>
+                              </div>
+                          </div>
+                      </a>` + panel.innerHTML;
+              }
+            }
+          }).catch(err => console.error('Silent admin polling exception:', err));
+      }
+    });
   } else {
     guardDashboard(); applyNav();
   }
 
   return {
-    getUser, isLogged, login, logout, applyNav,
+    getUser, getToken, isLogged, login, logout, applyNav,
     addNotif, getNotifs, markAllRead, unreadCount, toggleNotifPanel, updateNotifBadge
   };
 })();

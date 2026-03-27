@@ -750,15 +750,11 @@
 					<div
 						style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;background:#fff;padding:12px 16px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);border:1px solid #f1f5f9;">
 						<div style="display:flex;gap:12px;flex-wrap:wrap;">
-							<select class="cm-input"
-								style="width:auto;padding:8px 12px;font-size:13px;border-radius:6px;background:#f8fafc;border-color:#e2e8f0;">
-								<option value="">Filter by Location</option>
-								<option value="Asia">Asia</option>
-								<option value="Europe">Europe</option>
-								<option value="Americas">Americas</option>
-							</select>
-							<select class="cm-input"
-								style="width:auto;padding:8px 12px;font-size:13px;border-radius:6px;background:#f8fafc;border-color:#e2e8f0;">
+							<input type="text" id="searchInput" class="cm-input"
+								placeholder="Search by place or location..."
+								style="width:250px;padding:8px 12px;font-size:13px;border-radius:6px;background:#f8fafc;border:1px solid #e2e8f0;">
+							<select class="cm-input" id="budgetFilter"
+								style="width:auto;padding:8px 12px;font-size:13px;border-radius:6px;background:#f8fafc;border:1px solid #e2e8f0;">
 								<option value="">Filter by Budget</option>
 								<option value="low">Under ₹5000</option>
 								<option value="med">₹5000 - ₹15000</option>
@@ -785,105 +781,13 @@
 			<!-- ══════ SIDEBAR ══════ -->
 			<div class="sidebar-wrapper">
 
-				<!-- Trending Places Widget -->
-				<div class="widget">
-					<h3 class="widget-title"><i class="fas fa-fire"></i> Trending Places</h3>
-					<div class="trend-item">
-						<img src="https://images.unsplash.com/photo-1544644181-1484b3f8c8b6?w=200&q=80"
-							class="trend-img" loading="lazy">
-						<div class="trend-info">
-							<h4>Uluwatu Temple</h4>
-							<p>Bali, Indonesia</p>
-							<div class="trend-meta"><i class="fas fa-star" style="color:#f59e0b;"></i> 4.9 <span
-									style="color:#94a3b8;font-weight:500;">(420 posts)</span></div>
-						</div>
-					</div>
-					<div class="trend-item">
-						<img src="https://images.unsplash.com/photo-1512100356356-de1b84283e18?w=200&q=80"
-							class="trend-img" loading="lazy">
-						<div class="trend-info">
-							<h4>Shibuya Crossing</h4>
-							<p>Tokyo, Japan</p>
-							<div class="trend-meta"><i class="fas fa-star" style="color:#f59e0b;"></i> 4.8 <span
-									style="color:#94a3b8;font-weight:500;">(385 posts)</span></div>
-						</div>
-					</div>
-					<div class="trend-item">
-						<img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=200&q=80"
-							class="trend-img" loading="lazy">
-						<div class="trend-info">
-							<h4>Oia Village</h4>
-							<p>Santorini, Greece</p>
-							<div class="trend-meta"><i class="fas fa-star" style="color:#f59e0b;"></i> 4.7 <span
-									style="color:#94a3b8;font-weight:500;">(312 posts)</span></div>
-						</div>
-					</div>
-				</div>
 
 				<!-- Top Travelers Widget -->
 				<div class="widget">
 					<h3 class="widget-title"><i class="fas fa-trophy"></i> Top Travelers</h3>
-					<div class="traveler-item">
-						<div class="trav-left">
-							<img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" loading="lazy">
-							<div>
-								<h4>Elena R.</h4>
-								<p>128 Posts · 4.5k Followers</p>
-							</div>
-						</div>
-						<button class="btn-follow" onclick="if(!TmAuth.isLogged()){window.location.href='login.html';}else{this.innerHTML='Following'; this.style.background='#e2e8f0'; this.style.color='#0f172a';}">Follow</button>
-					</div>
-					<div class="traveler-item">
-						<div class="trav-left">
-							<img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80">
-							<div>
-								<h4>Marcus T.</h4>
-								<p>94 Posts · 3.2k Followers</p>
-							</div>
-						</div>
-						<button class="btn-follow" onclick="if(!TmAuth.isLogged()){window.location.href='login.html';}else{this.innerHTML='Following'; this.style.background='#e2e8f0'; this.style.color='#0f172a';}">Follow</button>
-					</div>
-					<div class="traveler-item">
-						<div class="trav-left">
-							<img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80">
-							<div>
-								<h4>Aisha P.</h4>
-								<p>87 Posts · 2.9k Followers</p>
-							</div>
-						</div>
-						<button class="btn-follow">Follow</button>
-					</div>
-				</div>
-
-				<!-- Travel Tips Widget -->
-				<div class="widget">
-					<h3 class="widget-title"><i class="fas fa-lightbulb" style="color:#3b82f6;"></i> Pro Tips</h3>
-					<div class="tip-card" style="border-left-color:#f59e0b;">
-						<h4>💰 Budget Hack</h4>
-						<p>Book local trains instead of bullet trains in Japan to save up to 60% on transit.</p>
-					</div>
-					<div class="tip-card" style="border-left-color:#3b82f6;">
-						<h4>🛡 Safety First</h4>
-						<p>Always keep a digital offline copy of your passport on your phone's secure folder.</p>
-					</div>
-					<div class="tip-card" style="border-left-color:#8b5cf6;">
-						<h4>🗺 Hidden Gems</h4>
-						<p>In Paris, visit the quiet Rue des Thermopyles instead of crowded tourist streets for perfect
-							photos.</p>
-					</div>
-				</div>
-
-				<!-- Map Widget -->
-				<div class="widget">
-					<h3 class="widget-title"><i class="fas fa-map-marked-alt" style="color:#ef4444;"></i> Global Map
-					</h3>
-					<div class="map-placeholder">
-						<img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&q=80" alt="World Map">
-						<div class="map-overlay">
-							<button class="btn-hero primary"
-								style="padding:10px 20px;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.2);">Explore
-								Map View</button>
-						</div>
+					<div id="topTravelersContainer">
+						<div style="font-size:13px; color:#94a3b8; text-align:center; padding:10px;">Loading
+							travelers...</div>
 					</div>
 				</div>
 
@@ -973,20 +877,7 @@
 		</div>
 	</div>
 
-	<!-- Chat Modal -->
-	<div id="chatModal" class="chat-modal">
-		<div class="chat-box">
-			<div class="chat-header">
-				<span id="chatUser">Chat</span>
-				<button onclick="closeChat()">✖</button>
-			</div>
-			<div class="chat-messages" id="chatMessages"></div>
-			<div class="chat-input">
-				<input type="text" id="chatInput" placeholder="Type a message...">
-				<button onclick="sendMessage()">Send</button>
-			</div>
-		</div>
-	</div>
+
 
 	<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
@@ -1021,37 +912,14 @@
 		let currentFilter = 'latest';
 
 		const filterLabels = {
-			latest: 'Sorted by: Latest',
-			popular: 'Sorted by: Most Popular ❤',
-			toprated: 'Sorted by: Top Rated ⭐'
+			latest: 'Sorted by: Recent',
+			popular: 'Sorted by: Trending 🔥',
+			toprated: 'Sorted by: Most Liked ❤'
 		};
 
-		function sortPosts(filter) {
-			const list = document.getElementById('postsList');
-			const posts = Array.from(list.querySelectorAll('.post-card'));
-
-			list.classList.add('sorting');
-
-			posts.sort((a, b) => {
-				if (filter === 'latest') {
-					return Number(b.dataset.timestamp) - Number(a.dataset.timestamp);
-				}
-				if (filter === 'popular') {
-					const likesA = Number(a.querySelector('.like-count').textContent);
-					const likesB = Number(b.querySelector('.like-count').textContent);
-					return likesB - likesA;
-				}
-				if (filter === 'toprated') {
-					return Number(b.dataset.rating) - Number(a.dataset.rating);
-				}
-				return 0;
-			});
-
-			setTimeout(() => {
-				posts.forEach(p => list.appendChild(p));
-				list.classList.remove('sorting');
-				document.getElementById('sortLabel').textContent = filterLabels[filter];
-			}, 200);
+		function runFilters() {
+			document.getElementById('sortLabel').textContent = filterLabels[currentFilter] || '';
+			loadPosts(currentCategoryFilter);
 		}
 
 		document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -1059,9 +927,23 @@
 				document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
 				this.classList.add('active');
 				currentFilter = this.dataset.filter;
-				sortPosts(currentFilter);
+				runFilters();
 			});
 		});
+
+		let searchTimeout;
+		const searchInp = document.getElementById('searchInput');
+		if (searchInp) {
+			searchInp.addEventListener('input', () => {
+				clearTimeout(searchTimeout);
+				searchTimeout = setTimeout(runFilters, 400);
+			});
+		}
+
+		const budgetSel = document.getElementById('budgetFilter');
+		if (budgetSel) {
+			budgetSel.addEventListener('change', runFilters);
+		}
 
 		/* ══════════════════════════════
 		   CREATE POST MODAL
@@ -1096,12 +978,13 @@
 		dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('over'); handleFiles(e.dataTransfer.files); });
 		fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
+		let uploadedFiles = [];
 		function handleFiles(files) {
 			Array.from(files).forEach(file => {
 				if (!file.type.startsWith('image/')) return;
+				uploadedFiles.push(file); // Raw file mapping
 				const fr = new FileReader();
 				fr.onload = () => {
-					uploadedImages.push(fr.result);
 					const box = document.createElement('div');
 					box.className = 'preview-item';
 					box.innerHTML = `<img src="${fr.result}" alt="${file.name}">`;
@@ -1118,7 +1001,7 @@
 			[...ratingEl.querySelectorAll('.star')].forEach(st => st.textContent = Number(st.dataset.value) <= val ? '★' : '☆');
 		});
 
-		document.getElementById('publishBtn').addEventListener('click', () => {
+		document.getElementById('publishBtn').addEventListener('click', async () => {
 			const place = document.getElementById('placeInput').value.trim();
 			const loc = document.getElementById('locationInput').value.trim();
 			const cat = document.getElementById('categoryInput').value;
@@ -1132,61 +1015,67 @@
 			if (!loc) { showToast('Please enter a location!'); return; }
 			if (!cap) { showToast('Please write a travel description!'); return; }
 
-			// Save to localStorage as community_posts
-			const post = {
-				id: Date.now(),
-				place: place,
-				location: loc,
-				category: cat,
-				budget: budget,
-				bestTime: time,
-				caption: cap,
-				tips: tips,
-				rating: rating,
-				images: uploadedImages.slice(),
-				date: new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }),
-				author: (TmAuth.getUser() && TmAuth.getUser().name) || 'Traveller',
-				likes: 0
-			};
-			const allPosts = JSON.parse(localStorage.getItem('community_posts') || '[]');
-			allPosts.unshift(post);
-			localStorage.setItem('community_posts', JSON.stringify(allPosts));
+			const user = TmAuth.getUser();
+			if (!user) {
+				showToast('Please login to post!', 'error');
+				setTimeout(() => window.location.href = 'login.html', 1500);
+				return;
+			}
 
-			// Also save to tm_posts (dashboard)
-			const dashPosts = JSON.parse(localStorage.getItem('tm_posts') || '[]');
-			dashPosts.unshift(post);
-			localStorage.setItem('tm_posts', JSON.stringify(dashPosts));
+			const formData = new FormData();
+			formData.append('place_name', place);
+			formData.append('location', loc);
+			formData.append('category', cat);
+			if (budget) formData.append('budget', budget);
+			if (time) formData.append('best_time', time);
+			formData.append('caption', cap);
+			formData.append('tips', tips);
+			formData.append('rating', rating);
 
-			const pts = 50 + (uploadedImages.length * 10);
-			setPoints(getPoints() + pts);
-			showToast('Post published — +' + pts + ' points 🎉');
-			addPostToList(post);
-			closeModal();
-			setTimeout(() => sortPosts(currentFilter), 50);
+			uploadedFiles.forEach(file => formData.append('images', file));
+
+			const btn = document.getElementById('publishBtn');
+			btn.disabled = true; btn.textContent = 'Analyzing Context...';
+			try {
+				const res = await fetch('http://localhost:5000/api/community/posts', {
+					method: 'POST',
+					headers: { 'Authorization': 'Bearer ' + TmAuth.getToken() },
+					body: formData
+				});
+				const data = await res.json();
+				if (!res.ok) throw new Error(data.message || 'Failed to post.');
+
+				showToast(`Analysis matched: ${data.assignedCategory} • +50 Points`);
+				closeModal();
+				loadPosts(currentCategoryFilter);
+			} catch (e) {
+				showToast(e.message, 'error');
+			} finally {
+				btn.disabled = false; btn.textContent = 'Post Travel Experience (+50 points)';
+			}
 		});
 
 		function buildPostCard(p) {
-			const imgs = p.images && p.images.length
-				? p.images.map(img => `<img src="${img}" style="width:100%;max-height:400px;object-fit:cover;display:block;border-radius:12px;">`).join('')
-				: `<img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1400&q=80" style="width:100%;max-height:400px;object-fit:cover;display:block;border-radius:12px;">`;
-			const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(p.author || 'T')}&background=dcfce7&color=16a34a&size=40`;
+			const parsedImages = p.images ? p.images.map(img => img.startsWith('http') ? img : 'http://localhost:5000/' + img) : [];
+			const avatarUrl = p.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.author_name || 'T')}&background=dcfce7&color=16a34a&size=40`;
 			const stars = '★'.repeat(p.rating || 0) + '☆'.repeat(5 - (p.rating || 0));
-			const nowTs = p.id || Date.now();
 
-			// Build tags line
 			let tagsHtml = '';
 			if (p.category) tagsHtml += `<span style="background:#f1f5f9;color:#475569;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;"><i class="fas fa-tag"></i> ${escapeHtml(p.category)}</span>`;
 			if (p.budget) tagsHtml += `<span style="background:#f0fdf4;color:#166534;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;"><i class="fas fa-wallet"></i> ₹${escapeHtml(p.budget)}</span>`;
-			if (p.bestTime) tagsHtml += `<span style="background:#fffbeb;color:#92400e;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;"><i class="fas fa-calendar-alt"></i> Best Time: ${escapeHtml(p.bestTime)}</span>`;
+			if (p.best_time) tagsHtml += `<span style="background:#fffbeb;color:#92400e;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;"><i class="fas fa-calendar-alt"></i> Best Time: ${escapeHtml(p.best_time)}</span>`;
+
+			// Transform date to pleasant syntax
+			const dStr = p.created_at ? new Date(p.created_at).toLocaleDateString() : 'just now';
 
 			return `
-				<article class="post-card" data-timestamp="${Math.floor(nowTs / 1000)}" data-likes="${p.likes || 0}" data-rating="${p.rating || 0}">
+				<article class="post-card" data-id="${p.id}" data-timestamp="${new Date(p.created_at).getTime()}" data-likes="${p.likes || 0}" data-rating="${p.rating || 0}">
 					<header class="post-header" style="align-items:flex-start;">
 						<div class="author" style="cursor:pointer;" title="View Profile">
 							<img src="${avatarUrl}" alt="avatar" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">
 							<div>
-								<div class="author-name" style="font-size:15px; transition:color .2s;">${escapeHtml(p.author || 'Traveller')}</div>
-								<div class="author-meta">📍 ${escapeHtml(p.place || p.location || '')} · ${escapeHtml(p.location || '')} · ${p.date || 'just now'}</div>
+								<div class="author-name" style="font-size:15px; transition:color .2s;">${escapeHtml(p.author_name || 'Traveller')}</div>
+								<div class="author-meta">📍 ${escapeHtml(p.place_name || p.location || '')} · ${escapeHtml(p.location || '')} · ${dStr}</div>
 							</div>
 						</div>
 						<div class="post-stars">${stars}</div>
@@ -1194,16 +1083,17 @@
 					
 					<div style="padding:16px;">
 						<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">${tagsHtml}</div>
-						<p style="font-size:14.5px;line-height:1.6;color:#1e293b;margin-bottom:12px;">${escapeHtml(p.caption || '')}</p>
+						<p class="post-caption" style="font-size:14.5px;line-height:1.6;color:#1e293b;margin-bottom:12px;">${escapeHtml(p.caption || '')}</p>
 						${p.tips ? `<div style="background:#f8fafc;border-left:4px solid #3b82f6;padding:12px;border-radius:0 8px 8px 0;margin-bottom:16px;"><strong style="font-size:13px;color:#1e293b;display:block;margin-bottom:4px;">💡 Travel Tips:</strong><p style="font-size:13px;color:#475569;margin:0;">${escapeHtml(p.tips)}</p></div>` : ''}
 					</div>
 
+					${parsedImages.length > 0 ? `
 					<div style="padding:0 16px 16px;">
-					${p.images && p.images.length > 1
-					? `<div class="post-image-scroll" style="display:flex;overflow-x:auto;gap:8px;scroll-snap-type:x mandatory;scrollbar-width:thin;padding-bottom:8px;">${p.images.map(img => `<img src="${img}" style="width:85%;max-height:360px;object-fit:cover;border-radius:12px;scroll-snap-align:center;flex-shrink:0;">`).join('')}</div>`
-					: `<div class="post-image" style="border-radius:12px;overflow:hidden;">${imgs}</div>`
-				}
-					</div>
+					${parsedImages.length > 1
+						? `<div class="post-image-scroll" style="display:flex;overflow-x:auto;gap:8px;scroll-snap-type:x mandatory;scrollbar-width:thin;padding-bottom:8px;">${parsedImages.map(img => `<img src="${img}" style="width:85%;max-height:360px;object-fit:cover;border-radius:12px;scroll-snap-align:center;flex-shrink:0;">`).join('')}</div>`
+						: `<div class="post-image" style="border-radius:12px;overflow:hidden;"><img src="${parsedImages[0]}" style="width:100%;max-height:400px;object-fit:cover;display:block;border-radius:12px;"></div>`
+					}
+					</div>` : ''}
 					
 					<footer class="post-footer" style="border-top:1px solid #f1f5f9;padding-top:12px;">
 						<div class="post-actions">
@@ -1228,18 +1118,10 @@
 			document.getElementById('postsList').insertAdjacentHTML('afterbegin', buildPostCard(p));
 		}
 
-		/* Load saved community posts on page load */
-		(function loadSavedPosts() {
-			let saved = JSON.parse(localStorage.getItem('community_posts') || '[]');
+		let currentCategoryFilter = '';
 
-			// Clean up legacy dummy posts if they exist in localStorage
-			const legacyNames = ['Sarah Miller', 'James Chen', 'Amara Osei'];
-			const filtered = saved.filter(p => !legacyNames.includes(p.author));
-			if (saved.length !== filtered.length) {
-				localStorage.setItem('community_posts', JSON.stringify(filtered));
-				saved = filtered;
-			}
-
+		async function loadPosts(categoryMap = '') {
+			currentCategoryFilter = categoryMap;
 			const list = document.getElementById('postsList');
 
 			// Shimmer Skeleton Loader
@@ -1258,21 +1140,80 @@
 				</article>
 			`).join('');
 
-			setTimeout(() => {
-				if (!saved.length) {
+			try {
+				let url = 'http://localhost:5000/api/community/posts?sort=' + currentFilter;
+				if (categoryMap && categoryMap !== 'All') url += '&category=' + encodeURIComponent(categoryMap);
+
+				const searchVal = document.getElementById('searchInput').value.trim();
+				const budgetVal = document.getElementById('budgetFilter').value;
+				if (searchVal) url += '&search=' + encodeURIComponent(searchVal);
+				if (budgetVal) url += '&budget=' + encodeURIComponent(budgetVal);
+
+				const res = await fetch(url);
+				const posts = await res.json();
+
+				if (!posts || !posts.length) {
 					list.innerHTML = `
 						<div style="text-align:center; padding: 60px 40px; background: #fff; border-radius: 16px; border: 1px solid #e2e8f0;">
 							<i class="fas fa-camera-retro" style="font-size:3.5rem; color:#cbd5e1; margin-bottom:16px;"></i>
 							<h3 style="color:#475569; margin-bottom:8px; font-family:'Playfair Display',serif; font-size:1.5rem;">No stories yet</h3>
 							<p style="color:#64748b; font-size:0.95rem;">Be the first to share a travel experience with the community!</p>
-							<button class="btn btn-primary" onclick="document.getElementById('postModal').classList.add('open')" style="margin-top:20px;"><i class="fas fa-plus"></i> Share a Story</button>
+							<button class="btn btn-primary" onclick="document.getElementById('openCreatePost').click()" style="margin-top:20px;"><i class="fas fa-plus"></i> Share a Story</button>
 						</div>`;
 					return;
 				}
+
 				list.innerHTML = '';
-				saved.forEach(p => list.insertAdjacentHTML('beforeend', buildPostCard(p)));
-			}, 500);
-		})();
+				posts.forEach(p => list.insertAdjacentHTML('beforeend', buildPostCard(p)));
+			} catch (e) {
+				list.innerHTML = `<div style="text-align:center;color:red;padding:40px;">Failed to load feed from server.</div>`;
+			}
+		}
+
+
+
+		// Connect the specific Aesthetic Filter Pill Buttons to trigger API query filters directly!
+		document.querySelectorAll('.cat-pill').forEach(btn => {
+			btn.addEventListener('click', function () {
+				document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+				this.classList.add('active');
+				loadPosts(this.dataset.cat);
+			});
+		});
+
+		async function loadTopTravelers() {
+			try {
+				const res = await fetch('http://localhost:5000/api/community/top-travelers');
+				const travelers = await res.json();
+				const container = document.getElementById('topTravelersContainer');
+
+				if (!travelers || travelers.length === 0) {
+					container.innerHTML = '<div style="font-size:13px; color:#94a3b8; text-align:center;">No travelers found</div>';
+					return;
+				}
+
+				container.innerHTML = travelers.map(t => {
+					const avatar = t.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(t.full_name || 'T')}&background=dcfce7&color=16a34a&size=40`;
+					return `
+					<div class="traveler-item">
+						<div class="trav-left" style="cursor:pointer;" onclick="localStorage.setItem('tm_targetUser', '${escapeHtml(t.full_name)}'); window.location.href='user-profile.html';">
+							<img src="${avatar}" loading="lazy">
+							<div>
+								<h4 style="transition: color 0.2s;">${escapeHtml(t.full_name)}</h4>
+								<p>${t.post_count} Post${t.post_count !== 1 ? 's' : ''}</p>
+							</div>
+						</div>
+						<button class="btn-follow" onclick="if(!TmAuth.isLogged()){window.location.href='login.html';}else{this.innerHTML='Following'; this.style.background='#e2e8f0'; this.style.color='#0f172a';}">Follow</button>
+					</div>`;
+				}).join('');
+			} catch (e) {
+				console.error("Aggregation failure fetching top travelers", e);
+			}
+		}
+
+		// Initialize Call Loops
+		loadPosts();
+		loadTopTravelers();
 
 		function escapeHtml(s) { return String(s).replace(/[&"'<>]/g, c => ({ '&': '&amp;', '"': '&quot;', '\'': '&#39;', '<': '&lt;', '>': '&gt;' }[c])); }
 		function clearForm() {
@@ -1300,6 +1241,7 @@
 
 			// LIKE — also updates data-likes for sort
 			if (e.target.closest('.like-btn')) {
+				if (!TmAuth.getUser()) { showToast('Please login to engage!', 'error'); return; }
 				const btn = post.querySelector('.like-btn');
 				const countEl = btn.querySelector('.like-count');
 				let count = Number(countEl.textContent);
@@ -1309,6 +1251,13 @@
 				const newCount = liked ? count - 1 : count + 1;
 				countEl.textContent = newCount;
 				post.dataset.likes = newCount;
+
+				// Sync with MySQL
+				fetch('http://localhost:5000/api/community/posts/' + post.dataset.id + '/like', {
+					method: 'PUT',
+					headers: { 'Authorization': 'Bearer ' + TmAuth.getToken() }
+				}).catch(e => console.error('Silent like sync error:', e));
+
 				// re-sort if in popular mode
 				if (currentFilter === 'popular') sortPosts('popular');
 				return;
@@ -1316,67 +1265,100 @@
 
 			// MESSAGE
 			if (e.target.closest('.message-btn')) {
-				openChat(post.querySelector('.author-name').textContent);
+				const postId = post.dataset.id;
+				const commentsSection = post.querySelector('.comments-section');
+
+				if (commentsSection.style.display === 'none' || !commentsSection.style.display) {
+					commentsSection.style.display = 'block';
+					loadComments(postId, post);
+				} else {
+					commentsSection.style.display = 'none';
+				}
 				return;
 			}
 
 			// SHARE
 			if (e.target.closest('.share-btn')) {
-				const text = post.querySelector('.post-body p').textContent;
+				const textNode = post.querySelector('.post-caption');
+				const text = textNode ? textNode.textContent : 'Check out this travel experience on TravelMate!';
 				navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!'));
 				return;
 			}
 
 			// COMMENT
 			if (e.target.closest('.add-comment')) {
+				if (!TmAuth.isLogged()) {
+					window.location.href = 'login.html';
+					return;
+				}
+
 				const input = post.querySelector('.comment-input');
-				const list = post.querySelector('.comments-list');
-				if (!input.value.trim()) return;
-				const p = document.createElement('p');
-				p.style.cssText = 'margin:4px 0;font-size:13px;';
-				p.textContent = 'You: ' + input.value;
-				list.appendChild(p);
-				input.value = '';
-				post.querySelector('.comments-section').style.display = 'block';
+				const text = input.value.trim();
+				if (!text) return;
+
+				const btn = e.target.closest('.add-comment');
+				btn.disabled = true;
+
+				const postId = post.dataset.id;
+
+				fetch(`http://localhost:5000/api/community/posts/${postId}/comments`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': 'Bearer ' + TmAuth.getToken()
+					},
+					body: JSON.stringify({ text })
+				}).then(res => res.json()).then(data => {
+					if (data.message) {
+						input.value = '';
+						loadComments(postId, post);
+					}
+				}).catch(err => {
+					console.error("Failed to post comment", err);
+					showToast("Failed to post comment", "error");
+				}).finally(() => {
+					btn.disabled = false;
+				});
 			}
 		});
 
 		/* ══════════════════════════════
-		   CHAT
+		   PUBLIC COMMENTS SYSTEM
 		══════════════════════════════ */
-		let currentChatUser = '';
+		async function loadComments(postId, postElement) {
+			const list = postElement.querySelector('.comments-list');
+			list.innerHTML = '<div style="text-align:center;font-size:12px;color:#94a3b8;padding:10px;">Loading comments...</div>';
 
-		function openChat(userId) {
-			currentChatUser = userId;
-			document.getElementById('chatModal').style.display = 'block';
-			document.getElementById('chatUser').innerText = 'Chat with ' + userId;
-			loadMessages();
-		}
-		function closeChat() {
-			document.getElementById('chatModal').style.display = 'none';
-		}
-		function sendMessage() {
-			const input = document.getElementById('chatInput');
-			const text = input.value.trim();
-			if (!text) return;
-			let chats = JSON.parse(localStorage.getItem('tm_chats') || '{}');
-			if (!chats[currentChatUser]) chats[currentChatUser] = [];
-			chats[currentChatUser].push({ text, type: 'sent', time: Date.now() });
-			localStorage.setItem('tm_chats', JSON.stringify(chats));
-			input.value = '';
-			loadMessages();
-		}
-		function loadMessages() {
-			const box = document.getElementById('chatMessages');
-			box.innerHTML = '';
-			let chats = JSON.parse(localStorage.getItem('tm_chats') || '{}');
-			(chats[currentChatUser] || []).forEach(msg => {
-				const div = document.createElement('div');
-				div.className = 'message ' + msg.type;
-				div.textContent = msg.text;
-				box.appendChild(div);
-			});
-			box.scrollTop = box.scrollHeight;
+			try {
+				const res = await fetch(`http://localhost:5000/api/community/posts/${postId}/comments`);
+				const comments = await res.json();
+
+				if (!comments || comments.length === 0) {
+					list.innerHTML = '<div style="text-align:center;font-size:12px;color:#94a3b8;padding:10px;">No comments yet. Be the first to comment!</div>';
+					return;
+				}
+
+				list.innerHTML = comments.map(c => {
+					const avatar = c.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(c.full_name || 'U')}&background=f1f5f9&color=475569&size=30`;
+					const timeRaw = new Date(c.created_at);
+					const timeStr = timeRaw.toLocaleDateString() + ' ' + timeRaw.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+					return `
+					<div style="display:flex;gap:10px;margin-bottom:12px;background:#f8fafc;padding:10px;border-radius:8px;">
+						<img src="${avatar}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;" loading="lazy">
+						<div style="flex:1;">
+							<div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+								<strong style="font-size:13px;color:#0f172a;">${escapeHtml(c.full_name)}</strong>
+								<span style="font-size:11px;color:#94a3b8;">${timeStr}</span>
+							</div>
+							<p style="font-size:13px;color:#334155;margin:0;word-break:break-word;">${escapeHtml(c.comment_text)}</p>
+						</div>
+					</div>`;
+				}).join('');
+			} catch (err) {
+				console.error("Failed loading comments", err);
+				list.innerHTML = '<div style="text-align:center;font-size:12px;color:red;padding:10px;">Error loading comments.</div>';
+			}
 		}
 	</script>
 </body>

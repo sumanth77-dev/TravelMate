@@ -500,9 +500,17 @@
           throw new Error(data.message || 'Registration failed');
         }
 
-        TmAuth.login(data.full_name, data.email, data.role, null, data.token, data.id);
-        showMsg('Account created successfully! Redirecting...', 'success');
-        setTimeout(() => window.location.href = data.role === 'Guide' ? 'guide-dashboard.html' : 'travel-mate-dashboard.html', 1000);
+        // Set active session role based on UI tab selection
+        localStorage.setItem('tm_active_role', role);
+
+        if (role === 'Guide') {
+          showMsg('Registration successful. Please wait for admin approval before logging in.', 'success');
+          setTimeout(() => window.location.href = 'login.html', 3000);
+        } else {
+          TmAuth.login(data.full_name, data.email, data.role, null, data.token, data.id);
+          showMsg('Account created successfully! Redirecting...', 'success');
+          setTimeout(() => window.location.href = 'travel-mate-dashboard.html', 1000);
+        }
       } catch (err) {
         showMsg(err.message, 'error');
         submitBtn.disabled = false;

@@ -12,6 +12,8 @@ const guideRoutes = require('./routes/guideRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const userRoutes = require('./routes/userRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const communityRoutes = require('./routes/communityRoutes');
 
 const app = express();
 
@@ -32,6 +34,8 @@ app.use('/api/guides', guideRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/community', communityRoutes);
 
 // Database check route for safety checks
 app.get('/api/health', (req, res) => {

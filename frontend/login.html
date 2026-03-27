@@ -1,233 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - Travel Mate</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Travel Mate</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="tm-auth.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="tm-auth.js"></script>
 
-<style>
-:root{
-  --primary:#22c55e;
-  --primary-dark:#16a34a;
-  --bg:#f0fdf4;
-}
+  <style>
+    :root {
+      --primary: #22c55e;
+      --primary-dark: #16a34a;
+      --bg: #f0fdf4;
+    }
 
-body{
-  font-family:'Poppins',sans-serif;
-  background:var(--bg);
-  padding-top:70px;
-}
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      padding-top: 70px;
+    }
 
-.auth-wrapper {
-  min-height: calc(100vh - 70px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 24px;
-}
+    .auth-wrapper {
+      min-height: calc(100vh - 70px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
 
-/* Navbar */
-.custom-navbar{
-  background:#ffffff;
-  box-shadow:0 4px 20px rgba(0,0,0,0.05);
-}
-.custom-navbar .navbar-brand{
-  color:var(--primary);
-  font-weight:700;
-}
-.custom-navbar .nav-link{
-  color:#333;
-  font-weight:500;
-  transition:0.3s;
-}
-.custom-navbar .nav-link:hover{
-  color:var(--primary);
-}
+    /* Navbar */
+    .custom-navbar {
+      background: #ffffff;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
 
-/* Card */
-.login-card{
-  background:white;
-  width:100%;
-  max-width:440px;
-  padding:40px;
-  border-radius:30px;
-  box-shadow:0 15px 40px rgba(34,197,94,0.15);
-  animation:fadeUp 0.6s ease;
-}
+    .custom-navbar .navbar-brand {
+      color: var(--primary);
+      font-weight: 700;
+    }
 
-@keyframes fadeUp{
-  from{opacity:0; transform:translateY(30px);}
-  to{opacity:1; transform:translateY(0);}
-}
+    .custom-navbar .nav-link {
+      color: #333;
+      font-weight: 500;
+      transition: 0.3s;
+    }
 
-.brand{
-  text-align:center;
-  font-weight:600;
-  font-size:24px;
-  color:var(--primary);
-  margin-bottom:8px;
-}
+    .custom-navbar .nav-link:hover {
+      color: var(--primary);
+    }
 
-.subtitle{
-  text-align:center;
-  color:#777;
-  font-size:14px;
-  margin-bottom:25px;
-}
+    /* Card */
+    .login-card {
+      background: white;
+      width: 100%;
+      max-width: 440px;
+      padding: 40px;
+      border-radius: 30px;
+      box-shadow: 0 15px 40px rgba(34, 197, 94, 0.15);
+      animation: fadeUp 0.6s ease;
+    }
 
-/* Role Toggle */
-.role-toggle{
-  display:flex;
-  background:#e6f9ee;
-  border-radius:50px;
-  padding:5px;
-  margin-bottom:25px;
-}
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
 
-.role-toggle button{
-  flex:1;
-  border:none;
-  background:transparent;
-  padding:8px;
-  border-radius:50px;
-  font-weight:500;
-  cursor:pointer;
-  transition:0.3s;
-}
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-.role-toggle button.active{
-  background:var(--primary);
-  color:white;
-  box-shadow:0 5px 15px rgba(34,197,94,0.3);
-}
+    .brand {
+      text-align: center;
+      font-weight: 600;
+      font-size: 24px;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
 
-/* Inputs */
-.form-control{
-  border-radius:15px;
-  padding:12px 15px;
-  border:1px solid #ddd;
-}
+    .subtitle {
+      text-align: center;
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
 
-.form-control:focus{
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(34,197,94,0.2);
-}
+    /* Role Toggle */
+    .role-toggle {
+      display: flex;
+      background: #e6f9ee;
+      border-radius: 50px;
+      padding: 5px;
+      margin-bottom: 25px;
+    }
 
-.mb-3 { margin-bottom: 16px; }
-.mb-2 { margin-bottom: 8px; }
+    .role-toggle button {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 8px;
+      border-radius: 50px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-.password-wrapper{
-  position:relative;
-}
+    .role-toggle button.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
+    }
 
-.show-pass{
-  position:absolute;
-  right:15px;
-  top:50%;
-  transform:translateY(-50%);
-  cursor:pointer;
-  font-size:14px;
-  color:#888;
-}
+    /* Inputs */
+    .form-control {
+      border-radius: 15px;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+    }
 
-/* Button */
-.login-btn{
-  width:100%;
-  background:var(--primary);
-  border:none;
-  padding:12px;
-  border-radius:50px;
-  font-weight:600;
-  color:white;
-  transition:0.3s;
-  margin-top: 10px;
-}
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+    }
 
-.login-btn:hover{
-  background:var(--primary-dark);
-  transform:translateY(-3px);
-  box-shadow:0 10px 20px rgba(34,197,94,0.3);
-}
+    .mb-3 {
+      margin-bottom: 16px;
+    }
 
-.forgot-password {
-  display: block;
-  text-align: right;
-  font-size: 13px;
-  color: #777;
-  text-decoration: none;
-  font-weight: 500;
-  margin-top: 10px;
-  margin-bottom: 25px;
-}
+    .mb-2 {
+      margin-bottom: 8px;
+    }
 
-.forgot-password:hover {
-  text-decoration: underline;
-  color: var(--primary);
-}
+    .password-wrapper {
+      position: relative;
+    }
 
-/* Divider */
-.divider {
-  text-align: center;
-  margin: 25px 0;
-  position: relative;
-}
-.divider::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: #ddd;
-  z-index: 1;
-}
-.divider span {
-  position: relative;
-  z-index: 2;
-  background: white;
-  padding: 0 15px;
-  color: #777;
-  font-weight: 500;
-  font-size: 14px;
-}
+    .show-pass {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 14px;
+      color: #888;
+    }
 
-/* Google */
-.google-btn{
-  width:100%;
-  background:white;
-  border:1px solid #ddd;
-  border-radius:50px;
-  padding:10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  font-weight:500;
-  transition:0.3s;
-}
-.google-btn:hover{
-  background:#f8f9fa;
-  transform:translateY(-2px);
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
-}
+    /* Button */
+    .login-btn {
+      width: 100%;
+      background: var(--primary);
+      border: none;
+      padding: 12px;
+      border-radius: 50px;
+      font-weight: 600;
+      color: white;
+      transition: 0.3s;
+      margin-top: 10px;
+    }
 
-.footer-text{
-  text-align:center;
-  margin-top:20px;
-  font-size:14px;
-}
-.footer-text a{
-  color:var(--primary);
-  text-decoration:none;
-  font-weight:500;
-}
-</style>
+    .login-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
+    }
+
+    .forgot-password {
+      display: block;
+      text-align: right;
+      font-size: 13px;
+      color: #777;
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 10px;
+      margin-bottom: 25px;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+      color: var(--primary);
+    }
+
+    /* Divider */
+    .divider {
+      text-align: center;
+      margin: 25px 0;
+      position: relative;
+    }
+
+    .divider::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #ddd;
+      z-index: 1;
+    }
+
+    .divider span {
+      position: relative;
+      z-index: 2;
+      background: white;
+      padding: 0 15px;
+      color: #777;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    /* Google */
+    .google-btn {
+      width: 100%;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 50px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .google-btn:hover {
+      background: #f8f9fa;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .footer-text {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .footer-text a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
 </head>
 
 <body>
@@ -251,167 +271,206 @@ body{
     </div>
   </nav>
 
-<div class="auth-wrapper">
-  <div class="login-card">
+  <div class="auth-wrapper">
+    <div class="login-card">
 
-    <div class="brand">Travel Mate</div>
-    <div class="subtitle">Welcome back! Please login to your account.</div>
+      <div class="brand">Travel Mate</div>
+      <div class="subtitle">Welcome back! Please login to your account.</div>
 
-    <!-- Role Selection -->
-    <div class="role-toggle">
-      <button class="active" onclick="selectRole(this)">User</button>
-      <button onclick="selectRole(this)">Guide</button>
-    </div>
-
-    <!-- Form -->
-    <form>
-      <div class="mb-3">
-        <input type="email" class="form-control" placeholder="Email address" required>
+      <!-- Role Selection -->
+      <div class="role-toggle">
+        <button class="active" onclick="selectRole(this)">User</button>
+        <button onclick="selectRole(this)">Guide</button>
+        <button type="button" onclick="selectRole(this)" id="adminRoleBtn">Admin</button>
       </div>
 
-      <div class="mb-2 password-wrapper">
-        <input type="password" id="password" class="form-control" placeholder="Password" required>
-        <span class="show-pass" onclick="togglePassword()">Show</span>
+      <!-- Form -->
+      <form>
+        <div class="mb-3">
+          <input type="email" id="email" class="form-control" placeholder="Email address" required>
+        </div>
+
+        <div class="mb-2 password-wrapper">
+          <input type="password" id="password" class="form-control" placeholder="Password" required>
+          <span class="show-pass" onclick="togglePassword()">Show</span>
+        </div>
+
+        <a href="#" class="forgot-password" onclick="simulateForgotPassword(event)">Forgot Password?</a>
+
+        <button type="submit" class="login-btn">Login</button>
+      </form>
+
+      <!-- Divider -->
+      <div class="divider"><span>OR</span></div>
+
+      <!-- Google Login -->
+      <button class="google-btn" onclick="simulateGoogleAuth()">
+        <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="18" alt="Google">
+        Continue with Google
+      </button>
+
+      <div class="footer-text">
+        Don’t have an account? <a href="signup.html">Create Account</a>
       </div>
-      
-      <a href="#" class="forgot-password" onclick="simulateForgotPassword(event)">Forgot Password?</a>
 
-      <button type="submit" class="login-btn">Login</button>
-    </form>
-
-    <!-- Divider -->
-    <div class="divider"><span>OR</span></div>
-
-    <!-- Google Login -->
-    <button class="google-btn" onclick="simulateGoogleAuth()">
-      <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="18" alt="Google">
-      Continue with Google
-    </button>
-
-    <div class="footer-text">
-      Don’t have an account? <a href="signup.html">Create Account</a>
     </div>
-
   </div>
-</div>
 
-<script>
-  /* redirect away if already logged in */
-  (function(){
-    if(TmAuth.isLogged()) window.location.href = 'index.html';
-  })();
+  <script>
+    /* redirect away if already logged in */
+    (function () {
+      if (TmAuth.isLogged()) window.location.href = 'index.html';
+    })();
 
-/* ── Navbar scroll effect ── */
-window.addEventListener('scroll', function () {
-  const navbar = document.getElementById('navbar');
-  // Just toggle between transparent and solid, but both have same green background
-  // This still works for any other styling differences you might want
-  if (window.scrollY > 40) {
-    navbar.classList.remove('transparent');
-    navbar.classList.add('solid');
-  } else {
-    navbar.classList.remove('solid');
-    navbar.classList.add('transparent');
-  }
-});
-
-function selectRole(btn){
-  document.querySelectorAll('.role-toggle button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-function togglePassword(){
-  const pass=document.getElementById("password");
-  if(pass.type==="password"){
-    pass.type="text";
-    this.textContent="Hide";
-  }else{
-    pass.type="password";
-    this.textContent="Show";
-  }
-}
-
-/* ── Working Login via API ── */
-document.querySelector('form').addEventListener('submit', async function(e){
-  e.preventDefault();
-  const email    = this.querySelector('[type=email]').value.trim();
-  const password = this.querySelector('[type=password]').value;
-  const role     = document.querySelector('.role-toggle button.active').textContent.trim();
-  const submitBtn = this.querySelector('button[type="submit"]');
-
-  if(!email || !password){
-    showError('Please fill in all fields.');
-    return;
-  }
-
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Logging in...';
-
-  try {
-    const res = await fetch('http://localhost:5000/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, role })
+    /* ── Navbar scroll effect ── */
+    window.addEventListener('scroll', function () {
+      const navbar = document.getElementById('navbar');
+      // Just toggle between transparent and solid, but both have same green background
+      // This still works for any other styling differences you might want
+      if (window.scrollY > 40) {
+        navbar.classList.remove('transparent');
+        navbar.classList.add('solid');
+      } else {
+        navbar.classList.remove('solid');
+        navbar.classList.add('transparent');
+      }
     });
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || 'Login failed');
+    function selectRole(btn) {
+      document.querySelectorAll('.role-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
     }
 
-    // Server returns: { id, full_name, email, role, token }
-    TmAuth.login(data.full_name, data.email, data.role, null, data.token, data.id);
-    showSuccess('Login successful! Redirecting...');
-    setTimeout(() => window.location.href = data.role === 'Guide' ? 'guide-dashboard.html' : 'travel-mate-dashboard.html', 1000);
-  } catch (error) {
-    showError(error.message);
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Login';
-  }
-});
+    function togglePassword() {
+      const pass = document.getElementById("password");
+      if (pass.type === "password") {
+        pass.type = "text";
+        this.textContent = "Hide";
+      } else {
+        pass.type = "password";
+        this.textContent = "Show";
+      }
+    }
 
-function showError(msg){
-  if(window.TmToast) window.TmToast.show(msg, 'error');
-  else alert(msg);
-}
-function showSuccess(msg){
-  if(window.TmToast) window.TmToast.show(msg, 'success');
-  else alert(msg);
-}
+    /* ── Working Login via API ── */
+    document.querySelector('form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
 
-function simulateForgotPassword(e) {
-  e.preventDefault();
-  const emailInput = document.querySelector('[type=email]').value.trim();
-  if(!emailInput) {
-    showError("Please enter your email address to reset your password.");
-  } else {
-    showSuccess("A password reset link has been sent to " + emailInput + "!");
-  }
-}
+      if (!emailInput || !passwordInput) return;
 
-function simulateGoogleAuth() {
-  const role = document.querySelector('.role-toggle button.active').textContent.trim();
-  
-  // Create a mock Google user if they don't exist
-  const googleUser = {
-    name: "Google Explorer",
-    email: "explorer@gmail.com",
-    role: role,
-    password: "hidden_google_oauth_token"
-  };
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const role = document.querySelector('.role-toggle button.active').textContent.trim();
+      const submitBtn = this.querySelector('button[type="submit"]');
 
-  const users = JSON.parse(localStorage.getItem('tm_users') || '[]');
-  if(!users.find(u => u.email === googleUser.email && u.role === role)) {
-    users.push(googleUser);
-    localStorage.setItem('tm_users', JSON.stringify(users));
-  }
-  
-  showSuccess('Google Authentication successful! Redirecting...');
-  TmAuth.login(googleUser.name, googleUser.email, googleUser.role, null);
-  setTimeout(() => window.location.href = googleUser.role === 'Guide' ? 'guide-dashboard.html' : 'travel-mate-dashboard.html', 1000);
-}
-</script>
+      if (!email || !password) {
+        showError('Please fill in all fields.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Logging in...';
+
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, role })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || 'Login failed');
+        }
+
+        if (data.role !== 'Admin' && data.role.toLowerCase() !== role.toLowerCase() && data.role.toLowerCase() !== 'both') {
+          throw new Error(`Login failed. You are registered as a ${data.role}, please select the correct role tab.`);
+        }
+
+        // Set active session role based on UI tab selection so TmAuth can use it for UI logic
+        localStorage.setItem('tm_active_role', role);
+
+        // Server returns: { id, full_name, email, role, token }
+        TmAuth.login(data.full_name, data.email, data.role, null, data.token, data.id);
+        showSuccess('Login successful! Redirecting...');
+
+        const user = {
+          name: data.full_name,
+          email: data.email,
+          role: data.role
+        };
+
+        // 🔥 Clean role-based redirect
+        if (user.role === 'Admin') {
+          window.location.href = 'admin-dashboard.html';
+        } else if (role === 'Guide') {
+          window.location.href = 'guide-dashboard.html';
+        } else {
+          window.location.href = 'travel-mate-dashboard.html';
+        }
+
+        setTimeout(() => window.location.href = redirectTarget, 1000);
+      } catch (error) {
+        showError(error.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Login';
+      }
+    });
+
+    function showError(msg) {
+      if (window.TmToast) window.TmToast.show(msg, 'error');
+      else alert(msg);
+    }
+    function showSuccess(msg) {
+      if (window.TmToast) window.TmToast.show(msg, 'success');
+      else alert(msg);
+    }
+
+    function simulateForgotPassword(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('email')?.value.trim();
+      if (!emailInput) {
+        showError("Please enter your email address to reset your password.");
+      } else {
+        showSuccess("A password reset link has been sent to " + emailInput + "!");
+      }
+    }
+
+    function simulateGoogleAuth() {
+      const role = document.querySelector('.role-toggle button.active').textContent.trim();
+
+      // Create a mock Google user if they don't exist
+      const googleUser = {
+        name: "Google Explorer",
+        email: "explorer@gmail.com",
+        role: role,
+        password: "hidden_google_oauth_token"
+      };
+
+      const users = JSON.parse(localStorage.getItem('tm_users') || '[]');
+      if (!users.find(u => u.email === googleUser.email && u.role === role)) {
+        users.push(googleUser);
+        localStorage.setItem('tm_users', JSON.stringify(users));
+      }
+
+      showSuccess('Google Authentication successful! Redirecting...');
+      TmAuth.login(googleUser.name, googleUser.email, googleUser.role, null);
+      setTimeout(() => window.location.href = googleUser.role === 'Guide' ? 'guide-dashboard.html' : 'travel-mate-dashboard.html', 1000);
+    }
+
+    // Secret backdoor to show Admin tab for mock tests (double click 'Login' title)
+    const brand = document.querySelector('.brand');
+    if (brand) {
+      brand.addEventListener('dblclick', () => {
+        document.getElementById('adminRoleBtn').style.display = 'block';
+      });
+    }
+
+  </script>
 
 </body>
+
 </html>

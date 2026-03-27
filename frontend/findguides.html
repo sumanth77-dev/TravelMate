@@ -875,7 +875,7 @@
           const unavailableBadge = !guide.available ? `<span class="status-unavailable">Unavailable</span>` : '';
 
           return `
-            <a href="guide-profile.html" class="guide-card-react fade-up delay-${(index % 3) + 1}">
+            <a href="guide-profile.html?id=${guide.id}" class="guide-card-react fade-up delay-${(index % 3) + 1}">
               <div class="card-react-flex">
                 <img src="${guide.avatar}" alt="${guide.name}" class="card-react-avatar" loading="lazy">
                 <div class="card-react-content">
