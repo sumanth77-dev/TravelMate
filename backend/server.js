@@ -14,6 +14,7 @@ const reviewRoutes = require('./routes/reviewRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const communityRoutes = require('./routes/communityRoutes');
+const destinationRoutes = require('./routes/destinationRoutes');
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/community', communityRoutes);
+app.use('/api/destinations', destinationRoutes);
 
 // Database check route for safety checks
 app.get('/api/health', (req, res) => {

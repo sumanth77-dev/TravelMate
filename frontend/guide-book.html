@@ -328,7 +328,7 @@
         e.preventDefault();
 
         if (!TmAuth.isLogged()) {
-          showToast("Please login to book a guide.");
+          showToast("Please login or register to continue");
           setTimeout(() => window.location.href = "login.html", 1500);
           return;
         }

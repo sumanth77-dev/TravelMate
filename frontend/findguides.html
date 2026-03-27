@@ -836,6 +836,22 @@
       return langs.slice(0, 2).join(", ") + ` +${langs.length - 2}`;
     }
 
+    const _GRADIENTS = [
+      'linear-gradient(135deg, #10b981, #059669)',
+      'linear-gradient(135deg, #f59e0b, #d97706)',
+      'linear-gradient(135deg, #3b82f6, #2563eb)'
+    ];
+
+    function renderStars(r) {
+      let s = '';
+      for (let i = 1; i <= 5; i++) {
+        if (r >= i) s += '<i class="fas fa-star"></i>';
+        else if (r >= i - 0.5) s += '<i class="fas fa-star-half-alt"></i>';
+        else s += '<i class="far fa-star"></i>';
+      }
+      return s;
+    }
+
     function renderGuides(guides) {
       const container = document.getElementById('guidesContainer');
       const countDisplay = document.getElementById('guideCountDisplay');
@@ -873,42 +889,35 @@
 
         const html = guides.map((guide, index) => {
           const unavailableBadge = !guide.available ? `<span class="status-unavailable">Unavailable</span>` : '';
+          
+          const gradient = _GRADIENTS[index % _GRADIENTS.length];
+          const ratingParts = Number(guide.rating || 0).toFixed(1);
+          const reviews = Number(guide.reviewCount || 0);
+          const price = Number(guide.pricePerDay || 0).toLocaleString();
+          let pic = guide.avatar;
+          if (pic && pic.startsWith('uploads/')) pic = 'http://localhost:5000/' + pic;
+          const shortbio = guide.shortbio || 'Passionate local guide eager to show you around.';
 
           return `
-            <a href="guide-profile.html?id=${guide.id}" class="guide-card-react fade-up delay-${(index % 3) + 1}">
-              <div class="card-react-flex">
-                <img src="${guide.avatar}" alt="${guide.name}" class="card-react-avatar" loading="lazy">
-                <div class="card-react-content">
-                  
-                  <div class="card-react-header">
-                    <h3 class="card-react-name">${guide.name}</h3>
-                    ${unavailableBadge}
-                  </div>
-                  
-                  <div class="card-react-meta">
-                    <span><i class="fas fa-map-marker-alt"></i> ${guide.location}</span>
-                    <span><i class="fas fa-globe"></i> ${formatLangs(guide.languages)}</span>
-                  </div>
-                  
-                  <div class="card-react-tags">
-                    ${guide.specialties.slice(0, 3).map(s => `<span class="card-react-tag">${s}</span>`).join('')}
-                  </div>
-                  
-                  <div class="card-react-footer">
-                    <div class="card-react-rating">
-                      <i class="fas fa-star"></i>
-                      <strong>${guide.rating}</strong>
-                      <span>(${guide.reviewCount})</span>
-                    </div>
-                    <div class="card-react-price">
-                      ₹${guide.pricePerDay.toLocaleString()}<span>/day</span>
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-            </a>
-          `;
+        <a href="guide-profile.html?id=${guide.id}" class="dest-card fade-up delay-${(index % 3) + 1} visible" style="display:flex; flex-direction:column; text-decoration:none; color:inherit; cursor:pointer;">
+          <div style="background:${gradient}; height:100px; border-radius:16px 16px 0 0; position:relative;">
+            <img src="${pic}" alt="${guide.name}" loading="lazy"
+              style="width:80px; height:80px; border-radius:50%; position:absolute; bottom:-40px; left:20px; border:4px solid #fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); background:#fff; object-fit:cover;">
+          </div>
+          <div class="dest-card-body" style="padding-top:50px; flex:1; display:flex; flex-direction:column;">
+            <h3 class="dest-title" style="margin-bottom:4px;">${guide.name} ${unavailableBadge}</h3>
+            <p class="dest-loc"><i class="fas fa-map-marker-alt"></i> ${guide.location}</p>
+            <div class="rating" style="margin:12px 0;">
+              <span class="stars">${renderStars(ratingParts)}</span>
+              <strong>${ratingParts}</strong><span class="review-count">(${reviews} reviews)</span>
+            </div>
+            <p style="font-size:13px; color:var(--muted); margin-bottom:16px; flex:1;">${shortbio}</p>
+            <div class="dest-footer" style="margin-top:auto; display:flex; justify-content:space-between; align-items:center;">
+              <span class="dest-price">From <strong>₹${price}</strong> / day</span>
+              <span style="color:var(--primary); font-size:13px; font-weight:600;">View Profile <i class="fas fa-arrow-right" style="margin-left:4px; font-size:11px;"></i></span>
+            </div>
+          </div>
+        </a>`;
         }).join('');
 
         container.innerHTML = html;
@@ -983,11 +992,12 @@
             avatar: g.profile_photo ? 'http://localhost:5000/' + g.profile_photo : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + encodeURIComponent(g.full_name),
             location: g.city_location || "Not specified",
             languages: g.languages_spoken ? g.languages_spoken.split(',').map(s => s.trim()) : [],
-            rating: 4.5,
-            reviewCount: Math.floor(Math.random() * 100),
+            rating: Number(g.average_rating) || 0,
+            reviewCount: Number(g.review_count) || 0,
             pricePerDay: Number(g.price_per_day) || 0,
             specialties: g.special_skills ? g.special_skills.split(',').map(s => s.trim()) : [],
-            available: true
+            available: true,
+            shortbio: g.short_bio ? (g.short_bio.substring(0, 75) + '...') : 'Passionate local guide eager to show you around.'
           }));
           if (apiGuides.length > 0) {
             guidesData = apiGuides;

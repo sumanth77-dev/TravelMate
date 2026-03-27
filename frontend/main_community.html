@@ -838,7 +838,9 @@
 							<option value="Temple">Temple</option>
 							<option value="Adventure">Adventure</option>
 							<option value="Food">Food</option>
+							<option value="Other">Other</option>
 						</select>
+						<input id="customCategoryInput" class="cm-input" placeholder="Enter custom category" style="display:none; margin-top:8px;" />
 					</div>
 					<div style="flex:1;">
 						<label class="cm-label">Budget Spent (₹)</label>
@@ -953,6 +955,11 @@
 		const ratingEl = document.getElementById('rating');
 
 		function openModal() {
+			if (!TmAuth.isLogged()) {
+				showToast('Please login or register to continue', 'error');
+				setTimeout(() => window.location.href = 'login.html', 1500);
+				return;
+			}
 			modal.classList.add('open');
 			modal.setAttribute('aria-hidden', 'false');
 			document.body.style.overflow = 'hidden';
@@ -967,6 +974,16 @@
 		document.getElementById('openCreatePost').addEventListener('click', openModal);
 		document.getElementById('closeCreatePost').addEventListener('click', closeModal);
 		document.getElementById('cancelBtn').addEventListener('click', closeModal);
+
+		document.getElementById('categoryInput').addEventListener('change', function() {
+			const customInp = document.getElementById('customCategoryInput');
+			if (this.value === 'Other') {
+				customInp.style.display = 'block';
+			} else {
+				customInp.style.display = 'none';
+				customInp.value = '';
+			}
+		});
 
 		const dropZone = document.getElementById('dropZone');
 		const fileInput = document.getElementById('fileInput');
@@ -1004,7 +1021,9 @@
 		document.getElementById('publishBtn').addEventListener('click', async () => {
 			const place = document.getElementById('placeInput').value.trim();
 			const loc = document.getElementById('locationInput').value.trim();
-			const cat = document.getElementById('categoryInput').value;
+			const catBase = document.getElementById('categoryInput').value;
+			const customCat = document.getElementById('customCategoryInput').value.trim();
+			const cat = (catBase === 'Other' && customCat) ? customCat : catBase;
 			const budget = document.getElementById('budgetInput').value.trim();
 			const time = document.getElementById('timeInput').value.trim();
 			const cap = document.getElementById('captionInput').value.trim();
@@ -1017,7 +1036,7 @@
 
 			const user = TmAuth.getUser();
 			if (!user) {
-				showToast('Please login to post!', 'error');
+				showToast('Please login or register to continue', 'error');
 				setTimeout(() => window.location.href = 'login.html', 1500);
 				return;
 			}
@@ -1090,8 +1109,8 @@
 					${parsedImages.length > 0 ? `
 					<div style="padding:0 16px 16px;">
 					${parsedImages.length > 1
-						? `<div class="post-image-scroll" style="display:flex;overflow-x:auto;gap:8px;scroll-snap-type:x mandatory;scrollbar-width:thin;padding-bottom:8px;">${parsedImages.map(img => `<img src="${img}" style="width:85%;max-height:360px;object-fit:cover;border-radius:12px;scroll-snap-align:center;flex-shrink:0;">`).join('')}</div>`
-						: `<div class="post-image" style="border-radius:12px;overflow:hidden;"><img src="${parsedImages[0]}" style="width:100%;max-height:400px;object-fit:cover;display:block;border-radius:12px;"></div>`
+						? `<div class="post-image-scroll" style="display:flex;overflow-x:auto;gap:8px;scroll-snap-type:x mandatory;scrollbar-width:thin;padding-bottom:8px;">${parsedImages.map(img => `<img src="${img}" style="width:85%;height:300px;object-fit:contain;background:#f8fafc;border-radius:12px;scroll-snap-align:center;flex-shrink:0;cursor:pointer;transition:transform .2s;" onclick="openLightbox('${img}')">`).join('')}</div>`
+						: `<div class="post-image" style="border-radius:12px;overflow:hidden;background:#f8fafc;"><img src="${parsedImages[0]}" style="width:100%;max-height:500px;object-fit:contain;display:block;border-radius:12px;cursor:pointer;transition:transform .2s;" onclick="openLightbox('${parsedImages[0]}')"></div>`
 					}
 					</div>` : ''}
 					
@@ -1172,14 +1191,40 @@
 
 
 
-		// Connect the specific Aesthetic Filter Pill Buttons to trigger API query filters directly!
-		document.querySelectorAll('.cat-pill').forEach(btn => {
-			btn.addEventListener('click', function () {
-				document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
-				this.classList.add('active');
-				loadPosts(this.dataset.cat);
-			});
-		});
+		async function loadCategories() {
+			try {
+				const res = await fetch('http://localhost:5000/api/community/categories');
+				const categories = await res.json();
+				
+				const pillContainer = document.querySelector('.category-pills');
+				if (!pillContainer) return;
+				
+				// Always keep 'All'
+				let html = '<button class="cat-pill active" data-cat="All">All</button>';
+				
+				categories.forEach(c => {
+					const emojiMap = {
+						'Beach': '🏖', 'Mountain': '⛰', 'Temple': '⛩', 
+						'City': '🏙', 'Adventure': '🏕', 'Food': '🍜'
+					};
+					const emoji = emojiMap[c] ? emojiMap[c] + ' ' : '✨ ';
+					html += `<button class="cat-pill" data-cat="${escapeHtml(c)}">${emoji}${escapeHtml(c)}</button>`;
+				});
+				
+				pillContainer.innerHTML = html;
+				
+				// Re-attach listeners dynamically
+				pillContainer.querySelectorAll('.cat-pill').forEach(btn => {
+					btn.addEventListener('click', function () {
+						pillContainer.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+						this.classList.add('active');
+						loadPosts(this.dataset.cat);
+					});
+				});
+			} catch (e) {
+				console.error("Failed to dynamically load categories", e);
+			}
+		}
 
 		async function loadTopTravelers() {
 			try {
@@ -1203,7 +1248,7 @@
 								<p>${t.post_count} Post${t.post_count !== 1 ? 's' : ''}</p>
 							</div>
 						</div>
-						<button class="btn-follow" onclick="if(!TmAuth.isLogged()){window.location.href='login.html';}else{this.innerHTML='Following'; this.style.background='#e2e8f0'; this.style.color='#0f172a';}">Follow</button>
+						<button class="btn-follow" onclick="if(!TmAuth.isLogged()){showToast('Please login or register to continue', 'error'); setTimeout(() => window.location.href='login.html', 1500);}else{this.innerHTML='Following'; this.style.background='#e2e8f0'; this.style.color='#0f172a';}">Follow</button>
 					</div>`;
 				}).join('');
 			} catch (e) {
@@ -1212,12 +1257,14 @@
 		}
 
 		// Initialize Call Loops
+		loadCategories();
 		loadPosts();
 		loadTopTravelers();
 
 		function escapeHtml(s) { return String(s).replace(/[&"'<>]/g, c => ({ '&': '&amp;', '"': '&quot;', '\'': '&#39;', '<': '&lt;', '>': '&gt;' }[c])); }
 		function clearForm() {
 			document.getElementById('createPostForm').reset();
+			document.getElementById('customCategoryInput').style.display = 'none';
 			uploadedImages = [];
 			preview.innerHTML = '';
 			[...ratingEl.querySelectorAll('.star')].forEach(st => st.textContent = '☆');
@@ -1241,7 +1288,7 @@
 
 			// LIKE — also updates data-likes for sort
 			if (e.target.closest('.like-btn')) {
-				if (!TmAuth.getUser()) { showToast('Please login to engage!', 'error'); return; }
+				if (!TmAuth.getUser()) { showToast('Please login or register to continue', 'error'); setTimeout(() => window.location.href='login.html', 1500); return; }
 				const btn = post.querySelector('.like-btn');
 				const countEl = btn.querySelector('.like-count');
 				let count = Number(countEl.textContent);
@@ -1279,6 +1326,7 @@
 
 			// SHARE
 			if (e.target.closest('.share-btn')) {
+				if (!TmAuth.isLogged()) { showToast('Please login or register to continue', 'error'); setTimeout(() => window.location.href='login.html', 1500); return; }
 				const textNode = post.querySelector('.post-caption');
 				const text = textNode ? textNode.textContent : 'Check out this travel experience on TravelMate!';
 				navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!'));
@@ -1288,7 +1336,8 @@
 			// COMMENT
 			if (e.target.closest('.add-comment')) {
 				if (!TmAuth.isLogged()) {
-					window.location.href = 'login.html';
+					showToast('Please login or register to continue', 'error');
+					setTimeout(() => window.location.href = 'login.html', 1500);
 					return;
 				}
 
@@ -1361,6 +1410,36 @@
 			}
 		}
 	</script>
-</body>
 
+	<!-- LIGHTBOX MODAL -->
+	<div id="lightboxModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.95); z-index:99999; justify-content:center; align-items:center; flex-direction:column; backdrop-filter: blur(4px);">
+		<button id="closeLightbox" style="position:absolute; top:20px; right:30px; background:none; border:none; color:#fff; font-size:40px; cursor:pointer; opacity:0.8; transition:opacity .2s;">&times;</button>
+		<img id="lightboxImg" src="" style="max-width:90vw; max-height:90vh; object-fit:contain; border-radius:8px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+	</div>
+
+	<script>
+		// Global Lightbox Actions
+		function openLightbox(src) {
+			document.getElementById('lightboxImg').src = src;
+			document.getElementById('lightboxModal').style.display = 'flex';
+			document.body.style.overflow = 'hidden';
+		}
+		document.getElementById('closeLightbox').addEventListener('click', () => {
+			document.getElementById('lightboxModal').style.display = 'none';
+			document.body.style.overflow = '';
+		});
+		document.getElementById('lightboxModal').addEventListener('click', (e) => {
+			if(e.target.id === 'lightboxModal') {
+				document.getElementById('lightboxModal').style.display = 'none';
+				document.body.style.overflow = '';
+			}
+		});
+		document.addEventListener('keydown', (e) => {
+			if(e.key === 'Escape') {
+				document.getElementById('lightboxModal').style.display = 'none';
+				document.body.style.overflow = '';
+			}
+		});
+	</script>
+</body>
 </html>

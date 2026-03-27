@@ -8,11 +8,18 @@ const Guide = {
              g.guide_type, g.short_bio, g.profile_photo,
              u.full_name, u.email, u.phone_number,
              gp.price_per_day, gp.max_group_size,
-             ge.areas_you_guide, ge.special_skills
+             ge.areas_you_guide, ge.special_skills,
+             COALESCE(g.fixed_rating, r.avg_rating, 0) AS average_rating,
+             COALESCE(g.fixed_reviews, r.review_count, 0) AS review_count
       FROM guides g
       JOIN users u ON g.user_id = u.id
       LEFT JOIN guide_pricing gp ON g.id = gp.guide_id
       LEFT JOIN guide_expertise ge ON g.id = ge.guide_id
+      LEFT JOIN (
+        SELECT guide_id, AVG(rating) as avg_rating, COUNT(id) as review_count 
+        FROM reviews 
+        GROUP BY guide_id
+      ) r ON g.id = r.guide_id
       WHERE g.is_approved = TRUE
     `;
     const [rows] = await db.query(query);
@@ -25,12 +32,19 @@ const Guide = {
       SELECT g.*, u.full_name, u.email, u.phone_number,
              gp.price_per_day, gp.max_group_size,
              ge.areas_you_guide, ge.special_skills,
-             ga.available_days, ga.available_timings
+             ga.available_days, ga.available_timings,
+             COALESCE(g.fixed_rating, r.avg_rating, 0) AS average_rating,
+             COALESCE(g.fixed_reviews, r.review_count, 0) AS review_count
       FROM guides g
       JOIN users u ON g.user_id = u.id
       LEFT JOIN guide_pricing gp ON g.id = gp.guide_id
       LEFT JOIN guide_expertise ge ON g.id = ge.guide_id
       LEFT JOIN guide_availability ga ON g.id = ga.guide_id
+      LEFT JOIN (
+        SELECT guide_id, AVG(rating) as avg_rating, COUNT(id) as review_count 
+        FROM reviews 
+        GROUP BY guide_id
+      ) r ON g.id = r.guide_id
       WHERE g.id = ?
     `;
     const [rows] = await db.query(query, [id]);

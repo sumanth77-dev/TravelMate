@@ -22,7 +22,11 @@ const createPost = async (req, res) => {
         // --- AI OVERRIDE ---
         const combinedContext = `${caption || ''} ${tips || ''} ${place_name || ''}`;
         const autoDetected = inferCategory(combinedContext);
-        const finalCategory = autoDetected || providedCategory;
+        
+        // Only run inference if they selected the generic 'Other' and did not specify a custom text
+        const finalCategory = (providedCategory === 'Other') 
+            ? (autoDetected || 'Other') 
+            : providedCategory;
 
         // Ensure user is verified from token
         const userId = req.user.id;
@@ -140,6 +144,16 @@ const addComment = async (req, res) => {
     }
 };
 
+const getCategories = async (req, res) => {
+    try {
+        const categories = await Community.getDistinctCategories();
+        res.status(200).json(categories);
+    } catch (err) {
+        console.error('Error fetching categories:', err);
+        res.status(500).json({ message: 'Failed to aggregate categories.' });
+    }
+};
+
 module.exports = {
     createPost,
     getPosts,
@@ -147,5 +161,6 @@ module.exports = {
     getTopTravelers,
     toggleLike,
     getComments,
-    addComment
+    addComment,
+    getCategories
 };

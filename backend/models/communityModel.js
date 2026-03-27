@@ -152,6 +152,19 @@ const Community = {
         `;
         const [rows] = await db.query(query, [postId]);
         return rows;
+    },
+
+    getDistinctCategories: async () => {
+        const query = `
+            SELECT DISTINCT category 
+            FROM community_posts 
+            WHERE category IS NOT NULL 
+              AND category != '' 
+              AND category != 'All'
+            ORDER BY category ASC
+        `;
+        const [rows] = await db.query(query);
+        return rows.map(r => r.category);
     }
 };
 

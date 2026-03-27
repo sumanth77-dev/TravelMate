@@ -285,75 +285,8 @@
         <p class="section-sub">Hand-picked destinations loved by our community of seasoned travellers.</p>
       </div>
 
-      <div class="dest-grid">
-        <div class="dest-card fade-up delay-1" data-name="Bali, Indonesia"
-          data-tags="bali indonesia beach asia tropical island">
-          <div class="dest-card-img">
-            <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80" alt="Bali"
-              loading="lazy">
-            <span class="card-badge badge-teal">Beach</span>
-            <button class="save-btn" onclick="toggleSave(this)"><i class="far fa-heart"></i></button>
-          </div>
-          <div class="dest-card-body">
-            <h3 class="dest-title">Bali, Indonesia</h3>
-            <p class="dest-loc"><i class="fas fa-map-marker-alt"></i> Indonesia</p>
-            <div class="rating">
-              <span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                  class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span>
-              <strong>4.8</strong><span class="review-count">(2,340 reviews)</span>
-            </div>
-            <div class="dest-footer">
-              <span class="dest-price">From <strong>$45/night</strong></span>
-              <a href="community.html?place=bali" class="btn btn-primary btn-sm">View Details</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="dest-card fade-up delay-2" data-name="Paris, France"
-          data-tags="paris france city europe eiffel romance luxury">
-          <div class="dest-card-img">
-            <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&q=80" alt="Paris"
-              loading="lazy">
-            <span class="card-badge badge-gold">City</span>
-            <button class="save-btn" onclick="toggleSave(this)"><i class="far fa-heart"></i></button>
-          </div>
-          <div class="dest-card-body">
-            <h3 class="dest-title">Paris, France</h3>
-            <p class="dest-loc"><i class="fas fa-map-marker-alt"></i> France</p>
-            <div class="rating">
-              <span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                  class="fas fa-star"></i><i class="fas fa-star"></i></span>
-              <strong>4.9</strong><span class="review-count">(5,621 reviews)</span>
-            </div>
-            <div class="dest-footer">
-              <span class="dest-price">From <strong>$120/night</strong></span>
-              <a href="community.html?place=paris" class="btn btn-primary btn-sm">View Details</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="dest-card fade-up delay-3" data-name="Swiss Alps, Switzerland"
-          data-tags="swiss switzerland alps mountains europe snow hiking hill station">
-          <div class="dest-card-img">
-            <img src="https://images.unsplash.com/photo-1472791108553-c9405341e398?w=600&q=80" alt="Switzerland"
-              loading="lazy">
-            <span class="card-badge badge" style="background:#dcfce7;color:#166534">Nature</span>
-            <button class="save-btn" onclick="toggleSave(this)"><i class="far fa-heart"></i></button>
-          </div>
-          <div class="dest-card-body">
-            <h3 class="dest-title">Swiss Alps, Switzerland</h3>
-            <p class="dest-loc"><i class="fas fa-map-marker-alt"></i> Switzerland</p>
-            <div class="rating">
-              <span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                  class="fas fa-star"></i><i class="far fa-star"></i></span>
-              <strong>4.7</strong><span class="review-count">(1,980 reviews)</span>
-            </div>
-            <div class="dest-footer">
-              <span class="dest-price">From <strong>$200/night</strong></span>
-              <a href="community.html?place=swissalps" class="btn btn-primary btn-sm">View Details</a>
-            </div>
-          </div>
-        </div>
+      <div class="dest-grid" id="popularDestinationsGrid">
+        <!-- Injected dynamically via API -->
       </div>
 
       <div class="text-center mt-3 fade-up" style="margin-top:20px;">
@@ -423,82 +356,8 @@
         <p class="section-sub">Connect with our highest-rated local experts around the globe.</p>
       </div>
 
-      <div class="dest-grid">
-        <!-- Guide 1 -->
-        <div class="dest-card fade-up delay-1" style="display:flex; flex-direction:column;">
-          <div
-            style="background:linear-gradient(135deg, #10b981, #059669); height:100px; border-radius:16px 16px 0 0; position:relative;">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=aarav" alt="Aarav" loading="lazy"
-              style="width:80px; height:80px; border-radius:50%; position:absolute; bottom:-40px; left:20px; border:4px solid #fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); background:#fff;">
-          </div>
-          <div class="dest-card-body" style="padding-top:50px; flex:1; display:flex; flex-direction:column;">
-            <h3 class="dest-title" style="margin-bottom:4px;">Aarav Sharma</h3>
-            <p class="dest-loc"><i class="fas fa-map-marker-alt"></i> Jaipur, Rajasthan</p>
-            <div class="rating" style="margin:12px 0;">
-              <span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                  class="fas fa-star"></i><i class="fas fa-star"></i></span>
-              <strong>4.9</strong><span class="review-count">(142 reviews)</span>
-            </div>
-            <p style="font-size:13px; color:var(--muted); margin-bottom:16px; flex:1;">Passionate about Rajasthani
-              heritage with 8 years of guiding experience.</p>
-            <div class="dest-footer" style="margin-top:auto;">
-              <span class="dest-price">From <strong>₹2,500</strong> / day</span>
-              <a href="guide-profile.html?id=1" class="btn btn-primary btn-sm" style="border-radius:50px;">View
-                Profile</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Guide 2 -->
-        <div class="dest-card fade-up delay-2" style="display:flex; flex-direction:column;">
-          <div
-            style="background:linear-gradient(135deg, #f59e0b, #d97706); height:100px; border-radius:16px 16px 0 0; position:relative;">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=priya" alt="Priya" loading="lazy"
-              style="width:80px; height:80px; border-radius:50%; position:absolute; bottom:-40px; left:20px; border:4px solid #fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); background:#fff;">
-          </div>
-          <div class="dest-card-body" style="padding-top:50px; flex:1; display:flex; flex-direction:column;">
-            <h3 class="dest-title" style="margin-bottom:4px;">Priya Patel</h3>
-            <p class="dest-loc"><i class="fas fa-map-marker-alt"></i> Jaipur, Rajasthan</p>
-            <div class="rating" style="margin:12px 0;">
-              <span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                  class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></span>
-              <strong>4.7</strong><span class="review-count">(98 reviews)</span>
-            </div>
-            <p style="font-size:13px; color:var(--muted); margin-bottom:16px; flex:1;">Art enthusiast and certified
-              guide specializing in Rajasthani culture.</p>
-            <div class="dest-footer" style="margin-top:auto;">
-              <span class="dest-price">From <strong>₹2,000</strong> / day</span>
-              <a href="guide-profile.html?id=2" class="btn btn-primary btn-sm" style="border-radius:50px;">View
-                Profile</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Guide 3 -->
-        <div class="dest-card fade-up delay-3" style="display:flex; flex-direction:column;">
-          <div
-            style="background:linear-gradient(135deg, #3b82f6, #2563eb); height:100px; border-radius:16px 16px 0 0; position:relative;">
-            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=ravi" alt="Ravi" loading="lazy"
-              style="width:80px; height:80px; border-radius:50%; position:absolute; bottom:-40px; left:20px; border:4px solid #fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); background:#fff;">
-          </div>
-          <div class="dest-card-body" style="padding-top:50px; flex:1; display:flex; flex-direction:column;">
-            <h3 class="dest-title" style="margin-bottom:4px;">Ravi Kumar</h3>
-            <p class="dest-loc"><i class="fas fa-map-marker-alt"></i> Goa</p>
-            <div class="rating" style="margin:12px 0;">
-              <span class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                  class="fas fa-star"></i><i class="fas fa-star"></i></span>
-              <strong>4.8</strong><span class="review-count">(210 reviews)</span>
-            </div>
-            <p style="font-size:13px; color:var(--muted); margin-bottom:16px; flex:1;">Born and raised in Goa, I know
-              every hidden beach and secret spot.</p>
-            <div class="dest-footer" style="margin-top:auto;">
-              <span class="dest-price">From <strong>₹3,000</strong> / day</span>
-              <a href="guide-profile.html?id=3" class="btn btn-primary btn-sm" style="border-radius:50px;">View
-                Profile</a>
-            </div>
-          </div>
-        </div>
-
+      <div class="dest-grid" id="topGuidesGrid">
+        <!-- RENDERED BY JS -->
       </div>
 
       <div class="text-center mt-3 fade-up" style="margin-top:40px;">
@@ -588,14 +447,39 @@
     /* ══════════════════════════════
        DESTINATION DATA
     ══════════════════════════════ */
-    const destinations = [
-      { name: 'Bali, Indonesia', loc: 'Indonesia', badge: 'Beach', badgeClass: 'badge-teal', badgeStyle: '', img: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80', rating: 4.8, reviews: '2,340', price: '$45/night', link: 'community.html?place=bali', tags: 'bali indonesia beach asia tropical island' },
-      { name: 'Paris, France', loc: 'France', badge: 'City', badgeClass: 'badge-gold', badgeStyle: '', img: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&q=80', rating: 4.9, reviews: '5,621', price: '$120/night', link: 'community.html?place=paris', tags: 'paris france city europe eiffel romance luxury' },
-      { name: 'Swiss Alps, Switzerland', loc: 'Switzerland', badge: 'Hill Station', badgeClass: 'badge', badgeStyle: 'background:#dcfce7;color:#166534', img: 'https://images.unsplash.com/photo-1472791108553-c9405341e398?w=600&q=80', rating: 4.7, reviews: '1,980', price: '$200/night', link: 'community.html?place=swiss', tags: 'swiss switzerland alps mountains europe snow hiking hill station' },
-      { name: 'Maldives Islands', loc: 'Maldives', badge: 'Beach', badgeClass: 'badge-teal', badgeStyle: '', img: 'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?w=600&q=80', rating: 5.0, reviews: '4,210', price: '$350/night', link: 'community.html?place=maldives', tags: 'maldives islands beach ocean resort luxury tropical overwater' },
-      { name: 'Tokyo, Japan', loc: 'Japan', badge: 'City', badgeClass: 'badge-gold', badgeStyle: '', img: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80', rating: 4.8, reviews: '6,800', price: '$80/night', link: 'community.html?place=tokyo', tags: 'tokyo japan city asia culture anime food technology urban' },
-      { name: 'Queenstown, New Zealand', loc: 'New Zealand', badge: 'Adventure', badgeClass: 'badge', badgeStyle: 'background:#ffe4e6;color:#9f1239', img: 'https://images.unsplash.com/photo-1533130061792-64b345e4a833?w=600&q=80', rating: 4.9, reviews: '3,102', price: '$90/night', link: 'community.html?place=queenstown', tags: 'queenstown new zealand adventure bungee skydive nature south pacific' }
-    ];
+    let destinations = [];
+
+    async function initDestinations() {
+      try {
+        const res = await fetch('http://localhost:5000/api/destinations');
+        const data = await res.json();
+        
+        destinations = data.map(d => ({
+          name: d.name,
+          loc: d.location,
+          badge: d.badge_text,
+          badgeClass: d.badge_class,
+          badgeStyle: d.badge_style,
+          img: d.image_url,
+          rating: Number(d.rating),
+          reviews: d.reviews_count,
+          price: d.price_text,
+          link: d.link,
+          tags: d.tags
+        }));
+
+        const popGrid = document.getElementById('popularDestinationsGrid');
+        if (popGrid) {
+            popGrid.innerHTML = destinations.slice(0, 3).map((d, index) => {
+                const cardHtml = buildResultCard(d);
+                return cardHtml.replace('class="dest-card"', `class="dest-card fade-up delay-${index + 1} visible" data-name="${d.name}" data-tags="${d.tags}"`);
+            }).join('');
+        }
+      } catch(err) {
+        console.error('Failed to load destinations', err);
+      }
+    }
+    initDestinations();
 
     function renderStars(r) {
       let s = '';
@@ -629,6 +513,64 @@
         </div>
       </div>`;
     }
+
+    /* ══════════════════════════════
+       TOP LOCAL GUIDES
+    ══════════════════════════════ */
+    async function initTopGuides() {
+      try {
+        const res = await fetch('http://localhost:5000/api/guides');
+        const data = await res.json();
+        
+        // Sort descending by average_rating, take top 6
+        const sorted = data.sort((a, b) => Number(b.average_rating) - Number(a.average_rating)).slice(0, 6);
+        
+        const grid = document.getElementById('topGuidesGrid');
+        if (grid) {
+            grid.innerHTML = sorted.map((g, index) => buildGuideCard(g, index)).join('');
+        }
+      } catch(err) {
+        console.error('Failed to load top guides', err);
+      }
+    }
+
+    const _GRADIENTS = [
+      'linear-gradient(135deg, #10b981, #059669)',
+      'linear-gradient(135deg, #f59e0b, #d97706)',
+      'linear-gradient(135deg, #3b82f6, #2563eb)'
+    ];
+
+    function buildGuideCard(g, idx = 0) {
+      const gradient = _GRADIENTS[idx % _GRADIENTS.length];
+      const ratingParts = Number(g.average_rating || 0).toFixed(1);
+      const reviews = Number(g.review_count || 0);
+      const price = Number(g.price_per_day || 0).toLocaleString();
+      let pic = g.profile_photo || `https://api.dicebear.com/7.x/avataaars/svg?seed=${g.full_name}`;
+      if (pic && pic.startsWith('uploads/')) pic = 'http://localhost:5000/' + pic;
+      const shortbio = g.short_bio ? (g.short_bio.substring(0, 75) + '...') : 'Passionate local guide eager to show you around.';
+
+      return `<a href="guide-profile.html?id=${g.id}" class="dest-card fade-up delay-${(idx % 3) + 1} visible" style="display:flex; flex-direction:column; text-decoration:none; color:inherit; cursor:pointer;">
+          <div style="background:${gradient}; height:100px; border-radius:16px 16px 0 0; position:relative;">
+            <img src="${pic}" alt="${g.full_name}" loading="lazy"
+              style="width:80px; height:80px; border-radius:50%; position:absolute; bottom:-40px; left:20px; border:4px solid #fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); background:#fff; object-fit:cover;">
+          </div>
+          <div class="dest-card-body" style="padding-top:50px; flex:1; display:flex; flex-direction:column;">
+            <h3 class="dest-title" style="margin-bottom:4px;">${g.full_name}</h3>
+            <p class="dest-loc"><i class="fas fa-map-marker-alt"></i> ${g.city_location || 'Unknown'}</p>
+            <div class="rating" style="margin:12px 0;">
+              <span class="stars">${renderStars(ratingParts)}</span>
+              <strong>${ratingParts}</strong><span class="review-count">(${reviews} reviews)</span>
+            </div>
+            <p style="font-size:13px; color:var(--muted); margin-bottom:16px; flex:1;">${shortbio}</p>
+            <div class="dest-footer" style="margin-top:auto; display:flex; justify-content:space-between; align-items:center;">
+              <span class="dest-price">From <strong>₹${price}</strong> / day</span>
+              <span style="color:var(--primary); font-size:13px; font-weight:600;">View Profile <i class="fas fa-arrow-right" style="margin-left:4px; font-size:11px;"></i></span>
+            </div>
+          </div>
+        </a>`;
+    }
+
+    initTopGuides();
 
     /* ══════════════════════════════
        SEARCH

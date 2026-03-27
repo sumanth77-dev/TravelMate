@@ -21,6 +21,7 @@ const upload = multer({ storage });
 router.get('/posts', communityController.getPosts);
 router.get('/trending', communityController.getTrending);
 router.get('/top-travelers', communityController.getTopTravelers);
+router.get('/categories', communityController.getCategories);
 
 // Protected functionality (Requires authentic JWT token)
 router.post('/posts', protect, upload.array('images', 5), communityController.createPost);
