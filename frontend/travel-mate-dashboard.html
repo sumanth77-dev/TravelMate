@@ -778,19 +778,26 @@
 
       /* populate profile stats */
       var ptsEl = document.getElementById('dashPoints');
-      var currentPts = (Number(localStorage.getItem('tm_points') || 0)).toLocaleString();
-      if (ptsEl) {
-        ptsEl.textContent = currentPts;
-      } else {
-        // Fallback search by looking for the stat-label 'Points' then setting its previous sibling value
-        const statLabels = document.querySelectorAll('.stat-label');
-        for (let lab of statLabels) {
-          if (lab.textContent === 'Points') {
-            lab.previousElementSibling.textContent = currentPts;
-            break;
+      fetch('http://localhost:5000/api/users/points', {
+        headers: { 'Authorization': `Bearer ${TmAuth.getToken()}` }
+      }).then(r => r.json()).then(data => {
+        var currentPts = (data.points || 0).toLocaleString();
+        if (ptsEl) {
+          ptsEl.textContent = currentPts;
+        } else {
+          const statLabels = document.querySelectorAll('.stat-label');
+          for (let lab of statLabels) {
+            if (lab.textContent === 'Points') {
+              lab.previousElementSibling.textContent = currentPts;
+              break;
+            }
           }
         }
-      }
+        
+        const el = document.getElementById('pointsCounter');
+        if (el) el.textContent = (data.points || 0) + ' pts';
+        
+      }).catch(e => console.error('Failed to load points:', e));
 
       var bkEl = document.getElementById('dashBookings');
 
@@ -809,12 +816,15 @@
               }
               container.innerHTML = data.map(function (b) {
                 var isAppr = b.status === 'approved';
+                var isComp = b.status === 'completed';
+                var btnHtml = isComp ? `<button class="rate-btn" onclick="openRatingModal(${b.guide_id}, ${b.id})">Rate Guide</button>` : '';
                 return '<div class="booking-item">' +
                   '<div class="booking-info">' +
                   '<h4>' + (b.guide_name || 'Guide') + ' – ' + (b.city_location || '') + '</h4>' +
                   '<p>Booking on ' + new Date(b.booking_date).toLocaleDateString() + '</p>' +
                   '</div>' +
-                  '<span class="badge ' + (isAppr ? 'approved' : 'pending') + '">' + b.status + '</span>' +
+                  btnHtml +
+                  '<span class="badge ' + (isAppr ? 'approved' : isComp ? 'positive' : 'pending') + '">' + b.status + '</span>' +
                   '</div>';
               }).join('');
             }
@@ -846,15 +856,6 @@
         contents[i].classList.add('active');
       });
     });
-  </script>
-  </script>
-  <script>
-    (function () {
-      const el = document.getElementById('pointsCounter');
-      if (!el) return;
-      const pts = Number(localStorage.getItem('tm_points') || 0);
-      el.textContent = pts + ' pts';
-    })();
   </script>
   <style>
     /* ── Wishlist card styles ── */
@@ -1166,6 +1167,100 @@
     });
 
   </script>
-</body>
+  <!-- RATING MODAL (Added for Guide Reviews) -->
+  <div id="ratingModal" class="modal">
+    <div class="modal-content" style="max-width: 450px;">
+      <div class="modal-header">
+        <h2>Rate Guide</h2>
+        <span class="close-modal" onclick="closeRatingModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="ratingForm" onsubmit="submitGuideRating(event)">
+          <input type="hidden" id="rateGuideId">
+          <input type="hidden" id="rateBookingId">
+          <div class="form-group">
+            <label>Rating (1-5 Stars)</label>
+            <div style="display:flex; gap:8px; font-size:24px; cursor:pointer; color:#ccc;" id="starSelector">
+              <i class="fas fa-star st" data-val="1"></i>
+              <i class="fas fa-star st" data-val="2"></i>
+              <i class="fas fa-star st" data-val="3"></i>
+              <i class="fas fa-star st" data-val="4"></i>
+              <i class="fas fa-star st" data-val="5"></i>
+            </div>
+            <input type="hidden" id="rateValue" value="5" required>
+          </div>
+          <div class="form-group" style="margin-top:16px;">
+            <label>Your Review</label>
+            <textarea id="rateReview" class="form-input" rows="4" placeholder="How was your experience with this guide?" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; margin-top:16px;" id="submitRatingBtn">Submit Rating</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
+  <script>
+    // Star Selector Logic
+    document.querySelectorAll('.st').forEach(s => {
+      s.addEventListener('click', function() {
+        const val = this.getAttribute('data-val');
+        document.getElementById('rateValue').value = val;
+        document.querySelectorAll('.st').forEach(star => {
+          star.style.color = star.getAttribute('data-val') <= val ? '#f59e0b' : '#ccc';
+        });
+      });
+    });
+    // Init stars
+    document.querySelectorAll('.st').forEach(star => {
+      star.style.color = '#f59e0b';
+    });
+
+    function openRatingModal(gId, bId) {
+      document.getElementById('rateGuideId').value = gId;
+      document.getElementById('rateBookingId').value = bId;
+      document.getElementById('ratingModal').classList.add('active');
+    }
+    
+    function closeRatingModal() {
+      document.getElementById('ratingModal').classList.remove('active');
+      document.getElementById('ratingForm').reset();
+    }
+
+    async function submitGuideRating(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitRatingBtn');
+      btn.textContent = 'Submitting...';
+      
+      try {
+        const guide_id = document.getElementById('rateGuideId').value;
+        const booking_id = document.getElementById('rateBookingId').value;
+        const rating = document.getElementById('rateValue').value;
+        const review = document.getElementById('rateReview').value;
+
+        const res = await fetch('http://localhost:5000/api/ratings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          },
+          body: JSON.stringify({
+            guide_id,
+            booking_id,
+            rating,
+            review
+          })
+        });
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.message || 'Failed to submit rating');
+        
+        alert('Rating submitted successfully!');
+        closeRatingModal();
+        location.reload();
+      } catch(err) {
+        alert(err.message);
+      }
+      btn.textContent = 'Submit Rating';
+    }
+  </script>
+</body>
 </html>

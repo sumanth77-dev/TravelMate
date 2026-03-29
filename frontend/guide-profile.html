@@ -608,11 +608,30 @@
             </div>
           </div>
 
+          ${TmAuth.getUser() ? `
           <div class="profile-section">
-            <h2 class="section-title">About</h2>
-            <p class="profile-bio">${guide.bio}</p>
+            <h2 class="section-title">Rate this Guide</h2>
+            <select id="ratingSelect" style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 10px; font-family: 'Plus Jakarta Sans', sans-serif;">
+              <option value="">Select</option>
+              <option value="5">5 ⭐</option>
+              <option value="4">4 ⭐</option>
+              <option value="3">3 ⭐</option>
+              <option value="2">2 ⭐</option>
+              <option value="1">1 ⭐</option>
+            </select>
+            <button onclick="submitRating()" style="padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif;">Submit</button>
           </div>
+          ` : `
+          <div class="profile-section">
+            <h2 class="section-title">Rate this Guide</h2>
+            <div class="unavailable-box">Please log in to rate this guide.</div>
+          </div>
+          `}
 
+<div class="profile-section">
+  <h2 class="section-title">About</h2>
+  <p class="profile-bio">${guide.bio}</p>
+</div>
           <div class="profile-section">
             <h2 class="section-title">Specialties</h2>
             <div class="specialty-tags">
@@ -658,6 +677,43 @@
     }
 
     document.addEventListener('DOMContentLoaded', renderPage);
+    async function submitRating() {
+  const rating = document.getElementById('ratingSelect').value;
+  let guideId = new URLSearchParams(window.location.search).get('id');
+  if (!guideId || guideId === 'null') {
+    guideId = '1';
+  }
+
+  if (!rating) {
+    alert("Select rating");
+    return;
+  }
+
+  try {
+    const res = await fetch('http://localhost:5000/api/reviews', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token') // ✅ IMPORTANT
+      },
+      body: JSON.stringify({
+        guide_id: guideId,
+        rating: Number(rating),
+        review_text: "User rating"
+      })
+    });
+
+    const data = await res.json();
+    console.log(data);
+
+    alert("Rating submitted successfully");
+    location.reload();
+
+  } catch (err) {
+    console.error(err);
+    alert("Error submitting rating");
+  }
+}
   </script>
 </body>
 

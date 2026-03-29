@@ -394,7 +394,11 @@
         localStorage.setItem('tm_active_role', role);
 
         // Server returns: { id, full_name, email, role, token }
-        TmAuth.login(data.full_name, data.email, data.role, null, data.token, data.id);
+        const token = data.token;
+        localStorage.setItem('token', token);
+        console.log("Verified Token in localStorage:", localStorage.getItem('token'));
+        
+        TmAuth.login(data.full_name, data.email, data.role, null, token, data.id);
         showSuccess('Login successful! Redirecting...');
 
         const user = {

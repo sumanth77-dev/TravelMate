@@ -507,7 +507,10 @@
           showMsg('Registration successful. Please wait for admin approval before logging in.', 'success');
           setTimeout(() => window.location.href = 'login.html', 3000);
         } else {
-          TmAuth.login(data.full_name, data.email, data.role, null, data.token, data.id);
+          const token = data.token;
+          localStorage.setItem('token', token);
+          console.log("Verified Token in localStorage:", localStorage.getItem('token'));
+          TmAuth.login(data.full_name, data.email, data.role, null, token, data.id);
           showMsg('Account created successfully! Redirecting...', 'success');
           setTimeout(() => window.location.href = 'travel-mate-dashboard.html', 1000);
         }

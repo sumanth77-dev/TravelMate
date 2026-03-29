@@ -26,6 +26,8 @@ router.get('/categories', communityController.getCategories);
 // Protected functionality (Requires authentic JWT token)
 router.post('/posts', protect, upload.array('images', 5), communityController.createPost);
 router.put('/posts/:id/like', protect, communityController.toggleLike);
+router.put('/posts/:id', protect, communityController.editPost);
+router.delete('/posts/:id', protect, communityController.deletePost);
 
 // Comment routes
 router.get('/posts/:id/comments', communityController.getComments);

@@ -45,10 +45,29 @@ const createPost = async (req, res) => {
         const postId = await Community.createPost(payload);
 
         // Process Multer Image Array
+        let photoPoints = 0;
         if (req.files && req.files.length > 0) {
             const uploadedUrls = req.files.map(f => f.path.replace(/\\/g, '/'));
             await Community.addImages(postId, uploadedUrls);
+            photoPoints = req.files.length * 10;
         }
+
+        try {
+            const db = require('../config/db');
+            await db.query('UPDATE users SET points = points + ? WHERE id = ?', [50 + photoPoints, userId]);
+        } catch(e) { console.error('Failed to attach generic post points', e); }
+
+        // --- NOTIFICATION HOOK: New Post created ---
+        try {
+            const Notification = require('../models/notificationModel');
+            const db = require('../config/db');
+            const [users] = await db.query('SELECT id FROM users WHERE id != ?', [userId]);
+            if (users.length > 0) {
+                await Notification.createBulk(users.map(u => u.id), 'new_post', 'New post added in community');
+                console.log(`[DEBUG] NOTIFICATION INSERTED - Type: new_post, Message: New post added in community`);
+                console.log(`[DEBUG] Receiving user_ids: ${users.map(u => u.id).join(', ')}`);
+            }
+        } catch (notifErr) { console.error('[DEBUG] Fault propagating post creation notifications:', notifErr); }
 
         res.status(201).json({ message: 'Post analyzed and created successfully', postId, assignedCategory: finalCategory });
 
@@ -108,6 +127,21 @@ const toggleLike = async (req, res) => {
         const userId = req.user.id;
 
         const result = await Community.toggleLike(postId, userId);
+        
+        // --- NOTIFICATION HOOK: Like Reaction ---
+        if (result.action === 'liked') {
+            try {
+                const Notification = require('../models/notificationModel');
+                const db = require('../config/db');
+                const [[post]] = await db.query('SELECT user_id FROM community_posts WHERE id = ?', [postId]);
+                if (post && post.user_id !== userId) {
+                    await Notification.create(post.user_id, 'post_reaction', 'Someone reacted to your post');
+                    console.log(`[DEBUG] NOTIFICATION INSERTED - Type: post_reaction, Message: Someone reacted to your post`);
+                    console.log(`[DEBUG] Receiving user_id: ${post.user_id}`);
+                }
+            } catch (notifErr) { console.error('[DEBUG] Reaction (like) notification blocked: ', notifErr); }
+        }
+
         res.status(200).json(result);
     } catch (err) {
         console.error('Liking Error:', err);
@@ -137,6 +171,19 @@ const addComment = async (req, res) => {
         }
 
         const commentId = await Community.addComment(postId, userId, text);
+        
+        // --- NOTIFICATION HOOK: Comment Reaction ---
+        try {
+            const Notification = require('../models/notificationModel');
+            const db = require('../config/db');
+            const [[post]] = await db.query('SELECT user_id FROM community_posts WHERE id = ?', [postId]);
+            if (post && post.user_id !== userId) {
+                await Notification.create(post.user_id, 'post_reaction', 'Someone reacted to your post');
+                console.log(`[DEBUG] NOTIFICATION INSERTED - Type: post_reaction, Message: Someone reacted to your post`);
+                console.log(`[DEBUG] Receiving user_id: ${post.user_id}`);
+            }
+        } catch (notifErr) { console.error('[DEBUG] Reaction (comment) notification blocked: ', notifErr); }
+        
         res.status(201).json({ message: 'Comment added successfully', commentId });
     } catch (err) {
         console.error('Adding comment error:', err);
@@ -154,6 +201,45 @@ const getCategories = async (req, res) => {
     }
 };
 
+const editPost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.user.id;
+        const { caption, tips } = req.body;
+
+        if (!caption) {
+            return res.status(400).json({ message: 'Caption cannot be empty' });
+        }
+
+        const success = await Community.updatePost(postId, userId, caption, tips);
+        if (success) {
+            res.status(200).json({ message: 'Post updated successfully' });
+        } else {
+            res.status(403).json({ message: 'Not authorized or post not found' });
+        }
+    } catch (err) {
+        console.error('Editing post error:', err);
+        res.status(500).json({ message: 'Failed to update post.' });
+    }
+};
+
+const deletePost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.user.id;
+
+        const success = await Community.deletePost(postId, userId);
+        if (success) {
+            res.status(200).json({ message: 'Post deleted successfully' });
+        } else {
+            res.status(403).json({ message: 'Not authorized or post not found' });
+        }
+    } catch (err) {
+        console.error('Deleting post error:', err);
+        res.status(500).json({ message: 'Failed to delete post.' });
+    }
+};
+
 module.exports = {
     createPost,
     getPosts,
@@ -162,5 +248,7 @@ module.exports = {
     toggleLike,
     getComments,
     addComment,
-    getCategories
+    getCategories,
+    editPost,
+    deletePost
 };

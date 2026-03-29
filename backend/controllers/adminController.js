@@ -53,6 +53,17 @@ const approveGuide = async (req, res) => {
     try {
         const { id } = req.params;
         await db.query("UPDATE guides SET is_approved = 1 WHERE id = ?", [id]);
+        
+        // --- NOTIFICATION HOOK: Guide Approved ---
+        try {
+            const Notification = require('../models/notificationModel');
+            const [[guide]] = await db.query("SELECT user_id FROM guides WHERE id = ?", [id]);
+            if (guide) {
+                await Notification.create(guide.user_id, 'guide', 'Your guide profile has been approved');
+                console.log(`[DEBUG] Notified user_id ${guide.user_id} about guide approval`);
+            }
+        } catch (notifErr) { console.error('[DEBUG] Fault submitting approval notification:', notifErr); }
+        
         res.status(200).json({ message: 'Guide successfully approved' });
     } catch (error) {
         console.error(error);
@@ -78,6 +89,13 @@ const rejectGuide = async (req, res) => {
 
             // Delete from guides
             await db.query("DELETE FROM guides WHERE id = ?", [id]);
+            
+            // --- NOTIFICATION HOOK: Guide Rejected ---
+            try {
+                const Notification = require('../models/notificationModel');
+                await Notification.create(guide.user_id, 'admin', 'Your guide profile has been rejected');
+                console.log(`[DEBUG] Notified user_id ${guide.user_id} about guide rejection`);
+            } catch (notifErr) { console.error('[DEBUG] Fault submitting rejection notification:', notifErr); }
         }
 
         res.status(200).json({ message: 'Guide successfully rejected and removed' });

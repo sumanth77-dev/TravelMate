@@ -925,8 +925,32 @@
       }, 400);
     }
 
-    function runFilters() {
-      const searchTxt = document.getElementById('heroSearchInput').value.toLowerCase();
+    async function runFilters() {
+      const searchTxt = document.getElementById('heroSearchInput').value.toLowerCase().trim();
+      
+      // If search text changed, fetch from backend via debounced DB LIKE searches
+      if (searchTxt !== lastSearchVal) {
+        lastSearchVal = searchTxt;
+        const container = document.getElementById('guidesContainer');
+        const countDisplay = document.getElementById('guideCountDisplay');
+        
+        container.innerHTML = Array(4).fill().map(() => `
+          <div class="guide-card-react" style="padding:20px; border:1px solid #e5e7eb; border-radius:16px;">
+            <div style="display:flex; gap:16px;">
+              <div class="skeleton skeleton-avatar"></div>
+              <div style="flex:1;">
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text" style="width:50%;"></div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        countDisplay.textContent = 'Searching guides...';
+        
+        await fetchGuidesFromBackend(searchTxt);
+      }
+
       const langTxt = document.getElementById('filterLang').value;
       const minRating = Number(document.getElementById('filterMinRating').value);
       const maxPrice = Number(document.getElementById('filterMaxPrice').value);
@@ -942,11 +966,6 @@
       checkActiveFilters(searchTxt, langTxt, minRating, maxPrice, specTxt);
 
       const filtered = guidesData.filter(g => {
-        // Search Filter (matches location React implementation)
-        if (searchTxt && !g.location.toLowerCase().includes(searchTxt)) {
-          return false;
-        }
-
         // Language Filter
         if (langTxt && !g.languages.includes(langTxt)) {
           return false;
@@ -974,16 +993,25 @@
     }
 
     // Event Listeners
-    document.getElementById('heroSearchInput').addEventListener('input', runFilters);
+    document.getElementById('heroSearchInput').addEventListener('input', () => {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(runFilters, 400);
+    });
     document.getElementById('filterLang').addEventListener('change', runFilters);
     document.getElementById('filterMinRating').addEventListener('change', runFilters);
     document.getElementById('filterMaxPrice').addEventListener('change', runFilters);
     document.getElementById('filterSpecialty').addEventListener('change', runFilters);
 
-    // Initial render
-    document.addEventListener('DOMContentLoaded', async () => {
+    let searchDebounceTimer;
+    let lastSearchVal = "";
+
+    async function fetchGuidesFromBackend(searchTxt = "") {
       try {
-        const response = await fetch('http://localhost:5000/api/guides');
+        let url = 'http://localhost:5000/api/guides';
+        if (searchTxt) {
+          url += '?search=' + encodeURIComponent(searchTxt);
+        }
+        const response = await fetch(url);
         if (response.ok) {
           const data = await response.json();
           const apiGuides = data.map(g => ({
@@ -999,12 +1027,14 @@
             available: true,
             shortbio: g.short_bio ? (g.short_bio.substring(0, 75) + '...') : 'Passionate local guide eager to show you around.'
           }));
-          if (apiGuides.length > 0) {
-            guidesData = apiGuides;
-          }
+          guidesData = apiGuides;
         }
       } catch (e) { console.error('API Error:', e); }
+    }
 
+    // Initial render
+    document.addEventListener('DOMContentLoaded', async () => {
+      await fetchGuidesFromBackend("");
       renderGuides(guidesData);
     });
   </script>

@@ -749,7 +749,7 @@
       padding: 0;
     }
 
-    .save-btn {
+    .settings-save-btn {
       background: var(--primary);
       color: #fff;
       border: none;
@@ -762,7 +762,7 @@
       transition: background .2s, transform .15s;
     }
 
-    .save-btn:hover {
+    .settings-save-btn:hover {
       background: var(--primary-dark);
       transform: translateY(-1px);
     }
@@ -1009,21 +1009,26 @@
         <div class="strip-stat">
           <span class="si"><i class="fas fa-rupee-sign"></i></span>
           <span class="sv" id="statEarnings">₹0</span>
-          <span class="sl">Total Earned</span>
+          <span class="sl" style="font-size:10px;">Estimated Earnings</span>
+        </div>
+        <div class="strip-stat">
+          <span class="si"><i class="fas fa-check-circle"></i></span>
+          <span class="sv" id="statCompletedBookings">0</span>
+          <span class="sl">Completed Bookings</span>
         </div>
         <div class="strip-stat">
           <span class="si"><i class="fas fa-star"></i></span>
-          <span class="sv">4.8</span>
+          <span class="sv" id="statRating">-</span>
           <span class="sl">Avg Rating</span>
         </div>
         <div class="strip-stat">
           <span class="si"><i class="fas fa-users"></i></span>
-          <span class="sv" id="statTravellers">0</span>
+          <span class="sv" id="statTravellers">-</span>
           <span class="sl">Travellers Served</span>
         </div>
         <div class="strip-stat">
           <span class="si"><i class="fas fa-trophy"></i></span>
-          <span class="sv" id="statPoints">0</span>
+          <span class="sv" id="statPoints">-</span>
           <span class="sl">Points</span>
         </div>
       </div>
@@ -1037,7 +1042,7 @@
     <div class="tabs-wrapper">
       <button class="tab active"><i class="fas fa-chart-pie"></i> Overview</button>
       <button class="tab"><i class="fas fa-calendar-alt"></i> Bookings</button>
-      <button class="tab"><i class="fas fa-rupee-sign"></i> Earnings</button>
+      <button class="tab"><i class="fas fa-rupee-sign"></i> Estimated Earnings</button>
       <button class="tab"><i class="fas fa-clock"></i> Availability</button>
       <button class="tab"><i class="fas fa-cog"></i> Settings</button>
     </div>
@@ -1123,12 +1128,12 @@
         <div class="earn-kpi green">
           <span class="kpi-icon"><i class="fas fa-rupee-sign"></i></span>
           <span class="kpi-val" id="kpiTotal">₹0</span>
-          <span class="kpi-lbl">Total Earned</span>
+          <span class="kpi-lbl">Estimated Earnings</span>
         </div>
         <div class="earn-kpi amber">
           <span class="kpi-icon"><i class="fas fa-clock"></i></span>
-          <span class="kpi-val" id="kpiPending">₹0</span>
-          <span class="kpi-lbl">Pending Payout</span>
+          <span class="kpi-val" id="kpiPending">0</span>
+          <span class="kpi-lbl">Pending Approvals</span>
         </div>
         <div class="earn-kpi blue">
           <span class="kpi-icon"><i class="fas fa-calendar-alt"></i></span>
@@ -1136,6 +1141,7 @@
           <span class="kpi-lbl">This Month</span>
         </div>
       </div>
+      <p style="font-size: 0.75rem; color: #9ca3af; margin-top: 8px; margin-bottom: 24px;">This is a calculated estimate based on completed bookings. No real payment is processed.</p>
       <div class="card">
         <div class="card-title"><i class="fas fa-exchange-alt"></i> Transaction History</div>
         <div id="transactionList">
@@ -1156,7 +1162,7 @@
           <div class="day-toggles" id="dayToggles">
             <!-- rendered by JS -->
           </div>
-          <button class="save-btn" style="margin-top:18px;width:100%;" onclick="saveAvailability()">
+          <button class="settings-save-btn" style="margin-top:18px;width:100%;" onclick="saveAvailability()">
             <i class="fas fa-save"></i> Save Availability
           </button>
         </div>
@@ -1176,7 +1182,7 @@
               <!-- rendered by JS -->
             </tbody>
           </table>
-          <button class="save-btn" style="margin-top:18px;width:100%;" onclick="savePricing()">
+          <button class="settings-save-btn" style="margin-top:18px;width:100%;" onclick="savePricing()">
             <i class="fas fa-save"></i> Save Pricing
           </button>
         </div>
@@ -1206,7 +1212,9 @@
             <textarea class="form-input" id="setBio" rows="4"
               placeholder="Tell travellers about yourself..."></textarea>
           </div>
-          <button class="save-btn" onclick="saveSettings()"><i class="fas fa-save"></i> Save Changes</button>
+          <button class="settings-save-btn" id="saveProfileBtn" onclick="saveSettings()">
+            <i class="fas fa-save"></i> Save Changes
+          </button>
         </div>
 
         <!-- Guide Profile -->
@@ -1236,7 +1244,7 @@
             <label>Base Price per Day (₹)</label>
             <input type="number" class="form-input" id="setPrice" placeholder="1200" min="100">
           </div>
-          <button class="save-btn" onclick="saveGuideProfile()"><i class="fas fa-save"></i> Save Profile</button>
+          <button class="settings-save-btn" onclick="saveGuideProfile()"><i class="fas fa-save"></i> Save Profile</button>
         </div>
       </div>
     </div>
@@ -1279,7 +1287,6 @@
     /* ── INIT profile header ── */
     function initProfile() {
       const u = TmAuth.getUser();
-      const pts = Number(localStorage.getItem('tm_points') || 0);
 
       // Avatar
       const initials = u.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
@@ -1292,9 +1299,6 @@
       // Fallback before fetch completes
       document.getElementById('guideLocation').textContent = 'Loading...';
       document.getElementById('joinDate').textContent = 'Joined ' + new Date(u.joinedAt).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
-
-      const statPtsEl = document.getElementById('statPoints');
-      if (statPtsEl) statPtsEl.textContent = pts.toLocaleString('en-IN');
 
       // Background fetch the guide profile
       fetch('http://localhost:5000/api/guides/me', {
@@ -1326,38 +1330,71 @@
             specs = data.special_skills.split(',').filter(x => x);
             renderSpecs();
           }
+          if (data.available_days) {
+            renderDayToggles(data.available_days.split(','));
+          } else {
+            renderDayToggles();
+          }
+          if (data.price_per_day) {
+            renderPricing(data.price_per_day);
+          } else {
+            renderPricing();
+          }
         })
         .catch(console.error);
     }
 
-    /* ── EARNINGS CHART (simple bar) ── */
-    function renderEarningsChart() {
-      const months = ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'];
-      const values = [4200, 6800, 5100, 9400, 7200, 8600];
-      const max = Math.max(...values);
-      const chart = document.getElementById('earningsChart');
-      chart.innerHTML = months.map((m, i) => `
-    <div class="earn-bar-wrap">
+    async function renderEarningsChart() {
+      try {
+        const res = await fetch('http://localhost:5000/api/guides/earnings', {
+          headers: { 'Authorization': `Bearer ${TmAuth.getToken()}` }
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        let months = [];
+        let values = [];
+        
+        const d = new Date();
+        for (let i = 5; i >= 0; i--) {
+            const m = new Date(d.getFullYear(), d.getMonth() - i, 1);
+            const monthStr = m.toISOString().slice(0, 7);
+            const shortM = m.toLocaleDateString('en-US', { month: 'short' });
+            months.push(shortM);
+            const match = data.find(row => row.month === monthStr);
+            values.push(match ? Number(match.total) : 0);
+        }
+
+        const max = Math.max(...values) || 1;
+        const chart = document.getElementById('earningsChart');
+        chart.innerHTML = months.map((m, i) => `
+    <div class="earn-bar-wrap" title="₹${values[i]}">
       <div class="earn-bar" style="height:${Math.round((values[i] / max) * 70)}px"></div>
       <span class="earn-lbl">${m}</span>
     </div>`).join('');
+      } catch (err) {
+        console.error('Failed to render earnings chart:', err);
+      }
     }
 
     /* ── RECENT BOOKINGS (overview) ── */
     function renderRecentBookings() {
-      const bookings = JSON.parse(localStorage.getItem('tm_bookings') || '[]').slice(0, 4);
+      const bookings = allBookings.slice(0, 4);
       const el = document.getElementById('recentBookingsList');
-      if (!bookings.length) return;
+      if (!bookings.length) {
+        el.innerHTML = '<p style="font-size:13px;color:var(--muted);text-align:center;padding:10px;">No bookings yet. Share your profile!</p>';
+        return;
+      }
       el.innerHTML = bookings.map(b => `
     <div class="booking-row">
       <img class="booking-avatar"
-           src="https://ui-avatars.com/api/?name=${encodeURIComponent(b.name || 'T')}&background=dcfce7&color=16a34a&size=36"
-           alt="${b.name || 'Traveller'}">
+           src="${b.traveler_photo ? ('http://localhost:5000/' + b.traveler_photo) : ('https://ui-avatars.com/api/?name=' + encodeURIComponent(b.traveler_name || 'T') + '&background=dcfce7&color=16a34a&size=36')}"
+           alt="${b.traveler_name || 'Traveller'}">
       <div class="booking-info">
-        <h4>${b.name || 'Traveller'}</h4>
-        <p>${b.destination || ''} &nbsp;·&nbsp; ${b.date || ''}</p>
+        <h4>${b.traveler_name || 'Traveller'}</h4>
+        <p>${new Date(b.booking_date).toLocaleDateString()} &nbsp;·&nbsp; ${b.duration} hours</p>
       </div>
-      <span class="status-pill ${b.status === 'confirmed' ? 'confirmed' : b.status === 'completed' ? 'completed' : 'pending'}">
+      <span class="status-pill ${b.status === 'confirmed' || b.status === 'approved' ? 'confirmed' : b.status === 'completed' ? 'completed' : b.status === 'rejected' || b.status === 'cancelled' ? 'declined' : 'pending'}" style="${b.status === 'rejected' || b.status === 'cancelled' ? 'background:#fee2e2;color:#dc2626;' : ''}; text-transform:capitalize;">
         ${b.status || 'Pending'}
       </span>
     </div>`).join('');
@@ -1365,52 +1402,92 @@
 
     /* ── BOOKINGS TAB ── */
     let allBookings = [];
+    async function loadGuideBookings() {
+      try {
+        const res = await fetch('http://localhost:5000/api/bookings/guide', {
+          headers: { 'Authorization': `Bearer ${TmAuth.getToken()}` }
+        });
+        if (res.ok) {
+          allBookings = await res.json();
+          renderBookings('all');
+          renderRecentBookings();
+          renderEarnings();
+          document.getElementById('statBookings').textContent = allBookings.length;
+          const compStat = document.getElementById('statCompletedBookings');
+          if (compStat) compStat.textContent = allBookings.filter(b => b.status === 'completed').length;
+        }
+      } catch (error) {
+        console.error("Failed to load guide bookings:", error);
+      }
+    }
+
     function renderBookings(filter) {
-      allBookings = JSON.parse(localStorage.getItem('tm_bookings') || '[]');
       const filtered = filter === 'all' ? allBookings
-        : allBookings.filter(b => (b.status || 'pending').toLowerCase() === filter);
+        : allBookings.filter(b => (b.status || 'pending').toLowerCase() === filter.replace('confirmed', 'approved'));
       const grid = document.getElementById('bookingsGrid');
       if (!filtered.length) {
         grid.innerHTML = `<div class="empty-state"><span class="ei">🗓️</span><h3>No ${filter} bookings</h3><p>Nothing here yet!</p></div>`;
         return;
       }
       grid.innerHTML = filtered.map((b, i) => {
-        const cls = b.status === 'confirmed' ? '' : b.status === 'completed' ? 'completed-card' : 'pending-card';
-        const actions = b.status === 'pending'
-          ? `<button class="btn-sm btn-accept" onclick="updateBooking(${i},'confirmed')">Accept</button>
-         <button class="btn-sm btn-decline" onclick="updateBooking(${i},'declined')">Decline</button>`
-          : `<button class="btn-sm btn-view" style="flex:none;padding:8px 16px;">View Details</button>`;
+        const cls = b.status === 'approved' || b.status === 'confirmed' ? '' : b.status === 'completed' ? 'completed-card' : 'pending-card';
+        let actions = '';
+        if (b.status === 'pending') {
+          actions = `<button class="btn-sm btn-accept" onclick="updateBooking(${b.id},'approved')">Accept</button>
+         <button class="btn-sm btn-decline" onclick="updateBooking(${b.id},'rejected')">Decline</button>`;
+        } else if (b.status === 'approved' || b.status === 'confirmed') {
+          actions = `<button class="btn-sm btn-accept" style="background:#2563eb; color:#fff;" onclick="updateBooking(${b.id},'completed')"><i class="fas fa-check-double"></i> Mark Completed</button>`;
+        } else {
+          actions = `<button class="btn-sm btn-view" style="flex:none;padding:8px 16px;">View Details</button>`;
+        }
         return `
       <div class="bk-card ${cls}">
         <div class="bk-top">
-          <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(b.name || 'T')}&background=dcfce7&color=16a34a&size=44" alt="">
+          <img src="${b.traveler_photo ? ('http://localhost:5000/' + b.traveler_photo) : ('https://ui-avatars.com/api/?name=' + encodeURIComponent(b.traveler_name || 'T') + '&background=dcfce7&color=16a34a&size=44')}" alt="">
           <div>
-            <h3>${b.name || 'Traveller'}</h3>
-            <p>${b.email || ''}</p>
+            <h3>${b.traveler_name || 'Traveller'}</h3>
+            <p>${b.traveler_email || ''}</p>
           </div>
-          <span class="status-pill ${b.status === 'confirmed' ? 'confirmed' : b.status === 'completed' ? 'completed' : 'pending'}" style="margin-left:auto;">
+          <span class="status-pill ${b.status === 'confirmed' || b.status === 'approved' ? 'confirmed' : b.status === 'completed' ? 'completed' : b.status === 'rejected' || b.status === 'cancelled' ? 'declined' : 'pending'}" style="margin-left:auto; ${b.status === 'rejected' || b.status === 'cancelled' ? 'background:#fee2e2;color:#dc2626;' : ''}; text-transform:capitalize;">
             ${b.status || 'Pending'}
           </span>
         </div>
         <div class="bk-details">
-          <div class="bk-detail"><i class="fas fa-map-marker-alt"></i>${b.destination || 'Not specified'}</div>
-          <div class="bk-detail"><i class="fas fa-calendar"></i>${b.date || 'Date TBD'}</div>
-          <div class="bk-detail"><i class="fas fa-users"></i>${b.people || 1} traveller(s)</div>
-          <div class="bk-detail"><i class="fas fa-rupee-sign"></i>₹${Number(b.price || 0).toLocaleString('en-IN')} &nbsp;·&nbsp; ${b.package || 'Full Day'}</div>
+          <div class="bk-detail"><i class="fas fa-calendar"></i>${new Date(b.booking_date).toLocaleDateString()}</div>
+          <div class="bk-detail"><i class="fas fa-users"></i>${b.group_size || 1} traveller(s)</div>
+          <div class="bk-detail"><i class="far fa-clock"></i>${b.duration || 1} hours</div>
+          <div class="bk-detail"><i class="fas fa-rupee-sign"></i>₹${Number(b.total_price || 0).toLocaleString('en-IN')} Total</div>
         </div>
-        ${b.requests ? `<div class="bk-detail" style="margin-bottom:12px;font-size:12px;color:var(--muted);font-style:italic;">"${b.requests}"</div>` : ''}
+        ${b.message ? `<div class="bk-detail" style="margin-bottom:12px;font-size:12px;color:var(--muted);font-style:italic;">"${b.message}"</div>` : ''}
         <div class="bk-actions">${actions}</div>
       </div>`;
       }).join('');
     }
 
-    function updateBooking(idx, status) {
-      let bk = JSON.parse(localStorage.getItem('tm_bookings') || '[]');
-      if (bk[idx]) { bk[idx].status = status; localStorage.setItem('tm_bookings', JSON.stringify(bk)); }
-      allBookings = bk;
-      renderBookings('all');
-      renderRecentBookings();
-      showToast(status === 'confirmed' ? '✅ Booking confirmed!' : '❌ Booking declined.');
+    async function updateBooking(id, status) {
+      const btn = document.activeElement;
+      if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      try {
+        const res = await fetch(`http://localhost:5000/api/bookings/${id}/status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${TmAuth.getToken()}`
+          },
+          body: JSON.stringify({ status })
+        });
+        if (res.ok) {
+          showToast(status === 'approved' ? '✅ Booking accepted!' : '❌ Booking declined.');
+          loadGuideBookings();
+          if (typeof loadDashboardStats === 'function') {
+            loadDashboardStats();
+          }
+        } else {
+          showToast('❌ Failed to update booking.');
+        }
+      } catch (err) {
+        showToast('❌ Network error updating booking.');
+      }
     }
 
     function filterBookings(filter, btn) {
@@ -1421,36 +1498,50 @@
 
     /* ── EARNINGS TAB ── */
     function renderEarnings() {
-      const bk = JSON.parse(localStorage.getItem('tm_bookings') || '[]');
-      const total = bk.reduce((s, b) => s + (Number(b.price) || 0), 0);
-      const pending = bk.filter(b => b.status !== 'completed').reduce((s, b) => s + (Number(b.price) || 0), 0);
-      const now = new Date(); const thisMonth = bk.filter(b => {
-        if (!b.date) return false;
-        const d = new Date(b.date); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-      }).reduce((s, b) => s + (Number(b.price) || 0), 0);
-      document.getElementById('kpiTotal').textContent = '₹' + total.toLocaleString('en-IN');
-      document.getElementById('kpiPending').textContent = '₹' + pending.toLocaleString('en-IN');
+      const bk = allBookings;
+      const completedBk = bk.filter(b => b.status === 'completed');
+      const total = completedBk.reduce((s, b) => s + (Number(b.total_price) || 0), 0);
+      const pendingApprovals = bk.filter(b => b.status === 'pending').length;
+      
+      const now = new Date(); 
+      const thisMonth = completedBk.filter(b => {
+        if (!b.booking_date) return false;
+        const d = new Date(b.booking_date); 
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      }).reduce((s, b) => s + (Number(b.total_price) || 0), 0);
+      
+      document.getElementById('kpiTotal').textContent = total > 0 ? '₹' + total.toLocaleString('en-IN') : 'No earnings yet';
+      document.getElementById('kpiPending').textContent = pendingApprovals;
       document.getElementById('kpiThisMonth').textContent = '₹' + thisMonth.toLocaleString('en-IN');
 
+      const st = document.getElementById('statEarnings');
+      if (st) st.textContent = total > 0 ? '₹' + total.toLocaleString('en-IN') : '₹0';
+
       const txList = document.getElementById('transactionList');
-      if (!bk.length) return;
-      txList.innerHTML = bk.map(b => `
+      if (!completedBk.length) {
+        txList.innerHTML = `<div class="empty-state" style="padding:24px;">
+            <span class="ei">💳</span>
+            <p>No earnings yet. Complete a booking to see estimated earnings!</p>
+          </div>`;
+        return;
+      }
+      txList.innerHTML = completedBk.map(b => `
     <div class="transaction-row">
       <div class="tx-icon credit"><i class="fas fa-arrow-down"></i></div>
       <div class="tx-info">
-        <h4>Booking — ${b.destination || 'Tour'}</h4>
-        <p>${b.name || 'Traveller'} &nbsp;·&nbsp; ${b.date || ''} &nbsp;·&nbsp; ${b.package || 'Full Day'}</p>
+        <h4>Estimated Breakdown: <span style="text-transform:capitalize;">${b.status}</span></h4>
+        <p>${b.traveler_name || 'Traveller'} &nbsp;·&nbsp; ${new Date(b.booking_date).toLocaleDateString()} &nbsp;·&nbsp; Duration: ${b.duration}h &nbsp;·&nbsp; Group Size: ${b.group_size}</p>
       </div>
-      <span class="tx-amount credit">+₹${Number(b.price || 0).toLocaleString('en-IN')}</span>
+      <span class="tx-amount credit">+₹${Number(b.total_price || 0).toLocaleString('en-IN')}</span>
     </div>`).join('');
     }
 
     /* ── AVAILABILITY ── */
     const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    function renderDayToggles() {
-      const avail = JSON.parse(localStorage.getItem('tm_guide_avail') || '{}');
+    function renderDayToggles(availArray = []) {
+      const isAvailable = (d) => availArray.length === 0 || availArray.includes(d);
       document.getElementById('dayToggles').innerHTML = DAYS.map(d => {
-        const on = avail[d] !== false;
+        const on = isAvailable(d);
         return `
       <div class="day-row">
         <span class="day-name">${d}</span>
@@ -1470,8 +1561,16 @@
     function saveAvailability() {
       const avail = {};
       DAYS.forEach(d => { avail[d] = document.getElementById('day_' + d).checked; });
-      localStorage.setItem('tm_guide_avail', JSON.stringify(avail));
-      showToast('✅ Availability saved!');
+      const available_days = Object.keys(avail).filter(d => avail[d]).join(',');
+      
+      fetch('http://localhost:5000/api/guides/me/availability', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TmAuth.getToken()}` },
+        body: JSON.stringify({ available_days, available_timings: '9 AM - 6 PM' })
+      })
+      .then(r => r.json())
+      .then(() => showToast('✅ Availability saved!'))
+      .catch(err => showToast('❌ Failed to save availability'));
     }
 
     const PACKAGES = [
@@ -1480,20 +1579,36 @@
       { name: '2-Day Package', dur: '2 days', key: 'two', def: 2200 },
       { name: 'Weekend Pack', dur: '3 days', key: 'three', def: 3200 },
     ];
-    function renderPricing() {
-      const prices = JSON.parse(localStorage.getItem('tm_guide_pricing') || '{}');
-      document.getElementById('pricingBody').innerHTML = PACKAGES.map(p => `
+    function renderPricing(basePrice) {
+      document.getElementById('pricingBody').innerHTML = PACKAGES.map(p => {
+        let val = p.def;
+        if (basePrice) {
+           if (p.key === 'half') val = Math.round(basePrice * 0.5);
+           else if (p.key === 'full') val = basePrice;
+           else if (p.key === 'two') val = basePrice * 2;
+           else if (p.key === 'three') val = basePrice * 3;
+        }
+        return `
     <tr>
       <td style="font-weight:600;">${p.name}</td>
       <td style="color:var(--muted)">${p.dur}</td>
-      <td><input type="number" class="price-input" id="price_${p.key}" value="${prices[p.key] || p.def}" min="100"></td>
-    </tr>`).join('');
+      <td><input type="number" class="price-input" id="price_${p.key}" value="${val}" min="100"></td>
+    </tr>`;
+      }).join('');
     }
     function savePricing() {
       const prices = {};
       PACKAGES.forEach(p => { prices[p.key] = Number(document.getElementById('price_' + p.key).value) || p.def; });
-      localStorage.setItem('tm_guide_pricing', JSON.stringify(prices));
-      showToast('✅ Pricing saved!');
+      const price_per_day = prices['full'] || 1200;
+      
+      fetch('http://localhost:5000/api/guides/me/pricing', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TmAuth.getToken()}` },
+        body: JSON.stringify({ price_per_day, max_group_size: 10 })
+      })
+      .then(r => r.json())
+      .then(() => showToast('✅ Pricing saved!'))
+      .catch(err => showToast('❌ Failed to save pricing'));
     }
 
     /* ── SPECIALTIES ── */
@@ -1508,65 +1623,74 @@
     }
     function removeSpec(i) { specs.splice(i, 1); renderSpecs(); }
 
-    /* ── SETTINGS SAVE ── */
-    function saveSettings() {
+    async function saveSettings() {
+      const name = document.getElementById('setName').value.trim();
+      const email = document.getElementById('setEmail').value.trim();
       const loc = document.getElementById('setLocation').value.trim();
       const bio = document.getElementById('setBio').value.trim();
 
-      fetch('http://localhost:5000/api/guides/me', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TmAuth.getToken()}` },
-        body: JSON.stringify({ city_location: loc, short_bio: bio })
-      })
-        .then(async r => {
-          if (!r.ok) throw new Error((await r.json()).message || 'Failed to update profile');
-          return r.json();
-        })
-        .then(d => {
-          document.getElementById('guideLocation').textContent = loc || 'Location not set';
-          showToast('✅ Personal info saved!');
-        })
-        .catch(err => {
-          console.error(err);
-          showToast('❌ ' + err.message);
+      const btn = document.activeElement;
+      if (btn) btn.textContent = 'Saving...';
+
+      try {
+        const userRes = await fetch('http://localhost:5000/api/users/profile', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TmAuth.getToken()}` },
+            body: JSON.stringify({ full_name: name, email: email, location: loc, bio: bio })
         });
+        if (!userRes.ok) throw new Error('Failed to update base user profile');
+
+        const guideRes = await fetch('http://localhost:5000/api/guides/me', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TmAuth.getToken()}` },
+            body: JSON.stringify({ city_location: loc, short_bio: bio })
+        });
+        if (!guideRes.ok) throw new Error('Failed to update guide specifics');
+
+        const ud = TmAuth.getUser();
+        if(ud) { ud.name = name; localStorage.setItem('tm_user', JSON.stringify(ud)); }
+
+        document.getElementById('guideName').textContent = name;
+        document.getElementById('guideLocation').textContent = loc || 'Location not set';
+        showToast('✅ Personal info & User Profile saved!');
+      } catch (err) {
+        console.error(err);
+        showToast('❌ ' + err.message);
+      }
+      if (btn) btn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
     }
 
-    function saveGuideProfile() {
+    async function saveGuideProfile() {
       const lang = document.getElementById('setLanguages').value.trim();
       const exp = document.getElementById('setExp').value.trim();
 
-      fetch('http://localhost:5000/api/guides/me', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TmAuth.getToken()}` },
-        body: JSON.stringify({ languages_spoken: lang, years_of_experience: Number(exp) || 0 })
-      })
-        .then(async r => {
-          if (!r.ok) throw new Error((await r.json()).message || 'Failed to update profile');
-          return r.json();
-        })
-        .then(d => {
-          showToast('✅ Guide profile saved!');
-        })
-        .catch(err => {
-          console.error(err);
-          showToast('❌ ' + err.message);
+      try {
+        const r = await fetch('http://localhost:5000/api/guides/me', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TmAuth.getToken()}` },
+          body: JSON.stringify({ languages_spoken: lang, years_of_experience: Number(exp) || 0 })
         });
+        if (!r.ok) throw new Error((await r.json()).message || 'Failed to update profile');
+
+        await fetch('http://localhost:5000/api/guides/me/expertise', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TmAuth.getToken()}` },
+          body: JSON.stringify({ special_skills: specs.join(',') })
+        });
+
+        showToast('✅ Guide profile & specialties saved!');
+      } catch (err) {
+        console.error(err);
+        showToast('❌ ' + err.message);
+      }
     }
 
     /* ── INIT ── */
     function init() {
       initProfile();
       renderEarningsChart();
-      renderRecentBookings();
-      renderBookings('all');
-      renderEarnings();
-      renderDayToggles();
-      renderPricing();
-      // Load specs
-      const profile = JSON.parse(localStorage.getItem('tm_guide_profile') || '{}');
-      specs = profile.specs || ['Heritage', 'Culture'];
-      renderSpecs();
+      loadGuideBookings();
+      // Dependencies like renderDayToggles() and renderPricing() are natively intercepted inside initProfile once the API promise succeeds
     }
 
     document.addEventListener('DOMContentLoaded', init);
@@ -1586,6 +1710,41 @@
       }
     });
   </script>
-</body>
+  <script>
+    // TASK 3: ENSURE API IS CALLED ON LOAD AND AVOID CACHING
+    async function loadDashboardStats() {
+      try {
+        const res = await fetch('http://localhost:5000/api/guides/dashboard-stats', {
+          method: 'GET',
+          cache: 'no-store', // Prevent caching so we get fresh data
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          // UPDATE UI
+          if (document.getElementById('statBookings')) document.getElementById('statBookings').textContent = data.totalBookings;
+          if (document.getElementById('statCompletedBookings')) document.getElementById('statCompletedBookings').textContent = data.completedBookings;
+          if (document.getElementById('statEarnings')) document.getElementById('statEarnings').textContent = '₹' + data.estimatedEarnings.toLocaleString('en-IN');
+          
+          document.getElementById('statRating').textContent =
+            data.avgRating ? Number(data.avgRating).toFixed(1) : '0.0';
+          
+          document.getElementById('statTravellers').textContent =
+            data.travellersServed || 0;
+          
+          document.getElementById('statPoints').textContent =
+            data.points || 0;
+            
+          if(document.getElementById('pointsCounter')) document.getElementById('pointsCounter').textContent = (data.points ?? 0) + ' pts';
+        }
+      } catch (err) {
+        console.error('Error fetching dashboard stats:', err);
+      }
+    }
 
+    window.addEventListener('DOMContentLoaded', loadDashboardStats);
+  </script>
+</body>
 </html>

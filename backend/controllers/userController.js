@@ -28,4 +28,15 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { getUserProfile, updateUserProfile };
+const getUserPoints = async (req, res) => {
+    try {
+        const [users] = await db.query('SELECT points FROM users WHERE id = ?', [req.user.id]);
+        if (!users.length) return res.status(404).json({ message: 'User not found' });
+        res.json({ points: users[0].points || 0 });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error retrieving points' });
+    }
+};
+
+module.exports = { getUserProfile, updateUserProfile, getUserPoints };

@@ -8,6 +8,7 @@
 	<link href="style.css" rel="stylesheet">
 	<script src="tm-auth.js"></script>
 	<script src="tm-auth.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<link
 		href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
 		rel="stylesheet">
@@ -89,6 +90,15 @@
 		.toast.show {
 			opacity: 1;
 			transform: translateX(-50%) translateY(0);
+		}
+
+		@keyframes pop {
+			0% { transform: scale(1); }
+			50% { transform: scale(1.3); }
+			100% { transform: scale(1); }
+		}
+		.pop-anim {
+			animation: pop 0.3s ease-in-out;
 		}
 
 		/* ── Modal ── */
@@ -230,9 +240,9 @@
 		/* ── Post card ── */
 		.post-card {
 			background: #fff;
-			border-radius: 14px;
-			box-shadow: 0 2px 12px rgba(0, 0, 0, .07);
-			margin-bottom: 20px;
+			border-radius: 12px;
+			border: 1px solid #efefef;
+			margin-bottom: 24px;
 			overflow: hidden;
 		}
 
@@ -240,7 +250,7 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			padding: 14px 16px 0;
+			padding: 14px 16px 10px;
 		}
 
 		.author {
@@ -280,10 +290,9 @@
 		}
 
 		.post-footer {
-			padding: 6px 16px 14px;
+			padding: 0 16px 16px;
 			display: flex;
-			justify-content: space-between;
-			align-items: center;
+			flex-direction: column;
 		}
 
 		.post-actions {
@@ -756,9 +765,11 @@
 							<select class="cm-input" id="budgetFilter"
 								style="width:auto;padding:8px 12px;font-size:13px;border-radius:6px;background:#f8fafc;border:1px solid #e2e8f0;">
 								<option value="">Filter by Budget</option>
-								<option value="low">Under ₹5000</option>
-								<option value="med">₹5000 - ₹15000</option>
-								<option value="high">Above ₹15000</option>
+								<option value="under2k">Under ₹2000</option>
+								<option value="2k-5k">₹2000 - ₹5000</option>
+								<option value="5k-10k">₹5000 - ₹10000</option>
+								<option value="10k-20k">₹10000 - ₹20000</option>
+								<option value="above20k">Above ₹20000</option>
 							</select>
 						</div>
 
@@ -884,6 +895,22 @@
 	<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 	<script>
+		window.slideCarousel = function(id, dir, event) {
+			event.stopPropagation();
+			const el = document.getElementById(id);
+			if (!el) return;
+			const w = el.offsetWidth;
+			el.scrollBy({ left: dir * w, behavior: 'smooth' });
+		};
+		window.updateIndicator = function(id, total) {
+			const el = document.getElementById(id);
+			if (!el) return;
+			const w = el.offsetWidth;
+			const index = Math.round(el.scrollLeft / w) + 1;
+			const indText = document.getElementById('ind_' + id);
+			if (indText) indText.textContent = index + '/' + total;
+		};
+
 		/* ── Navbar scroll effect ── */
 		window.addEventListener('scroll', function () {
 			const navbar = document.getElementById('navbar');
@@ -1087,47 +1114,63 @@
 			// Transform date to pleasant syntax
 			const dStr = p.created_at ? new Date(p.created_at).toLocaleDateString() : 'just now';
 
+			const isOwner = TmAuth.getUser() && TmAuth.getUser().id === p.user_id;
 			return `
 				<article class="post-card" data-id="${p.id}" data-timestamp="${new Date(p.created_at).getTime()}" data-likes="${p.likes || 0}" data-rating="${p.rating || 0}">
 					<header class="post-header" style="align-items:flex-start;">
 						<div class="author" style="cursor:pointer;" title="View Profile">
-							<img src="${avatarUrl}" alt="avatar" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">
+							<img src="${avatarUrl}" alt="avatar" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
 							<div>
-								<div class="author-name" style="font-size:15px; transition:color .2s;">${escapeHtml(p.author_name || 'Traveller')}</div>
-								<div class="author-meta">📍 ${escapeHtml(p.place_name || p.location || '')} · ${escapeHtml(p.location || '')} · ${dStr}</div>
+								<div class="author-name" style="font-size:14px; transition:color .2s;">${escapeHtml(p.author_name || 'Traveller')}</div>
+								<div class="author-meta">📍 ${escapeHtml(p.place_name || p.location || '')} · ${escapeHtml(p.location || '')}</div>
 							</div>
 						</div>
-						<div class="post-stars">${stars}</div>
+						<div style="display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+							<div class="post-stars" style="font-size:14px;">${stars}</div>
+							${isOwner ? `
+							<div class="post-owner-actions" style="display:flex; gap:8px;">
+								<button class="icon-btn edit-btn" style="color:#3b82f6; font-size:13px;" data-caption="${escapeHtml(p.caption || '')}" data-tips="${escapeHtml(p.tips || '')}"><i class="fas fa-edit"></i> Edit</button>
+								<button class="icon-btn delete-btn" style="color:#ef4444; font-size:13px;"><i class="fas fa-trash"></i> Delete</button>
+							</div>` : ''}
+						</div>
 					</header>
 					
-					<div style="padding:16px;">
-						<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">${tagsHtml}</div>
-						<p class="post-caption" style="font-size:14.5px;line-height:1.6;color:#1e293b;margin-bottom:12px;">${escapeHtml(p.caption || '')}</p>
-						${p.tips ? `<div style="background:#f8fafc;border-left:4px solid #3b82f6;padding:12px;border-radius:0 8px 8px 0;margin-bottom:16px;"><strong style="font-size:13px;color:#1e293b;display:block;margin-bottom:4px;">💡 Travel Tips:</strong><p style="font-size:13px;color:#475569;margin:0;">${escapeHtml(p.tips)}</p></div>` : ''}
-					</div>
-
 					${parsedImages.length > 0 ? `
-					<div style="padding:0 16px 16px;">
+					<div style="padding:0; position:relative;">
 					${parsedImages.length > 1
-						? `<div class="post-image-scroll" style="display:flex;overflow-x:auto;gap:8px;scroll-snap-type:x mandatory;scrollbar-width:thin;padding-bottom:8px;">${parsedImages.map(img => `<img src="${img}" style="width:85%;height:300px;object-fit:contain;background:#f8fafc;border-radius:12px;scroll-snap-align:center;flex-shrink:0;cursor:pointer;transition:transform .2s;" onclick="openLightbox('${img}')">`).join('')}</div>`
-						: `<div class="post-image" style="border-radius:12px;overflow:hidden;background:#f8fafc;"><img src="${parsedImages[0]}" style="width:100%;max-height:500px;object-fit:contain;display:block;border-radius:12px;cursor:pointer;transition:transform .2s;" onclick="openLightbox('${parsedImages[0]}')"></div>`
+						? `<div id="carousel_${p.id}" style="display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none;" onscroll="updateIndicator('carousel_${p.id}', ${parsedImages.length})">
+							${parsedImages.map(img => `<img src="${img}" class="feed-img" style="width:100%; aspect-ratio:4/5; object-fit:cover; background:#f8fafc; scroll-snap-align:center; flex-shrink:0; cursor:pointer;" onclick="openLightbox('${img}')">`).join('')}
+						   </div>
+						   <div id="ind_carousel_${p.id}" style="position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.65); color:#fff; font-size:12px; font-weight:600; padding:4px 10px; border-radius:12px; z-index:2; pointer-events:none;">1/${parsedImages.length}</div>
+						   <button onclick="slideCarousel('carousel_${p.id}', -1, event)" style="position:absolute; left:8px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.85); color:#262626; border:none; width:32px; height:32px; border-radius:50%; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.15); z-index:2; display:flex; align-items:center; justify-content:center; transition:background 0.2s;"><i class="fas fa-chevron-left"></i></button>
+						   <button onclick="slideCarousel('carousel_${p.id}', 1, event)" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.85); color:#262626; border:none; width:32px; height:32px; border-radius:50%; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.15); z-index:2; display:flex; align-items:center; justify-content:center; transition:background 0.2s;"><i class="fas fa-chevron-right"></i></button>`
+						: `<div style="background:#f8fafc;"><img src="${parsedImages[0]}" style="width:100%; aspect-ratio:4/5; object-fit:cover; display:block; cursor:pointer;" onclick="openLightbox('${parsedImages[0]}')"></div>`
 					}
 					</div>` : ''}
-					
-					<footer class="post-footer" style="border-top:1px solid #f1f5f9;padding-top:12px;">
-						<div class="post-actions">
-							<button class="icon-btn like-btn" data-liked="false" style="font-size:15px;">❤ <span class="like-count">${p.likes || 0}</span></button>
-							<button class="icon-btn message-btn" style="font-weight:600;color:#475569;">💬 Comment</button>
-							<button class="icon-btn save-btn" data-saved="false" style="color:#475569;">🔖 Save</button>
-							<button class="icon-btn share-btn" style="color:#475569;">🔗 Share</button>
+
+					<div class="post-footer">
+						<div class="post-actions" style="display:flex; gap:16px; margin-bottom:8px; margin-top:12px; align-items:center;">
+							<button class="icon-btn like-btn" data-liked="false" style="padding:0; font-size:24px; color:#262626; transition: transform 0.2s; background:transparent; border:none; cursor:pointer;"><i class="far fa-heart"></i></button>
+							<button class="icon-btn message-btn" style="padding:0; font-size:24px; color:#262626; background:transparent; border:none; cursor:pointer;"><i class="far fa-comment"></i></button>
+							<button class="icon-btn share-btn" style="padding:0; font-size:24px; color:#262626; background:transparent; border:none; cursor:pointer;"><i class="far fa-paper-plane"></i></button>
+							<div style="flex:1;"></div>
+							<a href="findguides.html" style="background:#f8fafc; color:#262626; font-size:13px; font-weight:600; text-decoration:none; padding:6px 14px; border-radius:20px; border:1px solid #e2e8f0; display:flex; align-items:center; gap:6px; transition:all 0.2s;"><i class="fas fa-compass" style="color:#0095f6;"></i> Find Guide</a>
+							<button class="icon-btn save-btn" data-saved="false" style="padding:0; font-size:24px; color:#262626; margin-left:8px; background:transparent; border:none; cursor:pointer;"><i class="far fa-bookmark"></i></button>
 						</div>
-						<a href="findguides.html" style="background:var(--primary);color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:700;text-decoration:none;transition:background .2s;"><i class="fas fa-compass"></i> Find Guide</a>
-					</footer>
-					<div class="comments-section" style="display:none;padding:10px 16px;">
+						<div style="font-weight:600; font-size:14px; margin-bottom:6px; color:#262626;"><span class="like-count">${p.likes || 0}</span> likes</div>
+						<div style="margin-bottom:12px;">
+							<span style="font-weight:600; font-size:14px; color:#262626; margin-right:6px;">${escapeHtml(p.author_name || 'Traveller')}</span>
+							<span class="post-caption" style="font-size:14px; line-height:1.5; color:#262626;">${escapeHtml(p.caption || '')}</span>
+						</div>
+						${p.tips ? `<div style="background:#f8fafc; border-left:3px solid #3b82f6; padding:10px; margin-bottom:12px;"><strong style="font-size:13px; color:#262626; display:block; margin-bottom:2px;">💡 Travel Tips</strong><p style="font-size:13px; margin:0; color:#525252;">${escapeHtml(p.tips)}</p></div>` : ''}
+						<div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">${tagsHtml}</div>
+						<div style="font-size:11px; color:#737373; text-transform:uppercase;">${dStr}</div>
+					</div>
+					<div class="comments-section" style="display:none;padding:0 16px 12px;">
 						<div class="comments-list"></div>
-						<div style="display:flex;gap:8px;margin-top:8px;">
-							<input type="text" class="comment-input cm-input" placeholder="Write a comment...">
-							<button class="btn btn-primary add-comment">Post</button>
+						<div style="display:flex;gap:8px;margin-top:8px; border-top:1px solid #efefef; padding-top:12px;">
+							<input type="text" class="comment-input cm-input" placeholder="Add a comment..." style="border:none; padding:8px 0; border-radius:0;">
+							<button class="btn add-comment" style="color:#0095f6; background:none; border:none; padding:8px 0; cursor:pointer; font-weight:600;">Post</button>
 						</div>
 					</div>
 				</article>`;
@@ -1290,11 +1333,24 @@
 			if (e.target.closest('.like-btn')) {
 				if (!TmAuth.getUser()) { showToast('Please login or register to continue', 'error'); setTimeout(() => window.location.href='login.html', 1500); return; }
 				const btn = post.querySelector('.like-btn');
-				const countEl = btn.querySelector('.like-count');
+				const countEl = post.querySelector('.like-count');
 				let count = Number(countEl.textContent);
 				const liked = btn.dataset.liked === 'true';
 				btn.dataset.liked = liked ? 'false' : 'true';
-				btn.style.color = liked ? '' : 'red';
+				
+				const icon = btn.querySelector('i');
+				if (liked) {
+					btn.style.color = '#262626';
+					icon.className = 'far fa-heart';
+				} else {
+					btn.style.color = '#ed4956';
+					icon.className = 'fas fa-heart';
+				}
+				
+				btn.classList.remove('pop-anim');
+				void btn.offsetWidth;
+				btn.classList.add('pop-anim');
+
 				const newCount = liked ? count - 1 : count + 1;
 				countEl.textContent = newCount;
 				post.dataset.likes = newCount;
@@ -1307,6 +1363,35 @@
 
 				// re-sort if in popular mode
 				if (currentFilter === 'popular') sortPosts('popular');
+				return;
+			}
+
+			// EDIT
+			if (e.target.closest('.edit-btn')) {
+				const btn = e.target.closest('.edit-btn');
+				document.getElementById('editPostId').value = post.dataset.id;
+				document.getElementById('editCaptionInput').value = btn.dataset.caption;
+				document.getElementById('editTipsInput').value = btn.dataset.tips;
+				document.getElementById('editPostModal').classList.add('open');
+				document.body.style.overflow = 'hidden';
+				return;
+			}
+
+			// DELETE
+			if (e.target.closest('.delete-btn')) {
+				if (!confirm('Are you sure you want to delete this post?')) return;
+				const postId = post.dataset.id;
+				fetch('http://localhost:5000/api/community/posts/' + postId, {
+					method: 'DELETE',
+					headers: { 'Authorization': 'Bearer ' + TmAuth.getToken() }
+				}).then(res => res.json()).then(data => {
+					if (data.message === 'Post deleted successfully') {
+						post.remove();
+						showToast('Post deleted');
+					} else showToast(data.message, 'error');
+				}).catch(err => {
+					showToast('Failed to delete user post', 'error');
+				});
 				return;
 			}
 
@@ -1327,9 +1412,19 @@
 			// SHARE
 			if (e.target.closest('.share-btn')) {
 				if (!TmAuth.isLogged()) { showToast('Please login or register to continue', 'error'); setTimeout(() => window.location.href='login.html', 1500); return; }
-				const textNode = post.querySelector('.post-caption');
-				const text = textNode ? textNode.textContent : 'Check out this travel experience on TravelMate!';
-				navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!'));
+				
+				const postId = post.dataset.id;
+				const url = window.location.origin + window.location.pathname + '?post=' + postId;
+				
+				if (navigator.share) {
+					navigator.share({
+						title: 'TravelMate Post',
+						text: 'Check out this travel experience on TravelMate!',
+						url: url,
+					}).catch(err => console.error("Share failed", err));
+				} else {
+					navigator.clipboard.writeText(url).then(() => showToast('Link copied to clipboard!'));
+				}
 				return;
 			}
 
@@ -1409,6 +1504,67 @@
 				list.innerHTML = '<div style="text-align:center;font-size:12px;color:red;padding:10px;">Error loading comments.</div>';
 			}
 		}
+	</script>
+
+	<!-- Edit Post Modal -->
+	<div id="editPostModal" class="cm-modal" aria-hidden="true">
+		<div class="cm-dialog">
+			<header class="cm-header">
+				<h2>Edit Post</h2>
+				<button id="closeEditPost" class="icon-btn">✕</button>
+			</header>
+			<form id="editPostForm" class="cm-form">
+				<input type="hidden" id="editPostId">
+				<label class="cm-label">Travel Description</label>
+				<textarea id="editCaptionInput" class="cm-textarea" rows="3"></textarea>
+
+				<label class="cm-label">Travel Tips</label>
+				<textarea id="editTipsInput" class="cm-textarea" rows="2"></textarea>
+
+				<div class="cm-actions">
+					<button type="button" id="saveEditBtn" class="btn btn-primary btn-lg">Save Changes</button>
+					<button type="button" id="cancelEditBtn" class="btn btn-white">Cancel</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		document.getElementById('closeEditPost').addEventListener('click', closeEditModal);
+		document.getElementById('cancelEditBtn').addEventListener('click', closeEditModal);
+		function closeEditModal() {
+			document.getElementById('editPostModal').classList.remove('open');
+			document.body.style.overflow = '';
+		}
+		document.getElementById('saveEditBtn').addEventListener('click', () => {
+			const postId = document.getElementById('editPostId').value;
+			const caption = document.getElementById('editCaptionInput').value.trim();
+			const tips = document.getElementById('editTipsInput').value.trim();
+			
+			const btn = document.getElementById('saveEditBtn');
+			btn.disabled = true;
+			btn.textContent = 'Saving...';
+			
+			fetch('http://localhost:5000/api/community/posts/' + postId, {
+				method: 'PUT',
+				headers: { 
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + TmAuth.getToken() 
+				},
+				body: JSON.stringify({ caption, tips })
+			}).then(res => res.json()).then(data => {
+				if (data.message === 'Post updated successfully') {
+					showToast('Post updated');
+					closeEditModal();
+					loadPosts(currentCategoryFilter);
+				} else showToast(data.message, 'error');
+			}).catch(err => {
+				showToast('Failed to edit post', 'error');
+			}).finally(() => {
+				btn.disabled = false;
+				btn.textContent = 'Save Changes';
+			});
+		});
 	</script>
 
 	<!-- LIGHTBOX MODAL -->

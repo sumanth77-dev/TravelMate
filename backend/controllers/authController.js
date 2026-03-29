@@ -78,6 +78,16 @@ const registerUser = async (req, res) => {
                     await connection.commit();
                     connection.release();
 
+                    // --- NOTIFICATION HOOK: Guide Registration ---
+                    try {
+                        const Notification = require('../models/notificationModel');
+                        const [admins] = await db.query('SELECT id FROM users WHERE role = ?', ['Admin']);
+                        if (admins.length > 0) {
+                            await Notification.createBulk(admins.map(a => a.id), 'admin', 'New guide registered. Please review.');
+                            console.log(`[DEBUG] Notified ${admins.length} admins about guide account upgrade`);
+                        }
+                    } catch (notifErr) { console.error('[DEBUG] Notification fault on registration upgrade:', notifErr); }
+
                     return res.status(200).json({ id: userExists.id, full_name: userExists.full_name, role: 'Both', token: generateToken(userExists.id) });
                 } catch (err) {
                     await connection.rollback();
@@ -151,6 +161,16 @@ const registerUser = async (req, res) => {
 
                 await connection.commit();
                 connection.release();
+
+                // --- NOTIFICATION HOOK: Guide Registration ---
+                try {
+                    const Notification = require('../models/notificationModel');
+                    const [admins] = await db.query('SELECT id FROM users WHERE role = ?', ['Admin']);
+                    if (admins.length > 0) {
+                        await Notification.createBulk(admins.map(a => a.id), 'admin', 'New guide registered. Please review.');
+                        console.log(`[DEBUG] Notified ${admins.length} admins about new guide registration`);
+                    }
+                } catch (notifErr) { console.error('[DEBUG] Notification fault on fresh registration:', notifErr); }
 
                 res.status(201).json({ id: userId, full_name, role: 'Guide', token: generateToken(userId) });
             } catch (err) {

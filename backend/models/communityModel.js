@@ -21,14 +21,14 @@ const Community = {
         let query = `
             SELECT p.*, 
                    IFNULL(JSON_ARRAYAGG(pi.image_url), JSON_ARRAY()) as images,
-                   IFNULL(pc.place_count, 0) as place_count
+                   IFNULL(lc.loc_count, 0) as loc_count
             FROM community_posts p
             LEFT JOIN post_images pi ON p.id = pi.post_id
             LEFT JOIN (
-                SELECT place_name, COUNT(id) as place_count
+                SELECT location, COUNT(id) as loc_count
                 FROM community_posts
-                GROUP BY place_name
-            ) pc ON pc.place_name = p.place_name
+                GROUP BY location
+            ) lc ON lc.location = p.location
         `;
         const params = [];
         const conditions = [];
@@ -52,12 +52,16 @@ const Community = {
         }
 
         if (filters.budget) {
-            if (filters.budget === 'low') {
-                conditions.push(`p.budget < 5000`);
-            } else if (filters.budget === 'med') {
-                conditions.push(`p.budget BETWEEN 5000 AND 15000`);
-            } else if (filters.budget === 'high') {
-                conditions.push(`p.budget > 15000`);
+            if (filters.budget === 'under2k') {
+                conditions.push(`p.budget < 2000`);
+            } else if (filters.budget === '2k-5k') {
+                conditions.push(`p.budget BETWEEN 2000 AND 5000`);
+            } else if (filters.budget === '5k-10k') {
+                conditions.push(`p.budget BETWEEN 5000 AND 10000`);
+            } else if (filters.budget === '10k-20k') {
+                conditions.push(`p.budget BETWEEN 10000 AND 20000`);
+            } else if (filters.budget === 'above20k') {
+                conditions.push(`p.budget > 20000`);
             }
         }
 
@@ -68,7 +72,7 @@ const Community = {
         query += ` GROUP BY p.id `;
 
         if (filters.sort === 'popular') {
-            query += ` ORDER BY place_count DESC, p.created_at DESC `;
+            query += ` ORDER BY loc_count DESC, p.created_at DESC `;
         } else if (filters.sort === 'toprated') {
             query += ` ORDER BY p.likes DESC, p.created_at DESC `;
         } else {
@@ -165,6 +169,18 @@ const Community = {
         `;
         const [rows] = await db.query(query);
         return rows.map(r => r.category);
+    },
+
+    updatePost: async (postId, userId, caption, tips) => {
+        const query = `UPDATE community_posts SET caption = ?, tips = ? WHERE id = ? AND user_id = ?`;
+        const [result] = await db.query(query, [caption, tips || null, postId, userId]);
+        return result.affectedRows > 0;
+    },
+
+    deletePost: async (postId, userId) => {
+        const query = `DELETE FROM community_posts WHERE id = ? AND user_id = ?`;
+        const [result] = await db.query(query, [postId, userId]);
+        return result.affectedRows > 0;
     }
 };
 

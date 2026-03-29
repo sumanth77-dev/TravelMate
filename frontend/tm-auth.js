@@ -6,45 +6,80 @@ const TmAuth = (() => {
   const KEY = 'tm_user';
 
   const getUser = () => JSON.parse(localStorage.getItem(KEY) || 'null');
-  const getToken = () => localStorage.getItem('tm_token');
+  const getToken = () => localStorage.getItem('token');
   const isLogged = () => !!getUser() && !!getToken();
 
   const login = (name, email, role, avatar, token, id) => {
     const user = { id, name, email, role, avatar: avatar || null, joinedAt: Date.now() };
     localStorage.setItem(KEY, JSON.stringify(user));
-    if (token) localStorage.setItem('tm_token', token);
+    if (token) localStorage.setItem('token', token);
     return user;
   };
 
   const logout = () => {
     localStorage.removeItem(KEY);
-    localStorage.removeItem('tm_token');
+    localStorage.removeItem('token');
     localStorage.removeItem('tm_active_role');
     window.location.href = 'index.html';
   };
 
-  /* ── Notifications helpers ── */
-  const getNotifs = () => JSON.parse(localStorage.getItem('tm_notifications') || '[]');
-  const addNotif = (icon, text) => {
-    const notifs = getNotifs();
-    notifs.unshift({ id: Date.now(), icon, text, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), read: false });
-    if (notifs.length > 30) notifs.pop();
-    localStorage.setItem('tm_notifications', JSON.stringify(notifs));
-    updateNotifBadge();
+  /* ── Notifications API & State ── */
+  let currentNotifications = [];
+
+  const fetchNotifications = async () => {
+    if (!isLogged()) return;
+    try {
+      const res = await fetch('http://localhost:5000/api/notifications', {
+        headers: { 'Authorization': `Bearer ${getToken()}` }
+      });
+      if (res.ok) {
+        currentNotifications = await res.json();
+        updateNotifBadge();
+        const panel = document.getElementById('tmNotifPanel');
+        if (panel && panel.style.display === 'flex') {
+          _renderNotifs();
+        }
+      }
+    } catch (err) { console.error('Error fetching notifications:', err); }
   };
-  const markAllRead = () => {
-    const notifs = getNotifs().map(n => ({ ...n, read: true }));
-    localStorage.setItem('tm_notifications', JSON.stringify(notifs));
-    updateNotifBadge();
+
+  const markAsRead = async (id, event) => {
+    if(event) { event.preventDefault(); event.stopPropagation(); }
+    try {
+      const res = await fetch(`http://localhost:5000/api/notifications/read/${id}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${getToken()}` }
+      });
+      if (res.ok) {
+        const notif = currentNotifications.find(n => n.id === id);
+        if (notif) notif.is_read = 1;
+        updateNotifBadge();
+        _renderNotifs();
+      }
+    } catch (err) { console.error('Error marking as read:', err); }
   };
-  const unreadCount = () => getNotifs().filter(n => !n.read).length;
+
+  const markAllRead = async () => {
+    const unread = currentNotifications.filter(n => !n.is_read && n.is_read !== 1);
+    for (const n of unread) { await markAsRead(n.id); }
+  };
+
+  const unreadCount = () => currentNotifications.filter(n => !n.is_read && n.is_read !== 1).length;
+  
   const updateNotifBadge = () => {
     document.querySelectorAll('.tm-notif-badge').forEach(el => {
       const c = unreadCount();
-      el.textContent = c;
+      el.textContent = c > 9 ? '9+' : c;
       el.style.display = c > 0 ? 'flex' : 'none';
+      if (c > 0) el.style.animation = 'pulse 2s infinite';
     });
   };
+
+  // Fallback for mock frontend events
+  const addNotif = (icon, text) => {
+    if (window.TmToast) window.TmToast.show(text, 'success');
+  };
+  const getNotifs = () => currentNotifications;
 
   /* ── redirect by role if on wrong dashboard ── */
   const guardDashboard = () => {
@@ -196,26 +231,59 @@ const TmAuth = (() => {
     if (!isOpen) _renderNotifs();
   };
 
+  const getIconForType = (type) => {
+    switch(type) {
+      case 'new_post': return '📝';
+      case 'post_reaction': return '❤️';
+      case 'booking_request': return '📅';
+      case 'booking_accepted': return '✅';
+      case 'booking_rejected': return '❌';
+      case 'admin': return '🛡️';
+      case 'guide': return '🧭';
+      default: return '🔔';
+    }
+  };
+
+  const formatTime = (dateString) => {
+    const d = new Date(dateString);
+    const today = new Date();
+    if (d.toDateString() === today.toDateString()) {
+      return d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+  };
+
   const _renderNotifs = () => {
     const list = document.getElementById('tmNotifList');
     if (!list) return;
-    const notifs = getNotifs();
-    if (!notifs.length) {
+    if (!currentNotifications || !currentNotifications.length) {
       list.innerHTML = `<div style="text-align:center;padding:32px 20px;color:#9ca3af;">
         <div style="font-size:2.5rem;margin-bottom:8px;">🔕</div>
         <p style="font-size:0.88rem;">No notifications yet</p></div>`;
       return;
     }
-    list.innerHTML = notifs.map(n => `
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:11px 18px;
-                  background:${n.read ? '#fff' : '#f0fdf4'};border-left:3px solid ${n.read ? 'transparent' : '#22c55e'};
-                  transition:background .2s;cursor:default;">
-        <span style="font-size:1.3rem;flex-shrink:0;margin-top:1px;">${n.icon}</span>
+    
+    list.innerHTML = currentNotifications.map(n => {
+      const isRead = n.is_read || n.is_read === 1;
+      const bg = isRead ? '#fff' : '#f0fdf4';
+      const border = isRead ? 'transparent' : '#22c55e';
+      const fw = isRead ? '400' : '600';
+      const hoverBg = isRead ? '#f9fafb' : '#dcfce7';
+      
+      return `
+      <div onclick="TmAuth.markAsRead(${n.id}, event)" 
+           onmouseover="this.style.background='${hoverBg}'" 
+           onmouseout="this.style.background='${bg}'"
+           style="display:flex;align-items:flex-start;gap:12px;padding:11px 18px;
+                  background:${bg};border-left:3px solid ${border};
+                  transition:background .2s;cursor:pointer;">
+        <span style="font-size:1.3rem;flex-shrink:0;margin-top:1px;">${getIconForType(n.type)}</span>
         <div style="flex:1;min-width:0;">
-          <p style="font-size:0.85rem;color:#1f2937;line-height:1.5;margin:0 0 3px;font-weight:${n.read ? '400' : '600'};">${n.text}</p>
-          <span style="font-size:0.75rem;color:#9ca3af;">${n.time}</span>
+          <p style="font-size:0.85rem;color:#1f2937;line-height:1.5;margin:0 0 3px;font-weight:${fw};">${n.message}</p>
+          <span style="font-size:0.75rem;color:#9ca3af;">${formatTime(n.created_at)}</span>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   };
 
   /* auto-run on DOMContentLoaded */
@@ -224,6 +292,11 @@ const TmAuth = (() => {
     document.addEventListener('DOMContentLoaded', () => {
       guardDashboard();
       applyNav();
+
+      if (isLogged()) {
+          TmAuth.fetchNotifications();
+          setInterval(TmAuth.fetchNotifications, 15000); // 15-second polling
+      }
 
       // Cross-Layout Administrative Notification Listener
       const currUser = getUser();
@@ -262,7 +335,7 @@ const TmAuth = (() => {
 
   return {
     getUser, getToken, isLogged, login, logout, applyNav,
-    addNotif, getNotifs, markAllRead, unreadCount, toggleNotifPanel, updateNotifBadge
+    fetchNotifications, markAsRead, addNotif, getNotifs, markAllRead, unreadCount, toggleNotifPanel, updateNotifBadge
   };
 })();
 

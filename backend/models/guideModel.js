@@ -2,8 +2,8 @@ const db = require('../config/db');
 
 const Guide = {
   // Get all guides along with their expertise and pricing
-  findAll: async () => {
-    const query = `
+  findAll: async (searchStr = null) => {
+    let query = `
       SELECT g.id, g.user_id, g.city_location, g.languages_spoken, g.years_of_experience,
              g.guide_type, g.short_bio, g.profile_photo,
              u.full_name, u.email, u.phone_number,
@@ -22,7 +22,15 @@ const Guide = {
       ) r ON g.id = r.guide_id
       WHERE g.is_approved = TRUE
     `;
-    const [rows] = await db.query(query);
+    const params = [];
+
+    if (searchStr) {
+      query += ` AND (u.full_name LIKE ? OR g.city_location LIKE ? OR ge.special_skills LIKE ?)`;
+      const searchRegex = `%${searchStr}%`;
+      params.push(searchRegex, searchRegex, searchRegex);
+    }
+
+    const [rows] = await db.query(query, params);
     return rows;
   },
 
@@ -67,6 +75,45 @@ const Guide = {
     `;
     const [rows] = await db.query(query, [userId]);
     return rows[0];
+  },
+
+  updatePricing: async (userId, { price_per_day, max_group_size }) => {
+    const [guides] = await db.query('SELECT id FROM guides WHERE user_id = ?', [userId]);
+    if (!guides.length) return;
+    const guideId = guides[0].id;
+    
+    const [existing] = await db.query('SELECT id FROM guide_pricing WHERE guide_id = ?', [guideId]);
+    if (existing.length > 0) {
+      await db.query('UPDATE guide_pricing SET price_per_day = ?, max_group_size = ? WHERE guide_id = ?', [price_per_day, max_group_size, guideId]);
+    } else {
+      await db.query('INSERT INTO guide_pricing (guide_id, price_per_day, max_group_size) VALUES (?, ?, ?)', [guideId, price_per_day, max_group_size]);
+    }
+  },
+
+  updateAvailability: async (userId, { available_days, available_timings }) => {
+    const [guides] = await db.query('SELECT id FROM guides WHERE user_id = ?', [userId]);
+    if (!guides.length) return;
+    const guideId = guides[0].id;
+
+    const [existing] = await db.query('SELECT id FROM guide_availability WHERE guide_id = ?', [guideId]);
+    if (existing.length > 0) {
+      await db.query('UPDATE guide_availability SET available_days = ?, available_timings = ? WHERE guide_id = ?', [available_days, available_timings, guideId]);
+    } else {
+      await db.query('INSERT INTO guide_availability (guide_id, available_days, available_timings) VALUES (?, ?, ?)', [guideId, available_days, available_timings]);
+    }
+  },
+
+  updateExpertise: async (userId, { areas_you_guide, special_skills }) => {
+    const [guides] = await db.query('SELECT id FROM guides WHERE user_id = ?', [userId]);
+    if (!guides.length) return;
+    const guideId = guides[0].id;
+
+    const [existing] = await db.query('SELECT id FROM guide_expertise WHERE guide_id = ?', [guideId]);
+    if (existing.length > 0) {
+      await db.query('UPDATE guide_expertise SET areas_you_guide = ?, special_skills = ? WHERE guide_id = ?', [areas_you_guide, special_skills, guideId]);
+    } else {
+      await db.query('INSERT INTO guide_expertise (guide_id, areas_you_guide, special_skills) VALUES (?, ?, ?)', [guideId, areas_you_guide, special_skills]);
+    }
   }
 };
 
