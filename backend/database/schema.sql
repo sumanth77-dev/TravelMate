@@ -71,7 +71,7 @@ CREATE TABLE `guide_availability` (
   KEY `guide_id` (`guide_id`),
   CONSTRAINT `guide_availability_ibfk_1` FOREIGN KEY (`guide_id`) REFERENCES `guides` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
--
+
 
 DROP TABLE IF EXISTS `guide_expertise`;
 

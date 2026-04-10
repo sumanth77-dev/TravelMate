@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="style.css">
   <script src="tm-auth.js"></script>
   <style>
-    /* ── Search autocomplete dropdown ── */
+    /*  Search autocomplete dropdown */
     .hero-search-wrap {
       position: relative;
       max-width: 620px;
@@ -305,11 +305,11 @@
         <p class="section-sub">Your journey to extraordinary places starts in just three simple steps.</p>
       </div>
 
-      <div class="works-grid fade-up delay-1"
+      <div class="works-grid"
         style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:32px; margin-top:40px;">
 
-        <div class="work-step"
-          style="background:#fff; padding:40px 24px; border-radius:16px; text-align:center; box-shadow:var(--card-shadow); transition:transform 0.3s; border-bottom:4px solid var(--primary);">
+        <div class="work-step scale-up delay-1"
+          style="background:#fff; padding:40px 24px; border-radius:16px; text-align:center; box-shadow:0 4px 16px rgba(0,0,0,0.06); transition:transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1); border-bottom:4px solid var(--primary);">
           <div class="step-icon"
             style="width:70px; height:70px; background:var(--primary-light); color:var(--primary-dark); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px;">
             <i class="fas fa-search-location"></i>
@@ -319,8 +319,8 @@
             Filter by language, specialty, and price to find your perfect match.</p>
         </div>
 
-        <div class="work-step"
-          style="background:#fff; padding:40px 24px; border-radius:16px; text-align:center; box-shadow:var(--card-shadow); transition:transform 0.3s; border-bottom:4px solid #d4a843;">
+        <div class="work-step scale-up delay-2"
+          style="background:#fff; padding:40px 24px; border-radius:16px; text-align:center; box-shadow:0 4px 16px rgba(0,0,0,0.06); transition:transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1); border-bottom:4px solid #d4a843;">
           <div class="step-icon"
             style="width:70px; height:70px; background:#fef3c7; color:#b45309; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px;">
             <i class="fas fa-calendar-check"></i>
@@ -330,8 +330,8 @@
             them directly and secure your dates with a simple booking process.</p>
         </div>
 
-        <div class="work-step"
-          style="background:#fff; padding:40px 24px; border-radius:16px; text-align:center; box-shadow:var(--card-shadow); transition:transform 0.3s; border-bottom:4px solid #0e7490;">
+        <div class="work-step scale-up delay-3"
+          style="background:#fff; padding:40px 24px; border-radius:16px; text-align:center; box-shadow:0 4px 16px rgba(0,0,0,0.06); transition:transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1); border-bottom:4px solid #0e7490;">
           <div class="step-icon"
             style="width:70px; height:70px; background:#cffafe; color:#0e7490; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px;">
             <i class="fas fa-map-marked-alt"></i>
@@ -374,7 +374,7 @@
     <div class="container">
       <div class="footer-grid">
 
-        <div class="footer-brand">
+        <div class="footer-brand fade-up delay-1">
           <div class="footer-logo">&#10022; Travel Mate</div>
           <p>Your community for authentic travel experiences, honest reviews, and unforgettable journeys worldwide.</p>
           <div class="social-links">
@@ -386,7 +386,7 @@
           </div>
         </div>
 
-        <div class="footer-col">
+        <div class="footer-col fade-up delay-2">
           <h5>Explore</h5>
           <ul>
             <li><a href="destinations.html">Destinations</a></li>
@@ -395,7 +395,7 @@
           </ul>
         </div>
 
-        <div class="footer-col">
+        <div class="footer-col fade-up delay-3">
           <h5>Community</h5>
           <ul>
             <li><a href="main_community.html">Travel Stories</a></li>
@@ -405,7 +405,7 @@
           </ul>
         </div>
 
-        <div class="footer-col">
+        <div class="footer-col fade-up delay-4">
           <h5>Company</h5>
           <ul>
             <li><a href="about.html">About Us</a></li>
@@ -472,8 +472,10 @@
         if (popGrid) {
             popGrid.innerHTML = destinations.slice(0, 3).map((d, index) => {
                 const cardHtml = buildResultCard(d);
-                return cardHtml.replace('class="dest-card"', `class="dest-card fade-up delay-${index + 1} visible" data-name="${d.name}" data-tags="${d.tags}"`);
+                return cardHtml.replace('class="dest-card"', `class="dest-card scale-up delay-${index + 1}" data-name="${d.name}" data-tags="${d.tags}"`);
             }).join('');
+            // Re-observe newly injected cards
+            observeAnimatedElements();
         }
       } catch(err) {
         console.error('Failed to load destinations', err);
@@ -528,6 +530,8 @@
         const grid = document.getElementById('topGuidesGrid');
         if (grid) {
             grid.innerHTML = sorted.map((g, index) => buildGuideCard(g, index)).join('');
+            // Re-observe newly injected guide cards
+            observeAnimatedElements();
         }
       } catch(err) {
         console.error('Failed to load top guides', err);
@@ -549,7 +553,7 @@
       if (pic && pic.startsWith('uploads/')) pic = 'http://localhost:5000/' + pic;
       const shortbio = g.short_bio ? (g.short_bio.substring(0, 75) + '...') : 'Passionate local guide eager to show you around.';
 
-      return `<a href="guide-profile.html?id=${g.id}" class="dest-card fade-up delay-${(idx % 3) + 1} visible" style="display:flex; flex-direction:column; text-decoration:none; color:inherit; cursor:pointer;">
+      return `<a href="guide-profile.html?id=${g.id}" class="dest-card scale-up delay-${(idx % 3) + 1}" style="display:flex; flex-direction:column; text-decoration:none; color:inherit; cursor:pointer;">
           <div style="background:${gradient}; height:100px; border-radius:16px 16px 0 0; position:relative;">
             <img src="${pic}" alt="${g.full_name}" loading="lazy"
               style="width:80px; height:80px; border-radius:50%; position:absolute; bottom:-40px; left:20px; border:4px solid #fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); background:#fff; object-fit:cover;">
@@ -679,13 +683,24 @@
       }
     }
 
-    /* ── Intersection Observer (original) ── */
+    /* ── Intersection Observer (enhanced with stagger) ── */
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
       });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    function observeAnimatedElements() {
+      document.querySelectorAll('.fade-up:not(.visible), .scale-up:not(.visible), .slide-in-left:not(.visible), .slide-in-right:not(.visible)').forEach(el => {
+        observer.observe(el);
+      });
+    }
+    observeAnimatedElements();
+
+    // Hero elements animate immediately
     setTimeout(() => {
       document.querySelectorAll('.hero .fade-up').forEach(el => el.classList.add('visible'));
     }, 150);

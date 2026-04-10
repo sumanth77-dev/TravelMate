@@ -145,22 +145,20 @@ const TmAuth = (() => {
         const profileLi = document.createElement('li');
         profileLi.setAttribute('data-auth', 'user');
         profileLi.innerHTML = `
-          <a href="${dashHref}" style="display:flex;align-items:center;gap:6px;text-decoration:none; padding:0.44rem 0.88rem;">
-            <img src="${avatarSrc}" alt="${user.name}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid #86efac;">
-          </a>`;
+          <div style="position:relative; display:inline-block;" onmouseenter="this.querySelector('.nav-dropdown').style.display='block'" onmouseleave="this.querySelector('.nav-dropdown').style.display='none'">
+            <a href="${dashHref}" style="display:flex;align-items:center;gap:6px;text-decoration:none; padding:0.44rem 0.88rem;">
+              <img src="${avatarSrc}" alt="${user.name}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;border:2px solid #86efac;">
+            </a>
+            <div class="nav-dropdown" style="display:none; position:absolute; right:0; top:100%; min-width:140px; background:#fff; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.1); padding:8px 0; z-index:1000; text-align:left; border:1px solid #f1f5f9;">
+              <a href="${dashHref}" style="display:block; padding:8px 16px; color:#111827; text-decoration:none; font-size:13px; font-weight:600; border-bottom:1px solid #f1f5f9;">
+                <i class="fas fa-columns" style="width:16px; margin-right:6px; color:#22c55e;"></i> Dashboard
+              </a>
+              <a href="#" onclick="TmAuth.logout();return false;" style="display:block; padding:8px 16px; color:#ef4444; text-decoration:none; font-size:13px; font-weight:600; margin-top:2px;">
+                <i class="fas fa-sign-out-alt" style="width:16px; margin-right:6px;"></i> Logout
+              </a>
+            </div>
+          </div>`;
         ul.appendChild(profileLi);
-
-        /* Logout button - small and subtle */
-        const logoutLi = document.createElement('li');
-        logoutLi.setAttribute('data-auth', 'user');
-        logoutLi.innerHTML = `
-          <a href="#" onclick="TmAuth.logout();return false;"
-             style="background:rgba(239,68,68,.15);color:#fca5a5;padding:4px 12px;border-radius:20px;
-                    font-size:12px;font-weight:600;text-decoration:none;margin-left:2px;
-                    border:1px solid rgba(239,68,68,.3);white-space:nowrap;">
-            Logout
-          </a>`;
-        ul.appendChild(logoutLi);
 
         /* Notification bell li */
         const bellLi = document.createElement('li');
@@ -171,7 +169,7 @@ const TmAuth = (() => {
             style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;
                    width:34px;height:34px;border-radius:50%;cursor:pointer;position:relative;
                    display:flex;align-items:center;justify-content:center;font-size:15px;transition:background .2s;">
-            🔔
+            <i class="fas fa-bell"></i>
             <span class="tm-notif-badge" style="position:absolute;top:-3px;right:-3px;background:#ef4444;color:#fff;
                   font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:50%;
                   display:none;align-items:center;justify-content:center;border:2px solid #065f46;"></span>
@@ -274,14 +272,17 @@ const TmAuth = (() => {
       <div onclick="TmAuth.markAsRead(${n.id}, event)" 
            onmouseover="this.style.background='${hoverBg}'" 
            onmouseout="this.style.background='${bg}'"
-           style="display:flex;align-items:flex-start;gap:12px;padding:11px 18px;
+           style="position:relative;display:flex;align-items:flex-start;gap:12px;padding:11px 18px;
                   background:${bg};border-left:3px solid ${border};
                   transition:background .2s;cursor:pointer;">
         <span style="font-size:1.3rem;flex-shrink:0;margin-top:1px;">${getIconForType(n.type)}</span>
-        <div style="flex:1;min-width:0;">
+        <div style="flex:1;min-width:0;padding-right:20px;">
           <p style="font-size:0.85rem;color:#1f2937;line-height:1.5;margin:0 0 3px;font-weight:${fw};">${n.message}</p>
           <span style="font-size:0.75rem;color:#9ca3af;">${formatTime(n.created_at)}</span>
         </div>
+        <button onclick="TmAuth.deleteNotification(${n.id}, event)" title="Delete" style="position:absolute;top:13px;right:14px;background:none;border:none;color:#9ca3af;cursor:pointer;font-size:13px;transition:color .2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#9ca3af'">
+            <i class="fas fa-trash-alt"></i>
+        </button>
       </div>`;
     }).join('');
   };
@@ -333,9 +334,16 @@ const TmAuth = (() => {
     guardDashboard(); applyNav();
   }
 
+  const deleteNotification = (id, event) => {
+    if (event) event.stopPropagation();
+    currentNotifications = currentNotifications.filter(n => n.id !== id);
+    _renderNotifs();
+    updateNotifBadge();
+  };
+
   return {
     getUser, getToken, isLogged, login, logout, applyNav,
-    fetchNotifications, markAsRead, addNotif, getNotifs, markAllRead, unreadCount, toggleNotifPanel, updateNotifBadge
+    fetchNotifications, markAsRead, addNotif, getNotifs, markAllRead, unreadCount, toggleNotifPanel, updateNotifBadge, deleteNotification
   };
 })();
 

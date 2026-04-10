@@ -355,6 +355,29 @@
       color: var(--text-muted);
       margin-bottom: 16px;
     }
+
+    /* ── Modal ── */
+    .cm-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .45);
+      z-index: 900;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .cm-modal.open {
+      display: flex;
+    }
+    .cm-dialog {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      width: min(560px, 95vw);
+      max-height: 90vh;
+      overflow-y: auto;
+      margin-top: 40px;
+    }
   </style>
 </head>
 
@@ -608,25 +631,20 @@
             </div>
           </div>
 
-          ${TmAuth.getUser() ? `
           <div class="profile-section">
             <h2 class="section-title">Rate this Guide</h2>
-            <select id="ratingSelect" style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 10px; font-family: 'Plus Jakarta Sans', sans-serif;">
-              <option value="">Select</option>
-              <option value="5">5 ⭐</option>
-              <option value="4">4 ⭐</option>
-              <option value="3">3 ⭐</option>
-              <option value="2">2 ⭐</option>
-              <option value="1">1 ⭐</option>
-            </select>
-            <button onclick="submitRating()" style="padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif;">Submit</button>
+            <div style="display:flex; gap:12px; align-items:center;">
+              <select id="ratingSelect" style="padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 10px; font-family: 'Plus Jakarta Sans', sans-serif;">
+                <option value="">Select</option>
+                <option value="5">5 ⭐</option>
+                <option value="4">4 ⭐</option>
+                <option value="3">3 ⭐</option>
+                <option value="2">2 ⭐</option>
+                <option value="1">1 ⭐</option>
+              </select>
+              <button onclick="submitRating()" style="padding: 8px 16px; margin-bottom: 10px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: 'Plus Jakarta Sans', sans-serif;">Submit</button>
+            </div>
           </div>
-          ` : `
-          <div class="profile-section">
-            <h2 class="section-title">Rate this Guide</h2>
-            <div class="unavailable-box">Please log in to rate this guide.</div>
-          </div>
-          `}
 
 <div class="profile-section">
   <h2 class="section-title">About</h2>
@@ -641,7 +659,7 @@
 
           <div class="booking-action">
             ${guide.available ? `
-              <a href="guide-book.html?id=${guide.id}" class="btn-book">
+              <a href="#" onclick="handleBooking(event, '${guide.id}')" class="btn-book">
                 <i class="far fa-calendar-alt"></i> Book This Guide
               </a>
             ` : `
@@ -676,8 +694,21 @@
       `;
     }
 
+    function handleBooking(e, id) {
+      e.preventDefault();
+      if (!TmAuth.isLogged()) {
+        document.getElementById('loginPromptModal').classList.add('open');
+      } else {
+        window.location.href = \`guide-book.html?id=\${id}\`;
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', renderPage);
     async function submitRating() {
+      if (!TmAuth.isLogged()) {
+        document.getElementById('loginPromptModal').classList.add('open');
+        return;
+      }
   const rating = document.getElementById('ratingSelect').value;
   let guideId = new URLSearchParams(window.location.search).get('id');
   if (!guideId || guideId === 'null') {
@@ -715,6 +746,23 @@
   }
 }
   </script>
+
+	<!-- Login Prompt Modal -->
+	<div id="loginPromptModal" class="cm-modal" aria-hidden="true" style="z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+		<div class="cm-dialog" style="padding: 32px; border-radius: 24px; text-align: center; max-width: 400px; width: 90%; background:#fff; margin-top:0;">
+			<div style="background: #ecfdf5; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+				<i class="fas fa-lock" style="color: #10b981; font-size: 24px;"></i>
+			</div>
+			<h2 style="font-size: 24px; margin-bottom: 12px; font-family: 'Playfair Display', serif; color:#0f172a;">Authentication Required</h2>
+			<p style="color: #64748b; font-size: 15px; margin-bottom: 28px; line-height: 1.5;">You need to be logged in to book a guide, submit a review, or leave comments.</p>
+			<div style="display: flex; flex-direction: column; gap: 12px;">
+				<button onclick="window.location.href='login.html'" style="background: #10b981; color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.2s;"><i class="fas fa-user-circle"></i> Login as User</button>
+				<button onclick="window.location.href='guide-login.html'" style="background: #f1f5f9; color: #334155; border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 15px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: background 0.2s;"><i class="fas fa-map-marked-alt"></i> Login as Guide</button>
+			</div>
+			<button onclick="document.getElementById('loginPromptModal').classList.remove('open');" style="margin-top: 24px; background: none; border: none; color: #94a3b8; font-size: 14px; font-weight: 600; cursor: pointer; transition: color 0.2s;">Not now</button>
+		</div>
+	</div>
+
 </body>
 
 </html>

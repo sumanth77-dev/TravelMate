@@ -203,13 +203,83 @@ h3 { font-size: clamp(1.1rem, 2vw, 1.35rem); }
 .btn-sm { padding: .42rem 1.05rem; font-size: .79rem; }
 .btn-lg { padding: .92rem 2.3rem;  font-size: .98rem; }
 
-/* ── Fade-up animation ──────────────────────────── */
-.fade-up { opacity: 0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
-.fade-up.visible { opacity: 1; transform: translateY(0); }
+/* ── Scroll-reveal animations (bottom → top) ──── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered delays for sequential card reveals */
 .delay-1 { transition-delay: .1s; }
 .delay-2 { transition-delay: .2s; }
 .delay-3 { transition-delay: .3s; }
 .delay-4 { transition-delay: .4s; }
+.delay-5 { transition-delay: .5s; }
+.delay-6 { transition-delay: .6s; }
+
+/* Scale-up animation variant */
+.scale-up {
+  opacity: 0;
+  transform: translateY(40px) scale(0.95);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.scale-up.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Slide-in from left */
+.slide-in-left {
+  opacity: 0;
+  transform: translateX(-40px) translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.slide-in-left.visible {
+  opacity: 1;
+  transform: translateX(0) translateY(0);
+}
+
+/* Slide-in from right */
+.slide-in-right {
+  opacity: 0;
+  transform: translateX(40px) translateY(20px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.slide-in-right.visible {
+  opacity: 1;
+  transform: translateX(0) translateY(0);
+}
+
+/* Work-step card hover lift */
+.work-step:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 0 20px 48px rgba(0,0,0,0.1) !important;
+}
+
+/* Footer section animation */
+.footer-grid > div {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.footer-grid > div.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 /* ════════════════════════════════════════════════
    NAVBAR
@@ -267,7 +337,7 @@ h3 { font-size: clamp(1.1rem, 2vw, 1.35rem); }
   align-items: center;
   gap: 2px;
   list-style: none;
-  margin: 0;
+  margin: 0 16px 0 auto;
   padding: 0;
 }
 
@@ -389,26 +459,44 @@ h3 { font-size: clamp(1.1rem, 2vw, 1.35rem); }
 /* ════════════════════════════════════════════════
    DESTINATION CARDS
 ════════════════════════════════════════════════ */
-.dest-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
-.dest-card {
-  background: #fff; border-radius: 16px; overflow: hidden;
-  box-shadow: var(--shadow-sm); transition: all var(--ease); cursor: pointer;
+.dest-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
 }
-.dest-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.dest-card {
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+.dest-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 48px rgba(34,197,94,0.18), 0 8px 20px rgba(0,0,0,0.08);
+}
 .dest-card-img { position: relative; height: 210px; overflow: hidden; }
-.dest-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
-.dest-card:hover .dest-card-img img { transform: scale(1.08); }
+.dest-card-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dest-card:hover .dest-card-img img { transform: scale(1.1); }
 .card-badge { position: absolute; top: 12px; left: 12px; }
 .save-btn {
   position: absolute; top: 12px; right: 12px;
-  width: 34px; height: 34px; border-radius: 50%;
-  background: rgba(255,255,255,.9); backdrop-filter: blur(4px);
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.92); backdrop-filter: blur(6px);
   border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  color: var(--slate-light); font-size: .92rem; transition: all var(--ease);
+  color: var(--slate-light); font-size: .92rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: scale(1);
 }
-.save-btn:hover, .save-btn.saved { color: #ef4444; }
-.dest-card-body { padding: 18px; }
+.save-btn:hover { transform: scale(1.15); color: #ef4444; }
+.save-btn.saved { color: #ef4444; }
+.dest-card-body { padding: 20px; }
 .dest-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--slate); margin-bottom: 5px; }
 .dest-loc   { font-size: .79rem; color: var(--slate-light); display: flex; align-items: center; gap: 4px; margin-bottom: 10px; }
 .dest-loc i { font-size: .72rem; }
@@ -568,15 +656,17 @@ body {
   .nav-links li a:hover { color: var(--teal) !important; background: var(--slate-mid); }
 }
 @media (max-width: 1024px) {
-  .dest-grid   { grid-template-columns: repeat(2,1fr); }
-  .blog-grid   { grid-template-columns: repeat(2,1fr); }
+  .dest-grid   { grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  .blog-grid   { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
+  .works-grid  { grid-template-columns: repeat(2, 1fr) !important; }
 }
 @media (max-width: 768px) {
   .section-pad { padding: 60px 0; }
-  .cat-grid    { grid-template-columns: repeat(2,1fr); }
-  .dest-grid   { grid-template-columns: 1fr; }
+  .cat-grid    { grid-template-columns: repeat(2, 1fr); }
+  .dest-grid   { grid-template-columns: 1fr; gap: 20px; }
   .blog-grid   { grid-template-columns: 1fr; }
+  .works-grid  { grid-template-columns: 1fr !important; }
   .hero-stats  { gap: 1.8rem; }
   .hero-search { flex-direction: column; padding: 12px; gap: 10px; }
   .hero-search input { width: 100%; }
@@ -584,6 +674,37 @@ body {
   .footer-grid { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; text-align: center; }
   .hero-circle { display: none; }
+
+  /* Responsive destination cards on mobile */
+  .dest-card-img { height: 200px; }
+  .dest-card-body { padding: 16px; }
+
+  /* Search card responsive */
+  .search-floating-card {
+    flex-direction: column !important;
+    padding: 16px !important;
+  }
+  .search-floating-card input {
+    width: 100% !important;
+  }
+  .search-floating-card .btn {
+    width: 100% !important;
+    justify-content: center;
+  }
+}
+@media (max-width: 480px) {
+  .dest-grid   { gap: 16px; }
+  .dest-card   { border-radius: 14px; }
+  .dest-card-img { height: 180px; }
+  .section-pad { padding: 48px 0; }
+  .container   { padding: 0 16px; }
+  .hero h1     { font-size: clamp(1.8rem, 7vw, 2.6rem); }
+  .hero-sub    { font-size: 0.92rem; }
+
+  /* Work step cards responsive */
+  .work-step {
+    padding: 28px 18px !important;
+  }
 }
 
 /* =====================

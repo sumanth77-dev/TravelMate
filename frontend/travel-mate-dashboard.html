@@ -5,26 +5,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Dashboard - TravelMate</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <script src="tm-auth.js"></script>
   <style>
     :root {
-      --primary: #26b85e;
-      --primary-dark: #0f766e;
-      --primary-light: #ccfbf1;
-      --bg: #f4f6f8;
+      --primary: #22c55e;
+      --primary-dark: #16a34a;
+      --primary-light: #dcfce7;
+      --accent: #f59e0b;
+      --bg: #f0fdf4;
       --white: #ffffff;
-      --text: #1a1a2e;
+      --text: #111827;
       --muted: #6b7280;
       --border: #e5e7eb;
-      --approved-bg: #f0fdf4;
-      --approved-text: #166534;
-      --pending-bg: #fffbeb;
-      --pending-text: #92400e;
-      --positive: #0d9488;
-      --negative: #ef4444;
+      --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
     }
 
     * {
@@ -34,163 +30,210 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
     }
 
 
-    /* MAIN CONTENT */
-    .main {
-      padding-top: 0;
-      /* Removed top padding to eliminate the space */
-      max-width: 1300px;
-      margin: auto;
-      padding-left: 30px;
-      padding-right: 30px;
+    /* ══════ HERO BANNER ══════ */
+    .guide-hero {
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+      padding: 100px 30px 0;
+      position: relative;
+      overflow: hidden;
     }
 
-    /* PROFILE CARD */
-    .profile-card {
-      background: var(--white);
-      border-radius: 16px;
-      padding: 28px 32px;
-      margin: 28px 0 16px;
+    .guide-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%2322c55e' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* PROFILE HEADER */
+    .profile-header {
+      max-width: 1200px;
+      margin: 0 auto;
       display: flex;
-      align-items: center;
-      gap: 24px;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      align-items: flex-end;
+      gap: 28px;
+      position: relative;
+      z-index: 1;
+      padding-bottom: 0;
     }
 
-    .avatar {
+    .guide-avatar-wrap {
       position: relative;
       flex-shrink: 0;
     }
 
-    .avatar-circle {
-      width: 88px;
-      height: 88px;
-      background: var(--primary);
+    .guide-avatar {
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
+      border: 4px solid #22c55e;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
       font-weight: 700;
-      color: white;
+      color: #fff;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      overflow: hidden;
+      flex-shrink: 0;
     }
 
     .camera-btn {
       position: absolute;
       bottom: 2px;
       right: 2px;
-      background: #f97316;
-      color: white;
-      width: 26px;
-      height: 26px;
+      background: var(--white);
+      color: var(--primary-dark);
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: 12px;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      border: 2px solid var(--primary);
     }
 
-    .profile-info {
+    .guide-header-info {
       flex: 1;
+      padding-bottom: 24px;
     }
 
-    .profile-info h2 {
-      font-size: 22px;
+    .guide-header-info h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .guide-role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(34, 197, 94, .25);
+      color: #86efac;
+      padding: 4px 14px;
+      border-radius: 50px;
+      font-size: 0.78rem;
       font-weight: 700;
-      margin-bottom: 4px;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      border: 1px solid rgba(134, 239, 172, .35);
+      margin-bottom: 10px;
     }
 
-    .profile-location {
+    .guide-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      color: rgba(255, 255, 255, .7);
+      font-size: 0.85rem;
+    }
+
+    .guide-meta-row span {
       display: flex;
       align-items: center;
       gap: 5px;
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 6px;
     }
 
-    .profile-bio {
-      color: #4b5563;
-      font-size: 14px;
+    .guide-meta-row i {
+      color: #86efac;
     }
 
-    .profile-stats {
-      display: flex;
-      gap: 12px;
-      margin-left: auto;
+    /* STAT STRIP */
+    .stat-strip {
+      background: rgba(255, 255, 255, .08);
+      backdrop-filter: blur(6px);
+      border-top: 1px solid rgba(255, 255, 255, .1);
+      margin-top: 20px;
     }
 
-    .stat-box {
-      background: #fafafa;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px 28px;
+    .stat-strip-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 0;
+    }
+
+    .strip-stat {
+      padding: 20px 16px;
       text-align: center;
-      min-width: 90px;
+      border-right: 1px solid rgba(255, 255, 255, .1);
     }
 
-    .stat-icon {
-      font-size: 16px;
-      color: #d97706;
-      margin-bottom: 6px;
+    .strip-stat:last-child {
+      border-right: none;
     }
 
-    .stat-icon.star {
-      color: #d97706;
+    .strip-stat .sv {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #fff;
+      display: block;
+      line-height: 1;
     }
 
-    .stat-icon.trophy {
-      color: #d97706;
-    }
-
-    .stat-icon.arrow {
-      color: #10b981;
-    }
-
-    .stat-value {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
+    .strip-stat .sl {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, .65);
+      margin-top: 4px;
       display: block;
     }
 
-    .stat-label {
-      font-size: 12px;
-      color: var(--muted);
-      font-weight: 500;
+    .strip-stat .si {
+      font-size: 1.1rem;
+      color: #86efac;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    /* ══════ MAIN ══════ */
+    .guide-main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 30px 60px;
     }
 
     /* TABS */
     .tabs-wrapper {
       background: var(--white);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 6px;
       display: flex;
       gap: 4px;
       margin-bottom: 24px;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+      box-shadow: var(--card-shadow);
+      flex-wrap: wrap;
     }
 
     .tab {
       flex: 1;
-      padding: 11px 16px;
+      padding: 11px 14px;
       border: none;
       background: transparent;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
       color: var(--muted);
       cursor: pointer;
-      transition: 0.2s;
-      font-family: 'Inter', sans-serif;
+      transition: all .2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-width: 100px;
     }
 
     .tab:hover {
@@ -200,7 +243,7 @@
 
     .tab.active {
       background: var(--primary);
-      color: white;
+      color: #fff;
     }
 
     /* TAB CONTENT */
@@ -210,6 +253,12 @@
 
     .tab-content.active {
       display: block;
+      animation: fadeUp .3s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* OVERVIEW GRID */
@@ -446,6 +495,149 @@
         flex-wrap: wrap;
       }
     }
+    /* ── Modal ── */
+    .cm-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .45);
+      z-index: 900;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cm-modal.active {
+      display: flex;
+    }
+
+    .cm-dialog {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      width: min(560px, 95vw);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .cm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .cm-label {
+      display: block;
+      font-weight: 600;
+      margin: 14px 0 6px;
+      font-size: 14px;
+    }
+
+    .cm-input,
+    .cm-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    .cm-textarea {
+      resize: vertical;
+    }
+
+    .drop-zone {
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+
+    .drop-zone.dragover {
+      border-color: #0f172a;
+    }
+
+    .drop-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .drop-text {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .preview-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .preview-item img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .rating-stars .star {
+      font-size: 26px;
+      cursor: pointer;
+      color: #f59e0b;
+    }
+
+    .cm-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all .2s;
+    }
+
+    .btn-primary {
+      background: #0f172a;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #1e293b;
+    }
+
+    .btn-white {
+      background: #fff;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    .btn-white:hover {
+      border-color: #0f172a;
+    }
+
+    .btn-lg {
+      padding: 12px 28px;
+      font-size: 15px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 4px 8px;
+    }
   </style>
 </head>
 
@@ -470,42 +662,46 @@
     </div>
   </nav>
 
-  <div class="main">
-    <!-- PROFILE CARD -->
-    <div class="profile-card">
-      <div class="avatar">
-        <div class="avatar-circle" id="dashAvatar">JD</div>
+  <!-- ══════ HERO & PROFILE ══════ -->
+  <div class="guide-hero">
+    <div class="profile-header">
+      <div class="guide-avatar-wrap">
+        <div class="guide-avatar" id="dashAvatar">JD</div>
         <div class="camera-btn"><i class="fas fa-camera"></i></div>
       </div>
-      <div class="profile-info">
-        <h2 id="dashName">John Doe</h2>
-        <span
-          style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-light);color:var(--primary-dark);padding:5px 14px;border-radius:50px;font-size:0.75rem;font-weight:700;border:1px solid rgba(15,118,110,0.2);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.05em;"><i
-            class="fas fa-suitcase-rolling"></i> Explorer</span>
-        <div class="profile-location">
-          <i class="fas fa-map-marker-alt"></i>
-          <span id="dashLocation">New York, USA</span>
-        </div>
-        <p class="profile-bio" id="dashBio">Passionate traveler exploring the world one city at a time ✈️</p>
-      </div>
-      <div class="profile-stats">
-        <div class="stat-box">
-          <div class="stat-icon trophy"><i class="fas fa-trophy"></i></div>
-          <span class="stat-value">1,250</span>
-          <span class="stat-label">Points</span>
-        </div>
-        <div class="stat-box">
-          <div class="stat-icon star"><i class="fas fa-star"></i></div>
-          <span class="stat-value">28</span>
-          <span class="stat-label">Reviews</span>
-        </div>
-        <div class="stat-box">
-          <div class="stat-icon arrow"><i class="fas fa-chart-line"></i></div>
-          <span class="stat-value">12</span>
-          <span class="stat-label">Trips</span>
+      
+      <div class="guide-header-info">
+        <h1 id="dashName">John Doe</h1>
+        <div class="guide-role-badge"><i class="fas fa-suitcase-rolling"></i> Explorer</div>
+        <div class="guide-meta-row">
+          <span><i class="fas fa-map-marker-alt"></i> <span id="dashLocation">New York, USA</span></span>
+          <span style="opacity: 0.8; margin-left: 10px;" id="dashBio">Passionate traveler exploring the world one city at a time ✈️</span>
         </div>
       </div>
     </div>
+    
+    <div class="stat-strip">
+      <div class="stat-strip-inner">
+        <div class="strip-stat">
+          <i class="fas fa-trophy si"></i>
+          <span class="sv">1,250</span>
+          <span class="sl">Points</span>
+        </div>
+        <div class="strip-stat">
+          <i class="fas fa-star si"></i>
+          <span class="sv">28</span>
+          <span class="sl">Reviews</span>
+        </div>
+        <div class="strip-stat">
+          <i class="fas fa-chart-line si"></i>
+          <span class="sv">12</span>
+          <span class="sl">Trips</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="guide-main">
 
     <!-- TABS -->
     <div class="tabs-wrapper">
@@ -663,12 +859,9 @@
     </div>
 
     <!-- BOOKINGS -->
-    <div class="tab-content" id="bookings">
-      <div class="section-card" style="max-width:500px">
-        <div class="section-header"><i class="fas fa-calendar-check"></i> Bookings</div>
-        <div id="dashBookingsContainer">
-          Loading...
-        </div>
+    <div class="tab-content" id="bookings" style="padding-top: 10px;">
+      <div class="bk-grid" id="dashBookingsContainer">
+        Loading...
       </div>
     </div>
 
@@ -811,21 +1004,33 @@
             var container = document.getElementById('dashBookingsContainer');
             if (container) {
               if (data.length === 0) {
-                container.innerHTML = '<p style="color:var(--muted); font-size:14px;">No upcoming bookings.</p>';
+                container.innerHTML = '<p style="color:var(--muted); font-size:14px; grid-column:1/-1;text-align:center;">No upcoming bookings.</p>';
                 return;
               }
               container.innerHTML = data.map(function (b) {
                 var isAppr = b.status === 'approved';
                 var isComp = b.status === 'completed';
-                var btnHtml = isComp ? `<button class="rate-btn" onclick="openRatingModal(${b.guide_id}, ${b.id})">Rate Guide</button>` : '';
-                return '<div class="booking-item">' +
-                  '<div class="booking-info">' +
-                  '<h4>' + (b.guide_name || 'Guide') + ' – ' + (b.city_location || '') + '</h4>' +
-                  '<p>Booking on ' + new Date(b.booking_date).toLocaleDateString() + '</p>' +
-                  '</div>' +
-                  btnHtml +
-                  '<span class="badge ' + (isAppr ? 'approved' : isComp ? 'positive' : 'pending') + '">' + b.status + '</span>' +
-                  '</div>';
+                const cardClass = isComp ? 'completed-card' : isAppr ? '' : 'pending-card';
+                const badgeClass = isComp ? 'completed' : isAppr ? 'confirmed' : 'pending';
+                var escapeStr = function(s) { return String(s).replace(/[&"'<>]/g, c => ({ '&': '&amp;', '"': '&quot;', '\'': '&#39;', '<': '&lt;', '>': '&gt;' }[c])); };
+
+                return `
+                <div class="bk-card ${cardClass}" style="position:relative;">
+                  <div class="bk-top">
+                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(b.guide_name || 'Guide')}&background=dcfce7&color=16a34a" alt="Guide">
+                    <div>
+                      <h3>${escapeStr(b.guide_name || 'Guide')}</h3>
+                      <p>${escapeStr(b.city_location || '')}</p>
+                    </div>
+                    <span class="status-pill ${badgeClass}" style="position:absolute; top:20px; right:20px; text-transform:capitalize;">${escapeStr(b.status)}</span>
+                  </div>
+                  <div class="bk-details">
+                    <div class="bk-detail"><i class="fas fa-calendar"></i> Date: ${new Date(b.booking_date).toLocaleDateString()}</div>
+                    <div class="bk-detail"><i class="fas fa-clock"></i> Time: ${escapeStr(b.time_slot || 'N/A')}</div>
+                    <div class="bk-detail"><i class="fas fa-users"></i> Travelers: ${b.num_people || 1}</div>
+                    <div class="bk-detail"><i class="fas fa-wallet"></i> Price: ₹${b.total_price || 'N/A'}</div>
+                  </div>
+                </div>`;
               }).join('');
             }
           }
@@ -858,6 +1063,104 @@
     });
   </script>
   <style>
+    /* ── BOOKINGS TAB ── */
+    .bk-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .bk-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: var(--card-shadow);
+      border-left: 4px solid var(--primary);
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .bk-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(34, 197, 94, .12);
+    }
+
+    .bk-card.pending-card {
+      border-color: #f59e0b;
+    }
+
+    .bk-card.completed-card {
+      border-color: #3b82f6;
+    }
+
+    .bk-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .bk-top img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-light);
+    }
+
+    .bk-top h3 {
+      font-size: 14.5px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .bk-top p {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .bk-details {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+
+    .bk-detail {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      color: #374151;
+    }
+
+    .bk-detail i {
+      color: var(--primary);
+      width: 14px;
+      text-align: center;
+    }
+    
+    .status-pill {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .status-pill.confirmed {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .status-pill.pending {
+      background: #fff7ed;
+      color: #d97706;
+    }
+
+    .status-pill.completed {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
     /* ── Wishlist card styles ── */
     .wishlist-card {
       background: var(--white);
@@ -987,11 +1290,10 @@
 
       if (wishlist.length === 0) {
         grid.innerHTML = `
-        <div class="wishlist-empty">
-          <div class="empty-icon">🌍</div>
-          <h3>Your wishlist is empty</h3>
-          <p>Go to the home page and click ❤️ on any destination to save it here.</p>
-          <a href="index.html">Explore Destinations</a>
+        <div class="wishlist-empty" style="background:#fff; border-radius:16px; padding:60px 24px; box-shadow:var(--card-shadow); text-align:center; grid-column:1/-1; border-top:4px solid var(--primary);">
+          <h3 style="font-family:'Playfair Display', serif; font-size:1.5rem; color:var(--text); margin-bottom:8px;">Your Wishlist Is Empty</h3>
+          <p style="color:var(--muted); font-size:14px; margin-bottom:24px;">Go to the home page and click ❤️ on any destination to thoughtfully save it here.</p>
+          <a href="index.html" style="display:inline-block; background:var(--primary); color:#fff; padding:12px 28px; border-radius:50px; text-decoration:none; font-weight:700; font-size:13.5px; transition:background 0.2s; box-shadow:0 4px 12px rgba(34,197,94,0.3);">Explore Destinations</a>
         </div>`;
         return;
       }
@@ -1103,8 +1405,11 @@
     });
     fileInput.addEventListener('change', function () { handleFiles(fileInput.files); });
 
+    let uploadedFilesDashboard = [];
     function handleFiles(files) {
       Array.from(files).forEach(function (file) {
+        if (!file.type.startsWith('image/')) return;
+        uploadedFilesDashboard.push(file);
         var reader = new FileReader();
         reader.onload = function (e) {
           selectedImages.push(e.target.result);
@@ -1116,12 +1421,13 @@
 
     function renderPreview() {
       document.getElementById('preview').innerHTML = selectedImages.map(function (src, i) {
-        return '<div class="preview-item"><img src="' + src + '" alt="preview"><button class="preview-remove" onclick="removeImage(' + i + ')">✕</button></div>';
+        return '<div class="preview-item"><img src="' + src + '" alt="preview"><button type="button" class="preview-remove" onclick="removeImage(' + i + ')">✕</button></div>';
       }).join('');
     }
 
     function removeImage(i) {
       selectedImages.splice(i, 1);
+      uploadedFilesDashboard.splice(i, 1);
       renderPreview();
     }
 
@@ -1156,111 +1462,105 @@
     });
 
     // Publish
-    document.getElementById('publishBtn').addEventListener('click', function () {
+    document.getElementById('publishBtn').addEventListener('click', async function () {
       var loc = document.getElementById('locationInput').value.trim();
       var cap = document.getElementById('captionInput').value.trim();
       if (!loc) { alert('Please enter a location!'); return; }
       if (!cap) { alert('Please write a caption!'); return; }
-      var pts = 50 + (selectedImages.length * 10);
-      alert('Post published! You earned +' + pts + ' points 🎉');
-      closeModal();
-    });
+      
+      const formData = new FormData();
+      formData.append('place_name', loc); // Match community schema requirement
+      formData.append('location', loc);
+      formData.append('category', 'Other'); // Default dashboard category fallback
+      formData.append('caption', cap);
+      
+      const blog = document.getElementById('blogInput').value.trim();
+      if (blog) formData.append('tips', blog);
+      formData.append('rating', currentRating);
 
-  </script>
-  <!-- RATING MODAL (Added for Guide Reviews) -->
-  <div id="ratingModal" class="modal">
-    <div class="modal-content" style="max-width: 450px;">
-      <div class="modal-header">
-        <h2>Rate Guide</h2>
-        <span class="close-modal" onclick="closeRatingModal()">&times;</span>
-      </div>
-      <div class="modal-body">
-        <form id="ratingForm" onsubmit="submitGuideRating(event)">
-          <input type="hidden" id="rateGuideId">
-          <input type="hidden" id="rateBookingId">
-          <div class="form-group">
-            <label>Rating (1-5 Stars)</label>
-            <div style="display:flex; gap:8px; font-size:24px; cursor:pointer; color:#ccc;" id="starSelector">
-              <i class="fas fa-star st" data-val="1"></i>
-              <i class="fas fa-star st" data-val="2"></i>
-              <i class="fas fa-star st" data-val="3"></i>
-              <i class="fas fa-star st" data-val="4"></i>
-              <i class="fas fa-star st" data-val="5"></i>
-            </div>
-            <input type="hidden" id="rateValue" value="5" required>
-          </div>
-          <div class="form-group" style="margin-top:16px;">
-            <label>Your Review</label>
-            <textarea id="rateReview" class="form-input" rows="4" placeholder="How was your experience with this guide?" required></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary" style="width:100%; margin-top:16px;" id="submitRatingBtn">Submit Rating</button>
-        </form>
-      </div>
-    </div>
-  </div>
+      uploadedFilesDashboard.forEach(file => formData.append('images', file));
 
-  <script>
-    // Star Selector Logic
-    document.querySelectorAll('.st').forEach(s => {
-      s.addEventListener('click', function() {
-        const val = this.getAttribute('data-val');
-        document.getElementById('rateValue').value = val;
-        document.querySelectorAll('.st').forEach(star => {
-          star.style.color = star.getAttribute('data-val') <= val ? '#f59e0b' : '#ccc';
-        });
-      });
-    });
-    // Init stars
-    document.querySelectorAll('.st').forEach(star => {
-      star.style.color = '#f59e0b';
-    });
-
-    function openRatingModal(gId, bId) {
-      document.getElementById('rateGuideId').value = gId;
-      document.getElementById('rateBookingId').value = bId;
-      document.getElementById('ratingModal').classList.add('active');
-    }
-    
-    function closeRatingModal() {
-      document.getElementById('ratingModal').classList.remove('active');
-      document.getElementById('ratingForm').reset();
-    }
-
-    async function submitGuideRating(e) {
-      e.preventDefault();
-      const btn = document.getElementById('submitRatingBtn');
-      btn.textContent = 'Submitting...';
+      const btn = document.getElementById('publishBtn');
+      btn.disabled = true; btn.textContent = 'Publishing...';
       
       try {
-        const guide_id = document.getElementById('rateGuideId').value;
-        const booking_id = document.getElementById('rateBookingId').value;
-        const rating = document.getElementById('rateValue').value;
-        const review = document.getElementById('rateReview').value;
-
-        const res = await fetch('http://localhost:5000/api/ratings', {
+        const res = await fetch('http://localhost:5000/api/community/posts', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + localStorage.getItem('token')
-          },
-          body: JSON.stringify({
-            guide_id,
-            booking_id,
-            rating,
-            review
-          })
+          headers: { 'Authorization': 'Bearer ' + TmAuth.getToken() },
+          body: formData
         });
         const data = await res.json();
-        if(!res.ok) throw new Error(data.message || 'Failed to submit rating');
+        if (!res.ok) throw new Error(data.message || 'Failed to post.');
+
+        alert('Post published! You earned +50 points 🎉');
+        closeModal();
         
-        alert('Rating submitted successfully!');
-        closeRatingModal();
-        location.reload();
-      } catch(err) {
-        alert(err.message);
+        // Refresh local view
+        loadMyPosts();
+      } catch (e) {
+        alert(e.message);
+      } finally {
+        btn.disabled = false; btn.textContent = 'Publish Post (+50 points)';
       }
-      btn.textContent = 'Submit Rating';
+    });
+
+    function escapeHtml(s) { return String(s).replace(/[&"'<>]/g, c => ({ '&': '&amp;', '"': '&quot;', '\'': '&#39;', '<': '&lt;', '>': '&gt;' }[c])); }
+
+    async function loadMyPosts() {
+      const grid = document.getElementById('posts-grid');
+      grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#64748b;">Loading posts...</p>';
+      
+      const user = TmAuth.getUser();
+      if (!user) return;
+      
+      try {
+        const res = await fetch('http://localhost:5000/api/community/posts');
+        const allPosts = await res.json();
+        
+        const myPosts = allPosts.filter(p => p.user_id === user.id);
+        
+        if (myPosts.length === 0) {
+          grid.innerHTML = `
+            <div class="no-posts" style="text-align:center;color:#9ca3af;padding:40px;background:white;border-radius:25px;grid-column:1/-1;box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);">
+              <span style="font-size:40px;display:block;margin-bottom:12px;">✍️</span>
+              <p>No posts yet. Share your travel story!</p>
+            </div>
+          `;
+          return;
+        }
+        
+        grid.innerHTML = myPosts.map(p => {
+          const imgs = p.images ? p.images.map(img => img.startsWith('http') ? img : 'http://localhost:5000/' + img) : [];
+          const imgHtml = imgs.length > 0 ? `<img src="${imgs[0]}" style="width:100%;height:180px;object-fit:cover;border-radius:14px 14px 0 0;">` : `<div style="width:100%;height:180px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border-radius:14px 14px 0 0;"><i class="fas fa-image" style="font-size:2.5rem;color:#cbd5e1;"></i></div>`;
+          const dStr = p.created_at ? new Date(p.created_at).toLocaleDateString() : 'just now';
+          const stars = '★'.repeat(p.rating || 0) + '☆'.repeat(5 - (p.rating || 0));
+
+          return `
+            <div class="grid-card" style="padding:0; display:flex; flex-direction:column; overflow:hidden;">
+              ${imgHtml}
+              <div style="padding:16px; flex:1; display:flex; flex-direction:column;">
+                <h3 style="font-size:16px;font-weight:700;margin-bottom:6px;">${escapeHtml(p.location || 'Unknown')}</h3>
+                <div style="font-size:13px;color:#f59e0b;letter-spacing:1px;margin-bottom:8px;">${stars}</div>
+                <p style="font-size:13px;color:#475569;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">${escapeHtml(p.caption || '')}</p>
+                
+                <div style="margin-top:auto;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #f1f5f9;padding-top:12px;">
+                  <span style="font-size:12px;color:#94a3b8;"><i class="far fa-heart"></i> ${p.likes || 0}</span>
+                  <span style="font-size:11px;color:#94a3b8;">${dStr}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+        
+      } catch (e) {
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#ef4444;">Failed to load posts.</p>';
+      }
     }
+    
+    loadMyPosts();
+
+
   </script>
+
 </body>
 </html>
