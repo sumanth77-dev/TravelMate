@@ -63,7 +63,7 @@
 			display: block;
 			font-size: 1.5rem;
 			font-weight: 700;
-			color: #22c55e;
+			color: #2563eb;
 			margin-bottom: 2px;
 		}
 		.stat-label {
@@ -91,8 +91,8 @@
 			gap: 8px;
 			border: none;
 		}
-		.btn-profile.follow { background: #22c55e; color: #fff; box-shadow: 0 4px 14px rgba(34,197,94,0.3); }
-		.btn-profile.follow:hover { background: #16a34a; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(34,197,94,0.4); }
+		.btn-profile.follow { background: #2563eb; color: #fff; box-shadow: 0 4px 14px rgba(37,99,235,0.3); }
+		.btn-profile.follow:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.4); }
 		.btn-profile.message { background: rgba(255,255,255,0.15); color: #fff; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); }
 		.btn-profile.message:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
 
@@ -212,7 +212,7 @@
 
 		<!-- ══════ CONTENT GRID ══════ -->
 		<div class="profile-content">
-			<h2 class="section-header"><i class="fas fa-images" style="color: #22c55e;"></i> Travel Experiences</h2>
+			<h2 class="section-header"><i class="fas fa-images" style="color: #2563eb;"></i> Travel Experiences</h2>
 			
 			<div id="postsGrid" class="posts-grid">
 				<!-- Posts injected here via JS -->
@@ -273,7 +273,7 @@
 			document.getElementById('profName').textContent = escapeHtml(targetUser);
 			document.title = `${escapeHtml(targetUser)} - TravelMate Profile`;
 			
-			const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(targetUser)}&background=dcfce7&color=16a34a&size=200`;
+			const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(targetUser)}&background=dbeafe&color=1d4ed8&size=200`;
 			document.getElementById('profAvatar').src = avatarUrl;
 			
 			// Faux Followers count based on string length to make it deterministic looking
@@ -300,7 +300,7 @@
 					
 					let tagsHtml = '';
 					if(p.category) tagsHtml += `<span style="background:#f1f5f9;color:#475569;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;">${escapeHtml(p.category)}</span>`;
-					if(p.budget)   tagsHtml += `<span style="background:#f0fdf4;color:#166534;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;">₹${escapeHtml(p.budget)}</span>`;
+					if(p.budget)   tagsHtml += `<span style="background:#eff6ff;color:#1e40af;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;">₹${escapeHtml(p.budget)}</span>`;
 
 					const cardHtml = `
 						<article class="post-card">
@@ -331,7 +331,7 @@
 								<div class="post-actions">
 									<button class="icon-btn like-btn">❤ <span class="like-count" style="margin-left:4px; font-size:14px; font-weight:700;">${p.likes||0}</span></button>
 								</div>
-								<a href="findguides.html" style="background:#22c55e;color:#fff;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;"><i class="fas fa-compass"></i> Guide</a>
+								<a href="findguides.html" style="background:#2563eb;color:#fff;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;"><i class="fas fa-compass"></i> Guide</a>
 							</footer>
 						</article>
 					`;
@@ -354,9 +354,9 @@
 				followBtn.style.boxShadow = 'none';
 			} else {
 				followBtn.innerHTML = `<i class="fas fa-user-plus"></i> Follow User`;
-				followBtn.style.background = '#22c55e';
+				followBtn.style.background = '#2563eb';
 				followBtn.style.color = '#fff';
-				followBtn.style.boxShadow = '0 4px 14px rgba(34,197,94,0.3)';
+				followBtn.style.boxShadow = '0 4px 14px rgba(37,99,235,0.3)';
 			}
 
 			followBtn.addEventListener('click', () => {
@@ -381,9 +381,9 @@
 					}
 				} else {
 					followBtn.innerHTML = `<i class="fas fa-user-plus"></i> Follow User`;
-					followBtn.style.background = '#22c55e';
+					followBtn.style.background = '#2563eb';
 					followBtn.style.color = '#fff';
-					followBtn.style.boxShadow = '0 4px 14px rgba(34,197,94,0.3)';
+					followBtn.style.boxShadow = '0 4px 14px rgba(37,99,235,0.3)';
 					document.getElementById('statFollowers').textContent = parseInt(document.getElementById('statFollowers').textContent) - 1;
 					followingList = followingList.filter(u => u !== targetUser.toLowerCase());
 					localStorage.setItem('tm_following', JSON.stringify(followingList));

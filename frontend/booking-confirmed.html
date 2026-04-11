@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="style.css">
 <script src="tm-auth.js"></script>
 <style>
-:root{--primary:#22c55e;--primary-dark:#16a34a;--bg:#f0fdf4;}
+:root{--primary:#2563eb;--primary-dark:#1d4ed8;--bg:#eff6ff;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#1f2937;}
 .confirm-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 24px 60px;}
@@ -17,16 +17,16 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#1f2937
 /* SUCCESS ANIMATION */
 .success-ring{
   width:100px;height:100px;border-radius:50%;
-  background:linear-gradient(135deg,#22c55e,#16a34a);
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
   display:flex;align-items:center;justify-content:center;
   font-size:2.8rem;margin:0 auto 20px;
-  box-shadow:0 0 0 0 rgba(34,197,94,.4);
+  box-shadow:0 0 0 0 rgba(37,99,235,.4);
   animation:pulse 2s ease infinite;
 }
 @keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(34,197,94,.4);}
-  70%{box-shadow:0 0 0 20px rgba(34,197,94,0);}
-  100%{box-shadow:0 0 0 0 rgba(34,197,94,0);}
+  0%{box-shadow:0 0 0 0 rgba(37,99,235,.4);}
+  70%{box-shadow:0 0 0 20px rgba(37,99,235,0);}
+  100%{box-shadow:0 0 0 0 rgba(37,99,235,0);}
 }
 .confirm-title{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,3vw,2.2rem);color:#111827;margin-bottom:8px;text-align:center;}
 .confirm-sub{color:#6b7280;font-size:0.95rem;text-align:center;max-width:420px;margin:0 auto 32px;line-height:1.7;}
@@ -37,25 +37,25 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#1f2937
   box-shadow:0 8px 40px rgba(0,0,0,.1);overflow:hidden;margin-bottom:24px;
 }
 .bc-header{
-  background:linear-gradient(135deg,#064e3b,#065f46);
+  background:linear-gradient(135deg,#0f172a,#1e3a8a);
   padding:24px 28px;display:flex;align-items:center;gap:16px;
 }
 .bc-guide-av{
   width:60px;height:60px;border-radius:50%;object-fit:cover;
-  border:3px solid #86efac;flex-shrink:0;
+  border:3px solid #93c5fd;flex-shrink:0;
 }
 .bc-guide-name{font-family:'Playfair Display',serif;font-size:1.1rem;color:#fff;margin-bottom:3px;}
-.bc-guide-spec{font-size:0.82rem;color:#86efac;font-weight:600;}
+.bc-guide-spec{font-size:0.82rem;color:#93c5fd;font-weight:600;}
 .bc-badge{
-  margin-left:auto;background:rgba(34,197,94,.2);color:#86efac;
+  margin-left:auto;background:rgba(37,99,235,.2);color:#93c5fd;
   padding:5px 14px;border-radius:20px;font-size:0.78rem;font-weight:700;
-  border:1px solid rgba(134,239,172,.3);white-space:nowrap;
+  border:1px solid rgba(147,197,253,.3);white-space:nowrap;
   display:flex;align-items:center;gap:5px;
 }
 
 .bc-body{padding:24px 28px;}
 .bc-ref{
-  background:var(--bg);border:1.5px dashed #86efac;border-radius:12px;
+  background:var(--bg);border:1.5px dashed #93c5fd;border-radius:12px;
   padding:12px 18px;text-align:center;margin-bottom:22px;
 }
 .bc-ref-label{font-size:0.75rem;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
@@ -272,7 +272,7 @@ function loadBooking() {
   }
 
   const ref   = 'TM-' + String(booking.id).slice(-6);
-  const avUrl = booking.guidePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(booking.guideName||'Guide')}&background=dcfce7&color=16a34a&size=60`;
+  const avUrl = booking.guidePhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(booking.guideName||'Guide')}&background=dbeafe&color=1d4ed8&size=60`;
   const dateStr = booking.date ? new Date(booking.date).toLocaleDateString('en-IN',{weekday:'short',year:'numeric',month:'short',day:'numeric'}) : booking.date;
 
   document.getElementById('guideAvatar').src        = avUrl;

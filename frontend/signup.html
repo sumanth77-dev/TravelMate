@@ -4,393 +4,709 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up - Travel Mate</title>
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Sign Up - TravelMate</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="tm-auth.js"></script>
 
   <style>
-    :root {
-      --primary: #22c55e;
-      --primary-dark: #16a34a;
-      --bg: #f0fdf4;
-    }
-
     body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--bg);
-      padding-top: 70px;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #f0f5ff;
+      padding-top: 0 !important;
     }
 
-    .auth-wrapper {
-      min-height: calc(100vh - 70px);
+    /* ═══════════════════════════════════
+       SPLIT PANEL AUTH LAYOUT
+    ═══════════════════════════════════ */
+    .auth-split {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* LEFT PANEL — Blue gradient with waves */
+    .auth-left {
+      flex: 1;
+      background: linear-gradient(155deg, #0f172a 0%, #1e3a8a 40%, #2563eb 70%, #3b82f6 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 48px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Decorative circles */
+    .auth-left::before {
+      content: '';
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(59, 130, 246, 0.25);
+      top: -80px;
+      left: -60px;
+      filter: blur(40px);
+    }
+
+    .auth-left::after {
+      content: '';
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background: rgba(96, 165, 250, 0.2);
+      bottom: -50px;
+      right: -40px;
+      filter: blur(40px);
+    }
+
+    /* Dot pattern overlay */
+    .auth-dots {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    /* Wave SVG at bottom */
+    .auth-wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+    }
+
+    .auth-left-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 420px;
+    }
+
+    .auth-left-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .auth-left-logo .dot {
+      color: #60a5fa;
+    }
+
+    .auth-left-greeting {
+      font-size: 1rem;
+      color: #93c5fd;
+      font-weight: 500;
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .auth-left h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 24px;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .auth-left-desc {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.7;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    /* Floating travel icons */
+    .float-icon {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.12);
+      font-size: 2rem;
+      animation: floatUp 6s ease-in-out infinite;
+    }
+
+    .float-icon:nth-child(1) { top: 15%; left: 12%; animation-delay: 0s; }
+    .float-icon:nth-child(2) { top: 25%; right: 15%; animation-delay: 1.5s; font-size: 1.6rem; }
+    .float-icon:nth-child(3) { bottom: 25%; left: 18%; animation-delay: 3s; font-size: 1.8rem; }
+    .float-icon:nth-child(4) { top: 60%; right: 10%; animation-delay: 2s; }
+    .float-icon:nth-child(5) { bottom: 35%; right: 25%; animation-delay: 4s; font-size: 1.5rem; }
+
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(5deg); }
+    }
+
+    /* RIGHT PANEL — White form */
+    .auth-right {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 24px;
+      padding: 48px 40px;
+      background: #fff;
     }
 
-    /* Navbar */
-    .custom-navbar {
-      background: #ffffff;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    .auth-form-container {
+      width: 100%;
+      max-width: 500px;
+      animation: slideInForm 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      margin: auto;
     }
 
-    .custom-navbar .navbar-brand {
-      color: var(--primary);
+    @keyframes slideInForm {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .auth-form-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: #0f172a;
+      margin-bottom: 6px;
       font-weight: 700;
     }
 
-    .custom-navbar .nav-link {
-      color: #333;
-      font-weight: 500;
-      transition: 0.3s;
+    .auth-form-title span {
+      color: #2563eb;
     }
 
-    .custom-navbar .nav-link:hover {
-      color: var(--primary);
+    .auth-form-subtitle {
+      font-size: 0.88rem;
+      color: #64748b;
+      margin-bottom: 28px;
+      line-height: 1.6;
     }
 
-    /* Card */
-    .signup-card {
-      background: white;
-      width: 100%;
-      max-width: 450px;
-      padding: 40px;
-      border-radius: 30px;
-      box-shadow: 0 15px 40px rgba(34, 197, 94, 0.15);
-      animation: fadeUp 0.6s ease;
-      transition: max-width 0.4s ease;
+    /* Input fields */
+    .form-group {
+      margin-bottom: 18px;
     }
 
-    .signup-card.is-guide {
-      max-width: 700px;
-    }
-
-    .section-title {
-      font-size: 1rem;
+    .form-group label {
+      display: block;
+      font-size: 13px;
       font-weight: 600;
-      color: var(--primary-dark);
-      margin-top: 24px;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
+      color: #334155;
+      margin-bottom: 7px;
     }
 
-    .guide-grid {
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap .input-bar {
+      position: absolute;
+      left: 0;
+      top: 12px;
+      bottom: 12px;
+      width: 3px;
+      background: #2563eb;
+      border-radius: 2px;
+    }
+
+    .input-wrap input,
+    .input-wrap select,
+    .input-wrap textarea {
+      width: 100%;
+      padding: 13px 14px 13px 18px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #0f172a;
+      background: #f8fafc;
+      transition: all .2s;
+      box-sizing: border-box;
+    }
+
+    .input-wrap input:focus,
+    .input-wrap select:focus,
+    .input-wrap textarea:focus {
+      outline: none;
+      border-color: #2563eb;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+    }
+    
+    .input-wrap input[type="file"] {
+      padding: 10px 14px 10px 18px;
+      background: #fff;
+    }
+
+    .input-wrap input::placeholder,
+    .input-wrap textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    .toggle-pass {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Role toggle */
+    .role-toggle {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .role-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .role-btn.active {
+      border-color: #2563eb;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    /* Form Grid layout */
+    .form-row {
       display: grid;
       grid-template-columns: 1fr;
       gap: 16px;
+      margin-bottom: 16px;
     }
 
     @media (min-width: 600px) {
-      .guide-grid {
+      .form-row {
         grid-template-columns: 1fr 1fr;
       }
     }
 
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .brand {
-      text-align: center;
-      font-weight: 600;
-      font-size: 24px;
-      color: var(--primary);
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #777;
-      font-size: 14px;
-      margin-bottom: 25px;
-    }
-
-    /* Role Toggle */
-    .role-toggle {
-      display: flex;
-      background: #e6f9ee;
-      border-radius: 50px;
-      padding: 5px;
-      margin-bottom: 25px;
-    }
-
-    .role-toggle button {
-      flex: 1;
-      border: none;
-      background: transparent;
-      padding: 8px;
-      border-radius: 50px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .role-toggle button.active {
-      background: var(--primary);
-      color: white;
-      box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
-    }
-
-    /* Inputs */
-    .form-control {
-      border-radius: 15px;
-      padding: 12px;
-      border: 1px solid #ddd;
-    }
-
-    .form-control:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-    }
-
-    .password-wrapper {
-      position: relative;
-    }
-
-    .show-pass {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 14px;
-      color: #888;
-    }
-
-    /* Button */
-    .signup-btn {
+    .section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-top: 24px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1.5px solid #e2e8f0;
       width: 100%;
-      background: var(--primary);
-      border: none;
-      padding: 12px;
-      border-radius: 50px;
-      font-weight: 600;
-      color: white;
-      transition: 0.3s;
     }
 
-    .signup-btn:hover {
-      background: var(--primary-dark);
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
+    .checkbox-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: #475569;
+    }
+
+    .checkbox-wrap input[type="checkbox"] {
+      accent-color: #2563eb;
+      flex-shrink: 0;
+      margin-top: 2px;
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Submit button */
+    .auth-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .25s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.25);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-top: 10px;
+    }
+
+    .auth-btn:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(37, 99, 235, 0.35);
+    }
+
+    .auth-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
     }
 
     /* Divider */
-    .divider {
-      text-align: center;
-      margin: 25px 0;
-      position: relative;
+    .or-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: #94a3b8;
+      font-size: 13px;
+      font-weight: 600;
     }
 
-    .divider::before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
+    .or-divider::before,
+    .or-divider::after {
+      content: '';
+      flex: 1;
       height: 1px;
-      background: #ddd;
-      z-index: 1;
+      background: #e2e8f0;
     }
 
-    .divider span {
-      position: relative;
-      z-index: 2;
-      background: white;
-      padding: 0 15px;
-      color: #777;
-      font-weight: 500;
-      font-size: 14px;
-    }
-
-    /* Google */
+    /* Google button */
     .google-btn {
       width: 100%;
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 50px;
-      padding: 10px;
+      padding: 12px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      background: #fff;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      font-weight: 500;
-      transition: 0.3s;
+      font-size: 14px;
+      font-weight: 600;
+      color: #334155;
+      transition: all .2s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     .google-btn:hover {
-      background: #f8f9fa;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      border-color: #2563eb;
+      background: #eff6ff;
+      transform: translateY(-1px);
     }
 
-    .footer-text {
+    /* Footer text */
+    .auth-switch {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 24px;
       font-size: 14px;
+      color: #64748b;
     }
 
-    .footer-text a {
-      color: var(--primary);
+    .auth-switch a {
+      color: #2563eb;
+      font-weight: 600;
       text-decoration: none;
+    }
+
+    .auth-switch a:hover {
+      text-decoration: underline;
+    }
+
+    /* Error display */
+    .auth-error-msg {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
       font-weight: 500;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .auth-error-msg.show {
+      display: flex;
+    }
+
+    .d-none {
+      display: none !important;
+    }
+
+    /* ═══════ RESPONSIVE ═══════ */
+    @media (max-width: 860px) {
+      .auth-split {
+        flex-direction: column;
+      }
+
+      .auth-left {
+        min-height: 280px;
+        height: auto;
+        position: static;
+        padding: 48px 24px;
+      }
+
+      .auth-left h1 {
+        font-size: 2rem;
+      }
+
+      .auth-left-desc {
+        display: none;
+      }
+
+      .float-icon {
+        display: none;
+      }
+
+      .auth-right {
+        padding: 32px 24px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .auth-left {
+        min-height: 220px;
+        padding: 36px 20px;
+      }
+
+      .auth-left h1 {
+        font-size: 1.6rem;
+      }
+
+      .auth-form-container {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ══════════════ NAVBAR ══════════════ -->
-  <nav class="navbar page-bg" id="navbar">
-    <div class="navbar-inner">
-      <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="main_community.html">Community</a></li>
-        <li><a href="findguides.html">Find Guides</a></li>
-        <li><a href="destinations.html">Destinations</a></li>
-      </ul>
-      <div style="display:flex;align-items:center;gap:12px;">
-        <div id="pointsCounter" class="badge badge-teal">0 pts</div>
+  <div class="auth-split">
+    <!-- ═══════ LEFT PANEL ═══════ -->
+    <div class="auth-left">
+      <div class="auth-dots"></div>
+
+      <!-- Floating icons -->
+      <i class="fas fa-plane float-icon"></i>
+      <i class="fas fa-map-marked-alt float-icon"></i>
+      <i class="fas fa-compass float-icon"></i>
+      <i class="fas fa-mountain float-icon"></i>
+      <i class="fas fa-globe-americas float-icon"></i>
+
+      <div class="auth-left-content">
+        <div class="auth-left-logo">&#10022; Travel<span class="dot">Mate</span></div>
+        <p class="auth-left-greeting">Join the community</p>
+        <h1>CREATE ACCOUNT</h1>
+        <p class="auth-left-desc">
+          Sign up to access your personalized travel dashboard, connect with local guides, and unlock new adventures.
+        </p>
       </div>
-      <button class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
+
+      <!-- Wave SVG -->
+      <svg class="auth-wave" viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path d="M0,80 C360,120 720,20 1080,80 C1260,110 1380,60 1440,80 L1440,120 L0,120 Z" fill="rgba(255,255,255,0.08)" />
+        <path d="M0,100 C240,60 480,120 720,90 C960,60 1200,110 1440,90 L1440,120 L0,120 Z" fill="rgba(255,255,255,0.05)" />
+      </svg>
     </div>
-  </nav>
 
-  <div class="auth-wrapper">
-    <div class="signup-card" id="signupCard">
+    <!-- ═══════ RIGHT PANEL ═══════ -->
+    <div class="auth-right">
+      <div class="auth-form-container">
+        <h2 class="auth-form-title">Join <span>TravelMate</span></h2>
+        <p class="auth-form-subtitle">Create a free account to unlock your travel journey.</p>
 
-      <div class="brand">Travel Mate</div>
-      <div class="subtitle">Create your account</div>
-
-      <!-- Role -->
-      <div class="role-toggle">
-        <button class="active" onclick="selectRole(this, 'User')">User</button>
-        <button onclick="selectRole(this, 'Guide')">Guide</button>
-      </div>
-
-      <form id="signupForm">
-        <div class="section-title">1️⃣ Basic Information</div>
-        <div class="guide-grid mb-3">
-          <div>
-            <input type="text" class="form-control" id="name" placeholder="Full Name" required>
-          </div>
-          <div>
-            <input type="email" class="form-control" id="email" placeholder="Email Address" required>
-          </div>
-          <div>
-            <input type="tel" class="form-control" id="phone" placeholder="Phone Number" required>
-          </div>
-          <div></div>
+        <!-- Error display -->
+        <div class="auth-error-msg" id="signupError">
+          <i class="fas fa-exclamation-circle"></i>
+          <span id="signupErrorMsg"></span>
         </div>
 
-        <div class="guide-grid mb-3">
-          <div class="password-wrapper">
-            <input type="password" id="password" class="form-control" placeholder="Password" required>
-            <span class="show-pass" onclick="togglePassword('password')">Show</span>
-          </div>
-          <div class="password-wrapper">
-            <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password" required>
-            <span class="show-pass" onclick="togglePassword('confirmPassword')">Show</span>
-          </div>
+        <!-- Role toggle -->
+        <div class="role-toggle">
+          <button type="button" class="role-btn active" onclick="selectRole(this, 'User')">
+            <i class="fas fa-user"></i> User
+          </button>
+          <button type="button" class="role-btn" onclick="selectRole(this, 'Guide')">
+            <i class="fas fa-map-marked-alt"></i> Guide
+          </button>
         </div>
 
-        <!-- GUIDE SPECIFIC FIELDS HIDDEN BY DEFAULT -->
-        <div id="guideFields" class="d-none">
-
-          <div class="section-title">2️⃣ Guide Details</div>
-          <div class="guide-grid mb-3">
-            <input type="text" class="form-control" id="gCity" placeholder="City / Location">
-            <input type="text" class="form-control" id="gLanguages" placeholder="Languages Spoken (comma separated)">
-            <input type="number" class="form-control" id="gExperience" placeholder="Years of Experience" min="0">
-            <select class="form-control" id="gType">
-              <option value="">Select Guide Type...</option>
-              <option value="Local">Local Guide</option>
-              <option value="Adventure">Adventure Guide</option>
-              <option value="Cultural">Cultural Guide</option>
-              <option value="Food">Food Guide</option>
-            </select>
-          </div>
-
-          <div class="section-title">3️⃣ Travel Expertise</div>
-          <div class="mb-3">
-            <input type="text" class="form-control mb-3" id="gAreas"
-              placeholder="Areas you guide (e.g. temples, beaches, specific regions)">
-            <input type="text" class="form-control" id="gSkills"
-              placeholder="Special skills (e.g. photography, history expert)">
-          </div>
-
-          <div class="section-title">4️⃣ Pricing</div>
-          <div class="guide-grid mb-3">
-            <input type="number" class="form-control" id="gPrice" placeholder="Price per Day (₹)" min="0">
-            <input type="number" class="form-control" id="gGroupSize" placeholder="Max Group Size" min="1">
-          </div>
-
-          <div class="section-title">5️⃣ Verification</div>
-          <div class="guide-grid mb-3">
-            <div>
-              <label class="form-label text-muted small mb-1">Government ID Upload</label>
-              <input type="file" class="form-control" id="gIdFile" accept="image/*,.pdf">
+        <form id="signupForm">
+          <div class="section-title">1️⃣ Basic Information</div>
+          
+          <div class="form-row">
+            <div class="input-wrap">
+              <div class="input-bar"></div>
+              <input type="text" id="name" placeholder="Full Name" required>
             </div>
-            <div>
-              <label class="form-label text-muted small mb-1">Profile Photo Upload</label>
-              <input type="file" class="form-control" id="gPhotoFile" accept="image/*">
+            <div class="input-wrap">
+              <div class="input-bar"></div>
+              <input type="tel" id="phone" placeholder="Phone Number" required>
             </div>
           </div>
-          <div class="mb-3">
-            <textarea class="form-control" id="gBio" rows="3" placeholder="Short bio / introduction..."></textarea>
+          
+          <div class="input-wrap" style="margin-bottom: 16px;">
+            <div class="input-bar"></div>
+            <input type="email" id="email" placeholder="Email Address" required>
           </div>
 
-          <div class="section-title">6️⃣ Availability</div>
-          <div class="guide-grid mb-3">
-            <input type="text" class="form-control" id="gDays" placeholder="Available Days (e.g. Mon-Fri)">
-            <input type="text" class="form-control" id="gTimings" placeholder="Available Timings (e.g. 9 AM - 6 PM)">
-          </div>
-
-          <div class="section-title">7️⃣ Safety & Policy</div>
-          <div class="mb-4" style="font-size:0.85rem; color:#555;">
-            <div class="form-check mb-2">
-              <input class="form-check-input" type="checkbox" id="gTerm1">
-              <label class="form-check-label" for="gTerm1">I accept the TravelMate Terms & Conditions.</label>
+          <div class="form-row">
+            <div class="input-wrap">
+              <div class="input-bar"></div>
+              <input type="password" id="password" placeholder="Password" required>
+              <button type="button" class="toggle-pass" onclick="togglePassword('password')">Show</button>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="gTerm2">
-              <label class="form-check-label" for="gTerm2">I agree to abide by TravelMate Guide Policies and verify all
-                information provided is accurate.</label>
+            <div class="input-wrap">
+              <div class="input-bar"></div>
+              <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+              <button type="button" class="toggle-pass" onclick="togglePassword('confirmPassword')">Show</button>
             </div>
           </div>
 
-        </div> <!-- End Guide Fields -->
+          <!-- GUIDE SPECIFIC FIELDS HIDDEN BY DEFAULT -->
+          <div id="guideFields" class="d-none">
 
-        <button type="submit" class="signup-btn mt-2">Sign Up</button>
-      </form>
+            <div class="section-title">2️⃣ Guide Details</div>
+            <div class="form-row">
+              <div class="input-wrap">
+                <div class="input-bar"></div>
+                <input type="text" id="gCity" placeholder="City / Location">
+              </div>
+              <div class="input-wrap">
+                <div class="input-bar"></div>
+                <input type="text" id="gLanguages" placeholder="Languages Spoken">
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="input-wrap">
+                <div class="input-bar"></div>
+                <input type="number" id="gExperience" placeholder="Years of Experience" min="0">
+              </div>
+              <div class="input-wrap">
+                <div class="input-bar"></div>
+                <select id="gType">
+                  <option value="">Select Guide Type...</option>
+                  <option value="Local">Local Guide</option>
+                  <option value="Adventure">Adventure Guide</option>
+                  <option value="Cultural">Cultural Guide</option>
+                  <option value="Food">Food Guide</option>
+                </select>
+              </div>
+            </div>
 
-      <div class="divider"><span>OR</span></div>
+            <div class="section-title">3️⃣ Travel Expertise</div>
+            <div class="input-wrap" style="margin-bottom: 16px;">
+              <div class="input-bar"></div>
+              <input type="text" id="gAreas" placeholder="Areas you guide (e.g. temples, beaches)">
+            </div>
+            <div class="input-wrap" style="margin-bottom: 16px;">
+              <div class="input-bar"></div>
+              <input type="text" id="gSkills" placeholder="Special skills (e.g. photography, history)">
+            </div>
 
-      <button class="google-btn" onclick="simulateGoogleAuth()">
-        <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="18">
-        Continue with Google
-      </button>
+            <div class="section-title">4️⃣ Pricing</div>
+            <div class="form-row">
+              <div class="input-wrap">
+                <div class="input-bar"></div>
+                <input type="number" id="gPrice" placeholder="Price per Day (₹)" min="0">
+              </div>
+              <div class="input-wrap">
+                <div class="input-bar"></div>
+                <input type="number" id="gGroupSize" placeholder="Max Group Size" min="1">
+              </div>
+            </div>
 
-      <div class="footer-text">
-        Already have an account? <a href="login.html">Login</a>
+            <div class="section-title">5️⃣ Verification</div>
+            <div class="form-row">
+              <div>
+                <label style="font-size: 12px; color: #64748b; margin-bottom: 6px; display: block;">Govt. ID Upload</label>
+                <div class="input-wrap">
+                  <div class="input-bar"></div>
+                  <input type="file" id="gIdFile" accept="image/*,.pdf">
+                </div>
+              </div>
+              <div>
+                <label style="font-size: 12px; color: #64748b; margin-bottom: 6px; display: block;">Profile Photo</label>
+                <div class="input-wrap">
+                  <div class="input-bar"></div>
+                  <input type="file" id="gPhotoFile" accept="image/*">
+                </div>
+              </div>
+            </div>
+            <div class="input-wrap" style="margin-bottom: 16px; margin-top: 10px;">
+              <div class="input-bar"></div>
+              <textarea id="gBio" rows="3" placeholder="Short bio / introduction..."></textarea>
+            </div>
+
+            <div class="section-title">6️⃣ Availability</div>
+            <div class="form-row">
+              <div class="input-wrap">
+                <div class="input-bar"></div>
+                <input type="text" id="gDays" placeholder="Available Days (e.g. Mon-Fri)">
+              </div>
+              <div class="input-wrap">
+                <div class="input-bar"></div>
+                <input type="text" id="gTimings" placeholder="Timings (e.g. 9 AM - 6 PM)">
+              </div>
+            </div>
+
+            <div class="section-title">7️⃣ Safety & Policy</div>
+            <div style="margin-bottom: 24px;">
+              <label class="checkbox-wrap">
+                <input type="checkbox" id="gTerm1">
+                <span>I accept the TravelMate Terms & Conditions.</span>
+              </label>
+              <label class="checkbox-wrap">
+                <input type="checkbox" id="gTerm2">
+                <span>I agree to abide by TravelMate Guide Policies and verify all information provided is accurate.</span>
+              </label>
+            </div>
+
+          </div> <!-- End Guide Fields -->
+
+          <button type="submit" class="auth-btn">CREATE ACCOUNT</button>
+        </form>
+
+        <div class="or-divider">OR</div>
+
+        <button class="google-btn" onclick="simulateGoogleAuth()">
+          <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="18" alt="Google">
+          Continue with Google
+        </button>
+
+        <div class="auth-switch">
+          Already have an account? <a href="login.html">Login</a>
+        </div>
       </div>
-
     </div>
   </div>
 
@@ -400,22 +716,20 @@
       if (TmAuth.isLogged()) window.location.href = 'index.html';
     })();
 
-    function selectRole(btn, roleName) {
-      document.querySelectorAll('.role-toggle button').forEach(b => b.classList.remove('active'));
+    let selectedRole = 'User';
+
+    function selectRole(btn, role) {
+      document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      selectedRole = role;
 
-      const card = document.getElementById('signupCard');
       const guideFields = document.getElementById('guideFields');
-
-      if (roleName === 'Guide') {
-        card.classList.add('is-guide');
+      if (role === 'Guide') {
         guideFields.classList.remove('d-none');
-        // make guide terms required
         document.getElementById('gTerm1').required = true;
         document.getElementById('gTerm2').required = true;
         document.getElementById('gCity').required = true;
       } else {
-        card.classList.remove('is-guide');
         guideFields.classList.add('d-none');
         document.getElementById('gTerm1').required = false;
         document.getElementById('gTerm2').required = false;
@@ -425,42 +739,64 @@
 
     function togglePassword(id) {
       const input = document.getElementById(id);
-      input.type = input.type === "password" ? "text" : "password";
+      const btn = input.parentElement.querySelector('.toggle-pass');
+      if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "Hide";
+      } else {
+        input.type = "password";
+        btn.textContent = "Show";
+      }
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('signupError');
+      document.getElementById('signupErrorMsg').textContent = msg;
+      el.classList.add('show');
+    }
+
+    function hideError() {
+      document.getElementById('signupError').classList.remove('show');
+    }
+
+    function showSuccess(msg) {
+      if (window.TmToast) window.TmToast.show(msg, 'success');
+      else alert(msg);
     }
 
     document.getElementById("signupForm").addEventListener("submit", async function (e) {
       e.preventDefault();
+      hideError();
       const name = document.getElementById('name').value.trim();
       const email = document.getElementById('email').value.trim();
       const phone = document.getElementById('phone').value.trim();
       const password = document.getElementById('password').value;
       const confirm = document.getElementById('confirmPassword').value;
-      const role = document.querySelector('.role-toggle button.active').textContent.trim();
       const submitBtn = this.querySelector('button[type="submit"]');
 
       if (!name || !email || !password || !confirm || !phone) {
-        showMsg('Please fill in all basic fields.', 'error'); return;
+        showError('Please fill in all basic fields.'); return;
       }
       if (password !== confirm) {
-        showMsg('Passwords do not match.', 'error'); return;
+        showError('Passwords do not match.'); return;
       }
       if (password.length < 6) {
-        showMsg('Password must be at least 6 characters.', 'error'); return;
+        showError('Password must be at least 6 characters.'); return;
       }
 
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Registering...';
+      submitBtn.textContent = 'REGISTERING...';
 
       try {
         let response, data;
 
-        if (role === 'Guide') {
+        if (selectedRole === 'Guide') {
           const formData = new FormData();
           formData.append('full_name', name);
           formData.append('email', email);
           formData.append('phone_number', phone);
           formData.append('password', password);
-          formData.append('role', role);
+          formData.append('role', selectedRole);
 
           formData.append('city_location', document.getElementById('gCity').value);
           formData.append('languages_spoken', document.getElementById('gLanguages').value);
@@ -490,7 +826,7 @@
           response = await fetch('http://localhost:5000/api/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ full_name: name, email, phone_number: phone, password, role })
+            body: JSON.stringify({ full_name: name, email, phone_number: phone, password, role: selectedRole })
           });
         }
 
@@ -500,50 +836,41 @@
           throw new Error(data.message || 'Registration failed');
         }
 
-        // Set active session role based on UI tab selection
-        localStorage.setItem('tm_active_role', role);
+        localStorage.setItem('tm_active_role', selectedRole);
 
-        if (role === 'Guide') {
-          showMsg('Registration successful. Please wait for admin approval before logging in.', 'success');
+        if (selectedRole === 'Guide') {
+          showSuccess('Registration successful. Please wait for admin approval before logging in.');
           setTimeout(() => window.location.href = 'login.html', 3000);
         } else {
           const token = data.token;
           localStorage.setItem('token', token);
-          console.log("Verified Token in localStorage:", localStorage.getItem('token'));
           TmAuth.login(data.full_name, data.email, data.role, null, token, data.id);
-          showMsg('Account created successfully! Redirecting...', 'success');
+          showSuccess('Account created successfully! Redirecting...');
           setTimeout(() => window.location.href = 'travel-mate-dashboard.html', 1000);
         }
       } catch (err) {
-        showMsg(err.message, 'error');
+        showError(err.message);
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Sign Up';
+        submitBtn.textContent = 'CREATE ACCOUNT';
       }
     });
 
-    function showMsg(msg, type) {
-      if (window.TmToast) window.TmToast.show(msg, type);
-      else alert(msg);
-    }
-
     function simulateGoogleAuth() {
-      const role = document.querySelector('.role-toggle button.active').textContent.trim();
-
       // Create a mock Google user if they don't exist
       const googleUser = {
         name: "Google Explorer",
         email: "explorer@gmail.com",
-        role: role,
+        role: selectedRole,
         password: "hidden_google_oauth_token"
       };
 
       const users = JSON.parse(localStorage.getItem('tm_users') || '[]');
-      if (!users.find(u => u.email === googleUser.email && u.role === role)) {
+      if (!users.find(u => u.email === googleUser.email && u.role === selectedRole)) {
         users.push(googleUser);
         localStorage.setItem('tm_users', JSON.stringify(users));
       }
 
-      showMsg('Google Authentication successful! Redirecting...', 'success');
+      showSuccess('Google Authentication successful! Redirecting...');
       TmAuth.login(googleUser.name, googleUser.email, googleUser.role, null);
       setTimeout(() => window.location.href = 'index.html', 1000);
     }

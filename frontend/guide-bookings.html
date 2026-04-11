@@ -19,7 +19,7 @@
       --text-foreground: #0f172a;
       --text-muted: #64748b;
       --border-color: #e2e8f0;
-      --primary-light-bg: rgba(34, 197, 94, 0.1);
+      --primary-light-bg: rgba(37, 99, 235, 0.1);
 
       --warning: #f59e0b;
       --warning-bg: rgba(245, 158, 11, 0.1);
@@ -338,27 +338,46 @@
           }
         });
         if (res.ok) {
-          const data = await res.json();
-          allBookings = data.map(b => ({
+          const serverData = await res.json();
+          const rawLocal = localStorage.getItem('tm_my_bookings');
+          const localData = rawLocal ? JSON.parse(rawLocal) : [];
+          const mergedData = [...(Array.isArray(serverData)?serverData:[]), ...localData];
+          
+          allBookings = mergedData.map(b => ({
             id: b.id,
             guideId: b.guide_id,
             guideName: b.guide_name || 'Guide',
-            location: b.city_location || 'Location',
+            location: b.city_location || b.location || 'Location',
             date: b.booking_date,
             duration: b.duration || 1,
-            members: b.group_size || 1,
-            status: b.status || 'pending',
+            members: b.group_size || b.num_people || 1,
+            status: (b.status || 'pending').toLowerCase(),
             totalPrice: b.total_price || 0,
             message: b.message || '',
             createdAt: b.created_at
           }));
         } else {
-          console.error("Failed to load bookings");
-          allBookings = [];
+          console.error("Failed to load bookings, falling back to local");
+          const raw = JSON.parse(localStorage.getItem('tm_my_bookings') || '[]');
+          allBookings = raw.map(b => ({
+            id: b.id, guideId: b.guide_id, guideName: b.guide_name || 'Guide',
+            location: b.location || 'Your Location', date: b.booking_date,
+            duration: b.duration || 1, members: b.group_size || 1,
+            status: (b.status || 'pending').toLowerCase(), totalPrice: b.total_price || 0,
+            message: b.message || '', createdAt: b.created_at
+          }));
         }
       } catch (err) {
-        console.error(err);
-        allBookings = [];
+        console.warn("API Error, falling back to local bookings:", err);
+        const rawLocal = localStorage.getItem('tm_my_bookings');
+        const raw = rawLocal ? JSON.parse(rawLocal) : [];
+        allBookings = raw.map(b => ({
+          id: b.id, guideId: b.guide_id, guideName: b.guide_name || 'Guide',
+          location: b.location || 'Your Location', date: b.booking_date,
+          duration: b.duration || 1, members: b.group_size || 1,
+          status: (b.status || 'pending').toLowerCase(), totalPrice: b.total_price || 0,
+          message: b.message || '', createdAt: b.created_at
+        }));
       }
       renderBookings();
     }

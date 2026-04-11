@@ -11,7 +11,7 @@
 <script src="tm-auth.js"></script>
 
 <style>
-:root { --primary:#22c55e; --primary-dark:#16a34a; --bg:#f0fdf4; }
+:root { --primary:#2563eb; --primary-dark:#1d4ed8; --bg:#eff6ff; }
 body { font-family:'Plus Jakarta Sans','Poppins',Arial,sans-serif; background:var(--bg); }
 
 /* Page specific overrides */
@@ -54,7 +54,7 @@ body { font-family:'Plus Jakarta Sans','Poppins',Arial,sans-serif; background:va
   background: var(--primary);
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(34,197,94,0.2);
+  box-shadow: 0 4px 12px rgba(37,99,235,0.2);
 }
 
 .search-floating-card {
@@ -84,7 +84,7 @@ body { font-family:'Plus Jakarta Sans','Poppins',Arial,sans-serif; background:va
 
 <body>
     <!-- Back Button -->
-    <a href="index.html" class="back-btn" style="position: absolute; top: 24px; left: 24px; z-index: 100; display: flex; align-items: center; gap: 6px; font-weight: 600; color: var(--primary); background: #fff; border-radius: 8px; padding: 7px 16px; box-shadow: 0 2px 8px rgba(34,197,94,.08); text-decoration: none;">
+    <a href="index.html" class="back-btn" style="position: absolute; top: 24px; left: 24px; z-index: 100; display: flex; align-items: center; gap: 6px; font-weight: 600; color: var(--primary); background: #fff; border-radius: 8px; padding: 7px 16px; box-shadow: 0 2px 8px rgba(37,99,235,.08); text-decoration: none;">
         <i class="fas fa-arrow-left"></i> Back
     </a>
     <!-- ══════════════ NAVBAR (unified) ══════════════ -->
@@ -171,8 +171,16 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, { threshold: 0.1 });
 
-// Show All on Load
-showAll();
+// Apply query parameter search if present, else show all
+window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const initialSearch = params.get('search');
+    if (initialSearch) {
+        searchDestination(initialSearch);
+    } else {
+        showAll();
+    }
+});
 
 function displayDestinations(filteredList) {
     // 1. Inject Shimmering Skeletons
@@ -235,8 +243,13 @@ function displayDestinations(filteredList) {
     }, 450);
 }
 
-function searchDestination() {
-    let searchValue = document.getElementById("searchInput").value.toLowerCase();
+function searchDestination(queryStr) {
+    let searchValue = typeof queryStr === 'string' ? queryStr.toLowerCase() : document.getElementById("searchInput").value.toLowerCase();
+    
+    // Set input value if passed by param
+    if (typeof queryStr === 'string') {
+        document.getElementById("searchInput").value = queryStr;
+    }
     
     // Reset active buttons when searching
     document.querySelectorAll('.suggestion-btn').forEach(btn => btn.classList.remove('active'));

@@ -9,23 +9,23 @@
 <link rel="stylesheet" href="style.css">
 <script src="tm-auth.js"></script>
 <style>
-:root { --primary:#22c55e; --primary-dark:#16a34a; --bg:#f0fdf4; }
+:root { --primary:#2563eb; --primary-dark:#1d4ed8; --bg:#eff6ff; }
 * { box-sizing:border-box; margin:0; padding:0; }
 body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:#1f2937; }
 
 .doc-hero {
-  background: linear-gradient(135deg,#064e3b 0%,#065f46 50%,#047857 100%);
+  background: linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%);
   padding: 130px 24px 80px; text-align: center; position: relative; overflow: hidden;
 }
 .doc-hero::before {
   content:''; position:absolute; inset:0;
-  background:radial-gradient(ellipse at 60% 40%, rgba(34,197,94,.12) 0%, transparent 65%);
+  background:radial-gradient(ellipse at 60% 40%, rgba(37,99,235,.12) 0%, transparent 65%);
 }
 .hero-tag {
-  display:inline-block; background:rgba(34,197,94,.2); color:#86efac;
+  display:inline-block; background:rgba(37,99,235,.2); color:#93c5fd;
   padding:6px 18px; border-radius:50px; font-size:0.8rem; font-weight:600;
   letter-spacing:.08em; text-transform:uppercase; margin-bottom:16px;
-  border:1px solid rgba(134,239,172,.3); position:relative;
+  border:1px solid rgba(147,197,253,.3); position:relative;
 }
 .doc-hero h1 {
   font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3rem);
@@ -39,7 +39,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:#1f293
 }
 .toc {
   position:sticky; top:90px; background:var(--bg);
-  border-radius:16px; padding:24px; border:1.5px solid #d1fae5;
+  border-radius:16px; padding:24px; border:1.5px solid #bfdbfe;
 }
 .toc h4 {
   font-size:0.78rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
@@ -50,7 +50,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:#1f293
   font-size:0.85rem; color:#374151; text-decoration:none;
   padding:6px 10px; border-radius:8px; display:block; transition:all .15s; font-weight:500;
 }
-.toc ul li a:hover { background:#dcfce7; color:var(--primary); }
+.toc ul li a:hover { background:#dbeafe; color:var(--primary); }
 .doc-content { display:flex; flex-direction:column; gap:38px; }
 .updated-badge {
   background:#fff7ed; color:#92400e; border:1px solid #fed7aa;
@@ -59,13 +59,13 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:#1f293
 }
 .doc-section h2 {
   font-family:'Playfair Display',serif; font-size:1.4rem; color:#111827;
-  margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid #d1fae5;
+  margin-bottom:14px; padding-bottom:10px; border-bottom:2px solid #bfdbfe;
 }
 .doc-section p { color:#4b5563; font-size:0.92rem; line-height:1.85; margin-bottom:10px; }
 .doc-section ul { list-style:none; padding-left:0; display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
 .doc-section ul li { font-size:0.9rem; color:#4b5563; line-height:1.7; padding-left:22px; position:relative; }
 .doc-section ul li::before { content:'✓'; position:absolute; left:0; color:var(--primary); font-weight:700; }
-.highlight-box { background:var(--bg); border:1.5px solid #d1fae5; border-radius:14px; padding:20px 24px; margin:14px 0; }
+.highlight-box { background:var(--bg); border:1.5px solid #bfdbfe; border-radius:14px; padding:20px 24px; margin:14px 0; }
 .highlight-box p { margin-bottom:0; }
 .contact-note { background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:14px; padding:20px 24px; }
 .contact-note a { color:#2563eb; font-weight:600; }
@@ -73,12 +73,12 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:#1f293
 footer { background:#0f1f1a; padding:48px 24px 28px; }
 .footer-inner { max-width:1100px; margin:0 auto; }
 .footer-grid { display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:40px; margin-bottom:32px; }
-.footer-logo { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:#86efac; margin-bottom:10px; }
+.footer-logo { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:#93c5fd; margin-bottom:10px; }
 .footer-brand p { color:rgba(255,255,255,.55); font-size:0.85rem; line-height:1.7; }
 .footer-col h5 { color:#fff; font-weight:700; font-size:0.88rem; margin-bottom:14px; letter-spacing:.04em; }
 .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:8px; }
 .footer-col ul li a { color:rgba(255,255,255,.5); font-size:0.85rem; text-decoration:none; transition:color .2s; }
-.footer-col ul li a:hover { color:#86efac; }
+.footer-col ul li a:hover { color:#93c5fd; }
 .footer-bottom { padding-top:20px; border-top:1px solid rgba(255,255,255,.08); font-size:0.82rem; color:rgba(255,255,255,.35); text-align:center; }
 
 @media(max-width:700px) {

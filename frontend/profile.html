@@ -9,18 +9,18 @@
 <link rel="stylesheet" href="style.css">
 <script src="tm-auth.js"></script>
 <style>
-:root{--primary:#22c55e;--primary-dark:#16a34a;--bg:#f0fdf4;}
+:root{--primary:#2563eb;--primary-dark:#1d4ed8;--bg:#eff6ff;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#1f2937;}
 
 .profile-cover{
   height:260px;
-  background:linear-gradient(135deg,#064e3b 0%,#065f46 55%,#047857 100%);
+  background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 55%,#2563eb 100%);
   position:relative;overflow:hidden;margin-top:68px;
 }
 .profile-cover::before{
   content:'';position:absolute;inset:0;
-  background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2322c55e' fill-opacity='0.07'%3E%3Cpath d='M50 50v-10h-5v10h-10v5h10v10h5v-10h10v-5H50zm0-40V0h-5v10H35v5h10v10h5V15h10v-5H50z'/%3E%3C/g%3E%3C/svg%3E");
+  background:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%232563eb' fill-opacity='0.07'%3E%3Cpath d='M50 50v-10h-5v10h-10v5h10v10h5v-10h10v-5H50zm0-40V0h-5v10H35v5h10v10h5V15h10v-5H50z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 .profile-header{
@@ -52,7 +52,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#1f2937
   cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;
 }
 .btn-follow:hover{background:var(--primary-dark);}
-.btn-follow.following{background:#f0fdf4;color:var(--primary);border:1.5px solid var(--primary);}
+.btn-follow.following{background:#eff6ff;color:var(--primary);border:1.5px solid var(--primary);}
 .btn-msg-p{
   background:#f8fafc;color:#374151;border:1.5px solid #e5e7eb;
   padding:9px 18px;border-radius:50px;font-size:0.85rem;font-weight:600;
@@ -103,9 +103,9 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#1f2937
 .badge-item{text-align:center;padding:12px 6px;background:#f9fafb;border-radius:12px;border:1px solid #f3f4f6;}
 .badge-icon{font-size:1.4rem;margin-bottom:4px;}
 .badge-lbl{font-size:0.68rem;font-weight:700;color:#6b7280;}
-.badge-item.earned{background:var(--bg);border-color:#d1fae5;}
+.badge-item.earned{background:var(--bg);border-color:#bfdbfe;}
 .badge-item.earned .badge-lbl{color:var(--primary);}
-.dest-chip{display:inline-flex;align-items:center;gap:5px;background:var(--bg);color:var(--primary);padding:5px 12px;border-radius:50px;font-size:0.8rem;font-weight:600;margin:3px;border:1px solid #d1fae5;}
+.dest-chip{display:inline-flex;align-items:center;gap:5px;background:var(--bg);color:var(--primary);padding:5px 12px;border-radius:50px;font-size:0.8rem;font-weight:600;margin:3px;border:1px solid #bfdbfe;}
 .follower-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f9fafb;}
 .follower-row:last-child{border-bottom:none;}
 .follower-av{width:34px;height:34px;border-radius:50%;object-fit:cover;}
@@ -121,12 +121,12 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:#f8fafc;color:#1f2937
 footer{background:#0f1f1a;padding:40px 24px 24px;}
 .footer-inner{max-width:1100px;margin:0 auto;}
 .footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px;margin-bottom:28px;}
-.footer-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:#86efac;margin-bottom:10px;}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:#93c5fd;margin-bottom:10px;}
 .footer-brand p{color:rgba(255,255,255,.5);font-size:0.85rem;line-height:1.7;}
 .footer-col h5{color:#fff;font-weight:700;font-size:0.85rem;margin-bottom:12px;}
 .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
 .footer-col ul li a{color:rgba(255,255,255,.5);font-size:0.85rem;text-decoration:none;transition:color .2s;}
-.footer-col ul li a:hover{color:#86efac;}
+.footer-col ul li a:hover{color:#93c5fd;}
 .footer-bottom{padding-top:20px;border-top:1px solid rgba(255,255,255,.08);font-size:0.8rem;color:rgba(255,255,255,.3);text-align:center;}
 
 @media(max-width:700px){
@@ -314,7 +314,7 @@ function computeBadges(posts, pts, trips) {
 
 function renderProfile(p, isOwn) {
   document.title = p.name + ' - Travel Mate';
-  const avUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=dcfce7&color=16a34a&size=110`;
+  const avUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(p.name)}&background=dbeafe&color=1d4ed8&size=110`;
   document.getElementById('profileAvatar').src = avUrl;
   document.getElementById('profileName').textContent = p.name;
   document.getElementById('profileLoc').textContent  = p.location;
@@ -323,7 +323,7 @@ function renderProfile(p, isOwn) {
   const isGuide = p.role === 'Guide';
   document.getElementById('profileRolePill').innerHTML = isGuide
     ? `<span style="background:#fef3c7;color:#d97706;padding:2px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;">✦ Guide</span>`
-    : `<span style="background:#dcfce7;color:#16a34a;padding:2px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;">✦ Traveller</span>`;
+    : `<span style="background:#dbeafe;color:#1d4ed8;padding:2px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;">✦ Traveller</span>`;
 
   /* follow button */
   const curUser = TmAuth.getUser();
@@ -388,7 +388,7 @@ function renderProfile(p, isOwn) {
             <div style="font-size:0.8rem;color:#6b7280;margin-top:2px;">Guide: ${b.guide_name || b.guideName || 'Local Guide'}</div>
             <div style="font-size:0.75rem;color:#9ca3af;margin-top:2px;">${new Date(b.booking_date || b.date).toLocaleDateString()}</div>
           </div>
-          <span style="background:${b.status==='completed'?'#dcfce7':b.status==='confirmed'||b.status==='approved'?'#dbeafe':b.status==='rejected'||b.status==='cancelled'?'#fee2e2':'#fef3c7'};color:${b.status==='completed'?'#16a34a':b.status==='confirmed'||b.status==='approved'?'#2563eb':b.status==='rejected'||b.status==='cancelled'?'#dc2626':'#d97706'};padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;text-transform:capitalize;">${b.status}</span>
+          <span style="background:${b.status==='completed'?'#dbeafe':b.status==='confirmed'||b.status==='approved'?'#dbeafe':b.status==='rejected'||b.status==='cancelled'?'#fee2e2':'#fef3c7'};color:${b.status==='completed'?'#1d4ed8':b.status==='confirmed'||b.status==='approved'?'#2563eb':b.status==='rejected'||b.status==='cancelled'?'#dc2626':'#d97706'};padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;text-transform:capitalize;">${b.status}</span>
         </div>`).join('');
 
   /* badges */
@@ -410,7 +410,7 @@ function renderProfile(p, isOwn) {
 
   /* followers */
   document.getElementById('followersList').innerHTML = SAMPLE_FOLLOWERS.map(f => {
-    const fav = `https://ui-avatars.com/api/?name=${encodeURIComponent(f.name)}&background=f0fdf4&color=16a34a&size=34`;
+    const fav = `https://ui-avatars.com/api/?name=${encodeURIComponent(f.name)}&background=eff6ff&color=1d4ed8&size=34`;
     return `<div class="follower-row">
       <img class="follower-av" src="${fav}" alt="${f.name}">
       <div><div class="follower-name">${f.name}</div><div class="follower-role">${f.role}</div></div>

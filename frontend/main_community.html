@@ -7,56 +7,546 @@
 	<title>Community - TravelMate</title>
 	<link href="style.css" rel="stylesheet">
 	<script src="tm-auth.js"></script>
-	<script src="tm-auth.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<link
 		href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
 		rel="stylesheet">
 	<style>
+		/* ══════════════════════════════════════════════════
+		   COMMUNITY PAGE — Premium Redesign
+		   Inspired by Airbnb, modern SaaS, glassmorphism
+		══════════════════════════════════════════════════ */
+
+		/* ── Animations ── */
+		@keyframes fadeInUp {
+			from { opacity: 0; transform: translateY(30px); }
+			to   { opacity: 1; transform: translateY(0); }
+		}
+		@keyframes fadeIn {
+			from { opacity: 0; }
+			to   { opacity: 1; }
+		}
+		@keyframes shimmer {
+			0%   { background-position: -400px 0; }
+			100% { background-position: 400px 0; }
+		}
+		@keyframes pop {
+			0%   { transform: scale(1); }
+			50%  { transform: scale(1.3); }
+			100% { transform: scale(1); }
+		}
+		@keyframes floatBadge {
+			0%, 100% { transform: translateY(0); }
+			50%      { transform: translateY(-6px); }
+		}
+		@keyframes gradientShift {
+			0%   { background-position: 0% 50%; }
+			50%  { background-position: 100% 50%; }
+			100% { background-position: 0% 50%; }
+		}
+		@keyframes slideInRight {
+			from { opacity: 0; transform: translateX(30px); }
+			to   { opacity: 1; transform: translateX(0); }
+		}
+
+		.pop-anim { animation: pop 0.3s ease-in-out; }
+
+		/* ── Page Wrapper ── */
 		.community-wrap {
-			padding: 40px 0 120px;
+			padding: 0 0 100px;
+			background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 30%, #ffffff 100%);
+			min-height: 100vh;
+		}
+
+		/* ═══════════════════════════════════════
+		   HERO BANNER — Full-width cinematic
+		═══════════════════════════════════════ */
+		.community-hero {
+			position: relative;
+			background:
+				linear-gradient(160deg, rgba(6, 78, 59, 0.75) 0%, rgba(10, 37, 64, 0.65) 40%, rgba(15, 23, 42, 0.80) 100%),
+				url('assets/community_hero.png') center/cover no-repeat;
+			padding: 160px 24px 100px;
+			text-align: center;
+			color: #fff;
+			margin-bottom: 0;
+			overflow: hidden;
+		}
+
+		.community-hero::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+			background-size: 32px 32px;
+			pointer-events: none;
+		}
+
+		.community-hero::after {
+			content: '';
+			position: absolute;
+			bottom: -2px;
+			left: 0;
+			right: 0;
+			height: 80px;
+			background: linear-gradient(to top, #eff6ff, transparent);
+			pointer-events: none;
+		}
+
+		.hero-title {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+			font-weight: 900;
+			margin-bottom: 16px;
+			text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+			animation: fadeInUp 0.8s ease-out;
+			position: relative;
+			z-index: 2;
+			letter-spacing: -0.02em;
+		}
+
+		.hero-subtitle {
+			font-family: 'Plus Jakarta Sans', sans-serif;
+			font-size: clamp(1rem, 2vw, 1.2rem);
+			max-width: 560px;
+			margin: 0 auto 36px;
+			color: rgba(255, 255, 255, 0.88);
+			line-height: 1.7;
+			animation: fadeInUp 0.8s ease-out 0.15s both;
+			position: relative;
+			z-index: 2;
+		}
+
+		.hero-actions {
+			display: flex;
+			gap: 14px;
+			justify-content: center;
+			flex-wrap: wrap;
+			animation: fadeInUp 0.8s ease-out 0.3s both;
+			position: relative;
+			z-index: 2;
+		}
+
+		.btn-hero {
+			padding: 14px 34px;
+			border-radius: 50px;
+			font-weight: 700;
+			font-size: 15px;
+			cursor: pointer;
+			transition: all .25s cubic-bezier(.4,0,.2,1);
+			border: none;
+			font-family: 'Plus Jakarta Sans', sans-serif;
+			letter-spacing: 0.01em;
+		}
+
+		.btn-hero.primary {
+			background: linear-gradient(135deg, #2563eb, #1d4ed8);
+			color: #fff;
+			box-shadow: 0 6px 24px rgba(37, 99, 235, 0.35);
+		}
+
+		.btn-hero.primary:hover {
+			background: linear-gradient(135deg, #1d4ed8, #1e40af);
+			transform: translateY(-3px);
+			box-shadow: 0 10px 32px rgba(37, 99, 235, 0.45);
+		}
+
+		.btn-hero.secondary {
+			background: rgba(255, 255, 255, 0.12);
+			color: #fff;
+			backdrop-filter: blur(12px);
+			-webkit-backdrop-filter: blur(12px);
+			border: 1.5px solid rgba(255, 255, 255, 0.28);
+		}
+
+		.btn-hero.secondary:hover {
+			background: rgba(255, 255, 255, 0.22);
+			transform: translateY(-3px);
+			border-color: rgba(255, 255, 255, 0.5);
+		}
+
+		/* Hero Stats Counter Bar */
+		.hero-stats-bar {
+			display: flex;
+			gap: 40px;
+			justify-content: center;
+			margin-top: 48px;
+			animation: fadeInUp 0.8s ease-out 0.45s both;
+			position: relative;
+			z-index: 2;
+		}
+
+		.hero-stat-item {
+			text-align: center;
+		}
+
+		.hero-stat-item .stat-number {
+			font-family: 'Playfair Display', serif;
+			font-size: 1.8rem;
+			font-weight: 900;
+			color: #93c5fd;
+			line-height: 1;
+		}
+
+		.hero-stat-item .stat-text {
+			font-size: 0.78rem;
+			color: rgba(255, 255, 255, 0.6);
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			font-weight: 600;
+			margin-top: 4px;
+		}
+
+		/* ═══════════════════════════════════════
+		   MAIN LAYOUT GRID
+		═══════════════════════════════════════ */
+		.community-content-grid {
+			max-width: 1280px;
+			margin: -40px auto 0;
+			padding: 0 24px;
+			display: flex;
+			flex-direction: column;
+			gap: 32px;
+			align-items: stretch;
+			position: relative;
+			z-index: 3;
+		}
+
+		/* ═══════════════════════════════════════
+		   FEED CONTROL BAR — Glassmorphism
+		═══════════════════════════════════════ */
+		.feed-control-bar {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 16px;
+			background: rgba(255, 255, 255, 0.72);
+			backdrop-filter: blur(20px);
+			-webkit-backdrop-filter: blur(20px);
+			padding: 16px 24px;
+			border-radius: 20px;
+			box-shadow:
+				0 4px 24px rgba(0, 0, 0, 0.04),
+				0 1px 2px rgba(0, 0, 0, 0.03),
+				inset 0 1px 0 rgba(255, 255, 255, 0.8);
+			border: 1px solid rgba(255, 255, 255, 0.7);
 		}
 
 		/* ── Filter Tabs ── */
 		.filter-btn {
-			padding: 8px 20px;
+			padding: 9px 22px;
 			border-radius: 999px;
-			border: 1px solid rgba(255, 255, 255, 0.4);
-			background: rgba(255, 255, 255, 0.2);
-			backdrop-filter: blur(8px);
+			border: 1.5px solid #e2e8f0;
+			background: #fff;
 			font-weight: 600;
 			cursor: pointer;
-			transition: all .2s;
-			font-size: 14px;
-			color: #1e293b;
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+			transition: all .25s cubic-bezier(.4,0,.2,1);
+			font-size: 13.5px;
+			color: #475569;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+			font-family: 'Plus Jakarta Sans', sans-serif;
 		}
 
 		.filter-btn:hover {
-			border-color: rgba(255, 255, 255, 0.8);
-			background: rgba(255, 255, 255, 0.4);
+			border-color: #2563eb;
+			color: #1d4ed8;
+			background: #eff6ff;
+			transform: translateY(-1px);
 		}
 
 		.filter-btn.active {
-			background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(30, 41, 59, 0.85));
+			background: linear-gradient(135deg, #2563eb, #1d4ed8);
 			color: #fff;
 			border-color: transparent;
-			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+			box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
 		}
 
-		/* ── Post sort transition ── */
+		/* ── Search Input ── */
+		.search-input-community {
+			padding: 10px 18px 10px 40px;
+			font-size: 13.5px;
+			border-radius: 12px;
+			background: #f8fafc;
+			border: 1.5px solid #e2e8f0;
+			color: #1e293b;
+			font-family: 'Plus Jakarta Sans', sans-serif;
+			transition: all .2s;
+			width: 240px;
+		}
+
+		.search-input-community:focus {
+			outline: none;
+			border-color: #2563eb;
+			background: #fff;
+			box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+		}
+
+		.search-input-community::placeholder {
+			color: #94a3b8;
+		}
+
+		/* ── Sort indicator ── */
+		.sort-label {
+			font-size: 12.5px;
+			color: #64748b;
+			font-weight: 600;
+			white-space: nowrap;
+		}
+
+		/* ═══════════════════════════════════════
+		   CATEGORY PILLS
+		═══════════════════════════════════════ */
+		.cat-pill {
+			padding: 9px 20px;
+			background: #fff;
+			border: 1.5px solid #e2e8f0;
+			border-radius: 50px;
+			font-size: 13.5px;
+			font-weight: 600;
+			color: #475569;
+			cursor: pointer;
+			white-space: nowrap;
+			transition: all .25s cubic-bezier(.4,0,.2,1);
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+			font-family: 'Plus Jakarta Sans', sans-serif;
+		}
+
+		.cat-pill:hover {
+			border-color: #2563eb;
+			color: #1d4ed8;
+			background: #eff6ff;
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+		}
+
+		.cat-pill.active {
+			background: linear-gradient(135deg, #2563eb, #1d4ed8);
+			color: #fff;
+			border-color: transparent;
+			box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+			transform: translateY(-1px);
+		}
+
+		/* ═══════════════════════════════════════
+		   TOP TRAVELERS — Horizontal scroll
+		═══════════════════════════════════════ */
+		.top-travelers-section {
+			background: rgba(255, 255, 255, 0.72);
+			backdrop-filter: blur(20px);
+			-webkit-backdrop-filter: blur(20px);
+			border-radius: 20px;
+			padding: 24px;
+			box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+			border: 1px solid rgba(255, 255, 255, 0.7);
+		}
+
+		/* ── SIDEBAR WIDGETS ── */
+		.widget {
+			background: #fff;
+			border-radius: 16px;
+			box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+			padding: 20px;
+			margin-bottom: 24px;
+			border: 1px solid #f1f5f9;
+		}
+
+		.widget-title {
+			font-family: 'Playfair Display', serif;
+			font-size: 1.2rem;
+			font-weight: 700;
+			margin-bottom: 16px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			color: #0f172a;
+		}
+
+		.widget-title i {
+			color: #f59e0b;
+			font-size: 1.1rem;
+		}
+
+		#topTravelersContainer {
+			display: flex;
+			overflow-x: auto;
+			gap: 20px;
+			padding-bottom: 8px;
+			scrollbar-width: none;
+		}
+
+		#topTravelersContainer::-webkit-scrollbar {
+			display: none;
+		}
+
+		.traveler-item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			min-width: 100px;
+			text-align: center;
+			margin-bottom: 0;
+			transition: transform .2s;
+		}
+
+		.traveler-item:hover {
+			transform: translateY(-3px);
+		}
+
+		.trav-left {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.trav-left img {
+			width: 68px;
+			height: 68px;
+			border-radius: 50%;
+			object-fit: cover;
+			border: 3px solid transparent;
+			background: linear-gradient(#fff, #fff) padding-box,
+			            linear-gradient(135deg, #2563eb, #1d4ed8) border-box;
+			padding: 3px;
+			transition: transform .2s;
+		}
+
+		.trav-left img:hover {
+			transform: scale(1.08);
+		}
+
+		.trav-left h4 {
+			font-size: 13px;
+			font-weight: 700;
+			color: #0f172a;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			max-width: 90px;
+			margin-bottom: 0;
+		}
+
+		.trav-left p {
+			display: none;
+		}
+
+		.btn-follow {
+			background: #eff6ff;
+			color: #1d4ed8;
+			border: 1.5px solid #dbeafe;
+			padding: 6px 16px;
+			border-radius: 20px;
+			font-size: 12px;
+			font-weight: 700;
+			cursor: pointer;
+			transition: all .2s;
+			font-family: 'Plus Jakarta Sans', sans-serif;
+		}
+
+		.btn-follow:hover {
+			background: #2563eb;
+			color: #fff;
+			border-color: #2563eb;
+		}
+
+		/* ═══════════════════════════════════════
+		   POST CARDS — Premium design
+		═══════════════════════════════════════ */
 		.posts-list {
-			transition: opacity .2s;
+			transition: opacity .25s;
 			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-			gap: 24px;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 18px;
 		}
 
 		.posts-list.sorting {
-			opacity: 0.4;
+			opacity: 0.3;
 		}
 
-		/* ── Star rating badge on card ── */
+		.post-card {
+			background: #fff;
+			border-radius: 20px;
+			box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
+			margin-bottom: 0;
+			overflow: hidden;
+			border: 1px solid #f1f5f9;
+			transition: all .35s cubic-bezier(.4,0,.2,1);
+			animation: fadeInUp 0.5s ease-out both;
+		}
+
+		.post-card:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+			border-color: #e2e8f0;
+		}
+
+		.post-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 12px 14px 10px;
+		}
+
+		.author {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.author img {
+			width: 42px;
+			height: 42px;
+			border-radius: 50%;
+			object-fit: cover;
+			border: 2px solid #eff6ff;
+		}
+
+		.author-name {
+			font-weight: 700;
+			font-size: 14px;
+			color: #0f172a;
+		}
+
+		.author-meta {
+			font-size: 12px;
+			color: #94a3b8;
+		}
+
+		.post-image img {
+			width: 100%;
+			max-height: 280px;
+			object-fit: cover;
+			display: block;
+			transition: transform .4s;
+		}
+
+		.post-card:hover .post-image img {
+			transform: scale(1.02);
+		}
+
+		.post-body {
+			padding: 10px 14px 6px;
+			font-size: 13px;
+			line-height: 1.55;
+			color: #334155;
+		}
+
+		.post-footer {
+			padding: 4px 14px 14px;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.post-actions {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+		}
+
+		/* ── Star rating badge ── */
 		.post-stars {
 			font-size: 18px;
 			color: #f59e0b;
@@ -69,52 +559,60 @@
 			border: none;
 			cursor: pointer;
 			font-size: 14px;
-			padding: 4px 8px;
-			border-radius: 6px;
-			transition: background .15s;
+			padding: 6px 10px;
+			border-radius: 8px;
+			transition: all .2s;
+			color: #475569;
 		}
 
 		.icon-btn:hover {
-			background: #f1f5f9;
+			background: #eff6ff;
+			color: #1d4ed8;
 		}
 
-		/* ── Toast ── */
-		.toast {
-			position: fixed;
-			bottom: 28px;
-			left: 50%;
-			transform: translateX(-50%) translateY(60px);
-			background: #0f172a;
-			color: #fff;
-			padding: 10px 22px;
+		/* ═══════════════════════════════════════
+		   SKELETON LOADER — Shimmer effect
+		═══════════════════════════════════════ */
+		.skeleton {
+			background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 37%, #f1f5f9 63%);
+			background-size: 800px 100%;
+			animation: shimmer 1.6s infinite ease-in-out;
 			border-radius: 8px;
-			font-size: 14px;
-			opacity: 0;
-			transition: all .3s;
-			pointer-events: none;
-			z-index: 9999;
 		}
 
-		.toast.show {
-			opacity: 1;
-			transform: translateX(-50%) translateY(0);
+		.skeleton-avatar {
+			width: 44px;
+			height: 44px;
+			border-radius: 50%;
 		}
 
-		@keyframes pop {
-			0% { transform: scale(1); }
-			50% { transform: scale(1.3); }
-			100% { transform: scale(1); }
-		}
-		.pop-anim {
-			animation: pop 0.3s ease-in-out;
+		.skeleton-title {
+			height: 14px;
+			width: 40%;
 		}
 
-		/* ── Modal ── */
+		.skeleton-text {
+			height: 12px;
+			width: 100%;
+			margin-top: 8px;
+		}
+
+		.skeleton-img {
+			width: 100%;
+			height: 300px;
+			border-radius: 0;
+		}
+
+		/* ═══════════════════════════════════════
+		   MODAL — Refined
+		═══════════════════════════════════════ */
 		.cm-modal {
 			display: none;
 			position: fixed;
 			inset: 0;
-			background: rgba(0, 0, 0, .45);
+			background: rgba(0, 0, 0, 0.5);
+			backdrop-filter: blur(4px);
+			-webkit-backdrop-filter: blur(4px);
 			z-index: 900;
 			align-items: center;
 			justify-content: center;
@@ -126,37 +624,53 @@
 
 		.cm-dialog {
 			background: #fff;
-			border-radius: 16px;
+			border-radius: 20px;
 			padding: 32px;
-			width: min(560px, 95vw);
+			width: min(580px, 94vw);
 			max-height: 90vh;
 			overflow-y: auto;
-			margin-top: 40px;
+			margin-top: 20px;
+			box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+			animation: fadeInUp 0.3s ease-out;
 		}
 
 		.cm-header {
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			margin-bottom: 20px;
+			margin-bottom: 24px;
+			padding-bottom: 16px;
+			border-bottom: 1px solid #f1f5f9;
 		}
 
 		.cm-label {
 			display: block;
 			font-weight: 600;
-			margin: 14px 0 6px;
+			margin: 16px 0 8px;
 			font-size: 14px;
+			color: #0f172a;
 		}
 
 		.cm-input,
 		.cm-textarea {
 			width: 100%;
-			padding: 10px 14px;
+			padding: 12px 16px;
 			border: 1.5px solid #e2e8f0;
-			border-radius: 8px;
+			border-radius: 12px;
 			font-size: 14px;
-			font-family: inherit;
+			font-family: 'Plus Jakarta Sans', sans-serif;
 			box-sizing: border-box;
+			background: #f8fafc;
+			transition: all .2s;
+			color: #1e293b;
+		}
+
+		.cm-input:focus,
+		.cm-textarea:focus {
+			outline: none;
+			border-color: #2563eb;
+			background: #fff;
+			box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 		}
 
 		.cm-textarea {
@@ -164,157 +678,113 @@
 		}
 
 		.drop-zone {
-			border: 2px dashed #cbd5e1;
-			border-radius: 10px;
-			padding: 28px;
+			border: 2px dashed #d1d5db;
+			border-radius: 16px;
+			padding: 32px;
 			text-align: center;
 			cursor: pointer;
-			transition: border-color .2s;
+			transition: all .25s;
+			background: #fafafa;
+		}
+
+		.drop-zone:hover {
+			border-color: #2563eb;
+			background: #eff6ff;
 		}
 
 		.drop-zone.over {
-			border-color: #0f172a;
+			border-color: #1d4ed8;
+			background: #dbeafe;
 		}
 
 		.drop-icon {
-			font-size: 28px;
-			margin-bottom: 8px;
+			font-size: 32px;
+			margin-bottom: 10px;
 		}
 
 		.drop-text {
 			font-size: 13px;
 			color: #64748b;
+			line-height: 1.6;
 		}
 
 		.preview-grid {
 			display: flex;
 			flex-wrap: wrap;
-			gap: 8px;
-			margin-top: 10px;
+			gap: 10px;
+			margin-top: 12px;
 		}
 
 		.preview-item img {
-			width: 80px;
-			height: 80px;
+			width: 84px;
+			height: 84px;
 			object-fit: cover;
-			border-radius: 8px;
+			border-radius: 12px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 		}
 
 		.rating-stars .star {
-			font-size: 26px;
+			font-size: 28px;
 			cursor: pointer;
 			color: #f59e0b;
+			transition: transform .15s;
+		}
+
+		.rating-stars .star:hover {
+			transform: scale(1.2);
 		}
 
 		.cm-actions {
 			display: flex;
 			gap: 12px;
-			margin-top: 22px;
+			margin-top: 24px;
 		}
 
-		.btn {
-			padding: 10px 22px;
-			border-radius: 20px;
+		/* ── Buttons (scoped) ── */
+		.community-wrap .btn {
+			padding: 11px 24px;
+			border-radius: 12px;
 			font-weight: 600;
 			font-size: 14px;
 			cursor: pointer;
-			border: 1px solid rgba(255, 255, 255, 0.4);
-			backdrop-filter: blur(8px);
-			transition: all .2s;
+			border: 1.5px solid transparent;
+			transition: all .25s cubic-bezier(.4,0,.2,1);
+			font-family: 'Plus Jakarta Sans', sans-serif;
 		}
 
-		.btn-primary {
-			background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(30, 41, 59, 0.85));
+		.community-wrap .btn-primary {
+			background: linear-gradient(135deg, #2563eb, #1d4ed8);
 			color: #fff;
-			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+			box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
 		}
 
-		.btn-primary:hover {
-			background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
-			box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
-			transform: translateY(-1px);
+		.community-wrap .btn-primary:hover {
+			background: linear-gradient(135deg, #1d4ed8, #1e40af);
+			box-shadow: 0 6px 24px rgba(37, 99, 235, 0.35);
+			transform: translateY(-2px);
 		}
 
-		.btn-white {
+		.community-wrap .btn-white {
 			background: #fff;
-			color: #0f172a;
-			border-color: #cbd5e1;
+			color: #475569;
+			border-color: #e2e8f0;
 		}
 
-		.btn-white:hover {
-			border-color: #0f172a;
+		.community-wrap .btn-white:hover {
+			border-color: #2563eb;
+			color: #1d4ed8;
+			background: #eff6ff;
 		}
 
-		.btn-lg {
-			padding: 12px 28px;
+		.community-wrap .btn-lg {
+			padding: 13px 32px;
 			font-size: 15px;
+			border-radius: 14px;
 		}
 
-		/* ── Post card ── */
-		.post-card {
-			background: #fff;
-			border-radius: 20px;
-			box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-			margin-bottom: 24px;
-			overflow: hidden;
-		}
-
-		.post-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 14px 16px 10px;
-		}
-
-		.author {
-			display: flex;
-			align-items: center;
-			gap: 10px;
-		}
-
-		.author img {
-			width: 40px;
-			height: 40px;
-			border-radius: 50%;
-			object-fit: cover;
-		}
-
-		.author-name {
-			font-weight: 700;
-			font-size: 14px;
-		}
-
-		.author-meta {
-			font-size: 12px;
-			color: #64748b;
-		}
-
-		.post-image img {
-			width: 100%;
-			max-height: 360px;
-			object-fit: cover;
-			display: block;
-		}
-
-		.post-body {
-			padding: 12px 16px 6px;
-			font-size: 14px;
-			line-height: 1.6;
-		}
-
-		.post-footer {
-			padding: 0 16px 16px;
-			display: flex;
-			flex-direction: column;
-		}
-
-		.post-actions {
-			display: flex;
-			gap: 6px;
-			align-items: center;
-		}
-
-		/* ── Chat ── */
+		/* ═══════════════════════════════════════
+		   CHAT BOX
+		═══════════════════════════════════════ */
 		.chat-modal {
 			display: none;
 			position: fixed;
@@ -324,17 +794,17 @@
 		}
 
 		.chat-box {
-			width: 300px;
+			width: 320px;
 			background: #fff;
-			border-radius: 12px;
-			box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
+			border-radius: 16px;
+			box-shadow: 0 12px 40px rgba(0, 0, 0, .12);
 			overflow: hidden;
 		}
 
 		.chat-header {
-			background: #0f172a;
+			background: linear-gradient(135deg, #0f172a, #1e3a8a);
 			color: #fff;
-			padding: 12px 16px;
+			padding: 14px 18px;
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
@@ -352,30 +822,33 @@
 		.chat-messages {
 			height: 220px;
 			overflow-y: auto;
-			padding: 12px;
+			padding: 14px;
 			display: flex;
 			flex-direction: column;
 			gap: 8px;
+			background: #fafafa;
 		}
 
 		.message {
 			max-width: 80%;
-			padding: 8px 12px;
-			border-radius: 12px;
+			padding: 10px 14px;
+			border-radius: 14px;
 			font-size: 13px;
+			line-height: 1.4;
 		}
 
 		.message.sent {
-			background: #0f172a;
+			background: linear-gradient(135deg, #2563eb, #1d4ed8);
 			color: #fff;
 			align-self: flex-end;
-			border-bottom-right-radius: 2px;
+			border-bottom-right-radius: 4px;
 		}
 
 		.message.received {
 			background: #f1f5f9;
+			color: #334155;
 			align-self: flex-start;
-			border-bottom-left-radius: 2px;
+			border-bottom-left-radius: 4px;
 		}
 
 		.chat-input {
@@ -385,157 +858,53 @@
 
 		.chat-input input {
 			flex: 1;
-			padding: 10px 12px;
+			padding: 12px 14px;
 			border: none;
 			outline: none;
 			font-size: 13px;
+			font-family: 'Plus Jakarta Sans', sans-serif;
 		}
 
 		.chat-input button {
-			padding: 10px 16px;
-			background: #0f172a;
+			padding: 12px 18px;
+			background: linear-gradient(135deg, #2563eb, #1d4ed8);
 			color: #fff;
 			border: none;
 			cursor: pointer;
 			font-weight: 600;
+			font-family: 'Plus Jakarta Sans', sans-serif;
 		}
 
-		/* ── Sort indicator ── */
-		.sort-label {
-			font-size: 12px;
-			color: #94a3b8;
-			margin-left: 8px;
-		}
-
-		/* ── Categories ── */
-		.cat-pill {
-			padding: 8px 18px;
-			background: rgba(255, 255, 255, 0.35);
-			backdrop-filter: blur(10px);
-			border: 1px solid rgba(255, 255, 255, 0.6);
-			border-radius: 50px;
-			font-size: 13.5px;
-			font-weight: 600;
-			color: #334155;
-			cursor: pointer;
-			white-space: nowrap;
-			transition: all .2s;
-			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-		}
-
-		.cat-pill:hover {
-			border-color: rgba(255, 255, 255, 0.9);
-			transform: translateY(-1px);
-			background: rgba(255, 255, 255, 0.5);
-		}
-
-		.cat-pill.active {
-			background: linear-gradient(135deg, rgba(34, 197, 94, 0.9), rgba(22, 163, 74, 0.9));
+		/* ═══════════════════════════════════════
+		   TOAST
+		═══════════════════════════════════════ */
+		.toast {
+			position: fixed;
+			bottom: 28px;
+			left: 50%;
+			transform: translateX(-50%) translateY(60px);
+			background: linear-gradient(135deg, #0f172a, #1e3a8a);
 			color: #fff;
-			border-color: transparent;
-			box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
-		}
-
-		/* ── HERO BANNER ── */
-		.community-hero {
-			background: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=1600&q=80') center/cover;
-			padding: 140px 20px 80px;
-			text-align: center;
-			color: #fff;
-			margin-bottom: 40px;
-		}
-
-		.hero-title {
-			font-family: 'Playfair Display', serif;
-			font-size: clamp(2.5rem, 5vw, 4rem);
-			font-weight: 900;
-			margin-bottom: 16px;
-			text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-		}
-
-		.hero-subtitle {
-			font-size: clamp(1rem, 2vw, 1.25rem);
-			max-width: 600px;
-			margin: 0 auto 32px;
-			color: rgba(255, 255, 255, 0.9);
-			line-height: 1.6;
-		}
-
-		.hero-actions {
-			display: flex;
-			gap: 16px;
-			justify-content: center;
-		}
-
-		.btn-hero {
-			padding: 14px 32px;
-			border-radius: 50px;
-			font-weight: 700;
-			font-size: 15px;
-			cursor: pointer;
-			transition: all .2s;
-			border: none;
-		}
-
-		.btn-hero.primary {
-			background: var(--primary);
-			color: #fff;
-		}
-
-		.btn-hero.primary:hover {
-			background: var(--primary-dark);
-			transform: translateY(-2px);
-			box-shadow: 0 8px 20px rgba(230, 57, 70, 0.3);
-		}
-
-		.btn-hero.secondary {
-			background: rgba(255, 255, 255, 0.15);
-			color: #fff;
-			backdrop-filter: blur(8px);
-			border: 1px solid rgba(255, 255, 255, 0.3);
-		}
-
-		.btn-hero.secondary:hover {
-			background: rgba(255, 255, 255, 0.25);
-			transform: translateY(-2px);
-		}
-
-		/* ── LAYOUT GRID ── */
-		.community-content-grid {
-			max-width: 1200px;
-			margin: 0 auto;
-			padding: 0 20px;
-			display: flex;
-			flex-direction: column;
-			gap: 40px;
-			align-items: stretch;
-		}
-
-		/* ── SIDEBAR WIDGETS ── */
-		.widget {
-			background: #fff;
+			padding: 12px 24px;
 			border-radius: 14px;
-			box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-			padding: 20px;
-			margin-bottom: 24px;
+			font-size: 14px;
+			font-weight: 600;
+			opacity: 0;
+			transition: all .35s cubic-bezier(.4,0,.2,1);
+			pointer-events: none;
+			z-index: 9999;
+			box-shadow: 0 8px 24px rgba(6, 78, 59, 0.3);
+			font-family: 'Plus Jakarta Sans', sans-serif;
 		}
 
-		.widget-title {
-			font-family: 'Playfair Display', serif;
-			font-size: 1.25rem;
-			font-weight: 700;
-			margin-bottom: 16px;
-			display: flex;
-			align-items: center;
-			gap: 8px;
+		.toast.show {
+			opacity: 1;
+			transform: translateX(-50%) translateY(0);
 		}
 
-		.widget-title i {
-			color: var(--primary);
-			font-size: 1.1rem;
-		}
-
-		/* Trending Place */
+		/* ═══════════════════════════════════════
+		   TRENDING & TIPS WIDGETS
+		═══════════════════════════════════════ */
 		.trend-item {
 			display: flex;
 			gap: 12px;
@@ -543,8 +912,9 @@
 			margin-bottom: 16px;
 			padding-bottom: 16px;
 			border-bottom: 1px solid #f1f5f9;
-			transition: transform .2s;
+			transition: all .2s;
 			cursor: pointer;
+			border-radius: 8px;
 		}
 
 		.trend-item:last-child {
@@ -560,12 +930,12 @@
 		.trend-img {
 			width: 60px;
 			height: 60px;
-			border-radius: 10px;
+			border-radius: 12px;
 			object-fit: cover;
 		}
 
 		.trend-info h4 {
-			font-size: 14.5px;
+			font-size: 14px;
 			font-weight: 700;
 			margin-bottom: 3px;
 			color: #0f172a;
@@ -586,88 +956,17 @@
 			gap: 4px;
 		}
 
-		/* Top Traveler */
-		#topTravelersContainer {
-			display: flex;
-			overflow-x: auto;
-			gap: 16px;
-			padding-bottom: 12px;
-			scrollbar-width: none;
-		}
-
-		#topTravelersContainer::-webkit-scrollbar {
-			display: none;
-		}
-
-		.traveler-item {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: space-between;
-			gap: 8px;
-			min-width: 90px;
-			text-align: center;
-			margin-bottom: 0;
-		}
-
-		.traveler-item:last-child {
-			margin-bottom: 0;
-		}
-
-		.trav-left {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			gap: 6px;
-		}
-
-		.trav-left img {
-			width: 64px;
-			height: 64px;
-			border-radius: 50%;
-			object-fit: cover;
-			border: 3px solid var(--primary);
-			padding: 2px;
-		}
-
-		.trav-left h4 {
-			font-size: 13px;
-			font-weight: 700;
-			color: #0f172a;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			max-width: 90px;
-			margin-bottom: 0;
-		}
-
-		.trav-left p {
-			display: none;
-		}
-
-		.btn-follow {
-			background: #f1f5f9;
-			color: #0f172a;
-			border: none;
-			padding: 6px 14px;
-			border-radius: 20px;
-			font-size: 12px;
-			font-weight: 700;
-			cursor: pointer;
-			transition: all .2s;
-		}
-
-		.btn-follow:hover {
-			background: #e2e8f0;
-		}
-
-		/* Travel Tip */
 		.tip-card {
-			background: #f8fafc;
-			border-left: 4px solid var(--primary);
-			padding: 14px;
-			border-radius: 0 10px 10px 0;
+			background: linear-gradient(135deg, #eff6ff, #ecfdf5);
+			border-left: 4px solid #2563eb;
+			padding: 16px;
+			border-radius: 0 12px 12px 0;
 			margin-bottom: 12px;
+			transition: transform .2s;
+		}
+
+		.tip-card:hover {
+			transform: translateX(4px);
 		}
 
 		.tip-card:last-child {
@@ -677,21 +976,20 @@
 		.tip-card h4 {
 			font-size: 13px;
 			font-weight: 700;
-			color: #1e293b;
+			color: #0f172a;
 			margin-bottom: 4px;
 		}
 
 		.tip-card p {
 			font-size: 12.5px;
 			color: #475569;
-			line-height: 1.5;
+			line-height: 1.55;
 			margin: 0;
 		}
 
-		/* Map Placeholder */
 		.map-placeholder {
 			position: relative;
-			border-radius: 10px;
+			border-radius: 14px;
 			overflow: hidden;
 			height: 180px;
 		}
@@ -701,11 +999,11 @@
 			height: 100%;
 			object-fit: cover;
 			filter: brightness(0.85);
-			transition: transform .3s;
+			transition: transform .4s;
 		}
 
 		.map-placeholder:hover img {
-			transform: scale(1.05);
+			transform: scale(1.06);
 		}
 
 		.map-overlay {
@@ -714,18 +1012,130 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			background: rgba(15, 23, 42, 0.2);
+			background: rgba(15, 23, 42, 0.15);
+		}
+
+		/* ═══════════════════════════════════════
+		   RESPONSIVE DESIGN — Mobile first
+		═══════════════════════════════════════ */
+		@media (max-width: 1024px) {
+			.posts-list {
+				grid-template-columns: repeat(2, 1fr);
+				gap: 16px;
+			}
 		}
 
 		@media (max-width: 900px) {
 			.posts-list {
 				grid-template-columns: 1fr;
+				max-width: 560px;
+				margin: 0 auto;
 			}
 
 			.sidebar-wrapper {
 				display: none;
 			}
+
+			.feed-control-bar {
+				flex-direction: column;
+				align-items: stretch;
+				padding: 14px 16px;
+			}
+
+			.hero-stats-bar {
+				gap: 24px;
+			}
+
+			.hero-stats-bar .hero-stat-item .stat-number {
+				font-size: 1.5rem;
+			}
 		}
+
+		@media (max-width: 640px) {
+			.community-hero {
+				padding: 130px 16px 80px;
+			}
+
+			.community-content-grid {
+				padding: 0 12px;
+			}
+
+			.posts-list {
+				grid-template-columns: 1fr;
+				gap: 20px;
+			}
+
+			.post-card {
+				border-radius: 16px;
+			}
+
+			.cm-dialog {
+				padding: 20px;
+				border-radius: 16px;
+			}
+
+			.hero-actions {
+				flex-direction: column;
+				align-items: center;
+				gap: 10px;
+			}
+
+			.btn-hero {
+				width: 100%;
+				max-width: 280px;
+				text-align: center;
+			}
+
+			.hero-stats-bar {
+				flex-wrap: wrap;
+				gap: 16px;
+			}
+
+			.search-input-community {
+				width: 100%;
+			}
+
+			.filter-btn {
+				padding: 8px 16px;
+				font-size: 12.5px;
+			}
+		}
+
+		@media (max-width: 480px) {
+			.community-hero {
+				padding: 120px 12px 70px;
+			}
+
+			.hero-title {
+				font-size: 2rem;
+			}
+
+			.post-header {
+				padding: 12px 14px 10px;
+			}
+
+			.post-footer {
+				padding: 4px 14px 14px;
+			}
+
+			.feed-control-bar {
+				border-radius: 14px;
+				padding: 12px;
+			}
+
+			.cat-pill {
+				padding: 7px 14px;
+				font-size: 12.5px;
+			}
+		}
+
+		/* Smooth Page Transitions */
+		html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+		body { animation: pageEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+		@keyframes pageEnter { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+		* { transition: all 0.3s ease; }
+		button:hover { transform: translateY(-2px); }
+		.post-card:hover, .dest-card:hover, .guide-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(37,99,235,0.2); }
 	</style>
 </head>
 
@@ -754,13 +1164,24 @@
 		<!-- ══════ HERO SECTION ══════ -->
 		<div class="community-hero">
 			<h1 class="hero-title">TravelMate Community</h1>
-			<p class="hero-subtitle">Share your travel experiences and discover amazing places from travelers around the
-				world.</p>
+			<p class="hero-subtitle">Share your travel experiences, discover hidden gems, and connect with travelers from around the world.</p>
 			<div class="hero-actions">
-				<button class="btn-hero primary" onclick="document.getElementById('openCreatePost').click()">Post Your
-					Travel</button>
-				<button class="btn-hero secondary" onclick="window.location.href='destinations.html'">Explore
-					Places</button>
+				<button class="btn-hero primary" onclick="document.getElementById('openCreatePost').click()"><i class="fas fa-plus" style="margin-right:6px;"></i> Share Your Story</button>
+				<button class="btn-hero secondary" onclick="window.location.href='destinations.html'"><i class="fas fa-compass" style="margin-right:6px;"></i> Explore Places</button>
+			</div>
+			<div class="hero-stats-bar">
+				<div class="hero-stat-item">
+					<div class="stat-number">2.4K+</div>
+					<div class="stat-text">Stories Shared</div>
+				</div>
+				<div class="hero-stat-item">
+					<div class="stat-number">850+</div>
+					<div class="stat-text">Active Travelers</div>
+				</div>
+				<div class="hero-stat-item">
+					<div class="stat-number">120+</div>
+					<div class="stat-text">Destinations</div>
+				</div>
 			</div>
 		</div>
 
@@ -772,40 +1193,32 @@
 					<!-- Top Row: Title & Action -->
 					<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;">
 						<div>
-							<h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:4px;">
+							<h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;margin-bottom:4px;color:#0f172a;">
 								Community Feed</h2>
-							<p style="color:var(--muted);font-size:0.95rem;">Recent stories and tips</p>
+							<p style="color:#64748b;font-size:0.95rem;">Recent stories and tips from fellow travelers</p>
 						</div>
 						<button id="openCreatePost" class="btn btn-primary" style="display:none;">Create Post</button>
 					</div>
 
-					<!-- Search & Sort Nav Bar -->
-					<div
-						style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;background:linear-gradient(135deg, rgba(224, 242, 254, 0.7), rgba(204, 251, 241, 0.7));backdrop-filter:blur(12px);padding:12px 18px;border-radius:24px;box-shadow:0 4px 16px rgba(0,0,0,0.06);border:1px solid rgba(255, 255, 255, 0.6); margin-bottom: 8px;">
-						<div style="display:flex;gap:12px;flex-wrap:wrap;">
-							<input type="text" id="searchInput" class="cm-input"
-								placeholder="Search by place or location..."
-								style="width:250px;padding:10px 14px;font-size:13px;border-radius:20px;background:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.8);color:#0f172a;box-shadow:inset 0 2px 4px rgba(0,0,0,0.02);">
-							<select class="cm-input" id="budgetFilter"
-								style="width:auto;padding:10px 14px;font-size:13px;border-radius:20px;background:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.8);color:#0f172a;box-shadow:inset 0 2px 4px rgba(0,0,0,0.02);">
-								<option value="">Filter by Budget</option>
-								<option value="under2k">Under ₹2000</option>
-								<option value="2k-5k">₹2000 - ₹5000</option>
-								<option value="5k-10k">₹5000 - ₹10000</option>
-								<option value="10k-20k">₹10000 - ₹20000</option>
-								<option value="above20k">Above ₹20000</option>
-							</select>
+					<!-- Search & Sort Nav Bar — Glassmorphism -->
+					<div class="feed-control-bar">
+						<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+							<div style="position:relative;">
+								<i class="fas fa-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:13px;"></i>
+								<input type="text" id="searchInput" class="search-input-community"
+									placeholder="Search places...">
+							</div>
 						</div>
 
 						<div style="display:flex;gap:10px;align-items:center;">
 							<button class="filter-btn active" data-filter="latest">Recent</button>
 							<button class="filter-btn" data-filter="popular">Trending</button>
 							<button class="filter-btn" data-filter="toprated">Most Liked</button>
-							<span class="sort-label" id="sortLabel" style="color:#334155; font-weight:600; margin-left:10px;">Sorted by: Recent</span>
+							<span class="sort-label" id="sortLabel">Sorted by: Recent</span>
 						</div>
 					</div>
 
-					<!-- Category Pills (moved below) -->
+					<!-- Category Pills -->
 					<div class="category-pills"
 						style="display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;">
 						<button class="cat-pill active" data-cat="All">All</button>
@@ -818,7 +1231,7 @@
 					</div>
 				</div>
 
-				<div class="widget" style="margin-bottom: 28px; background: transparent; box-shadow: none; padding: 0;">
+				<div class="top-travelers-section" style="margin-bottom: 28px;">
 					<h3 class="widget-title" style="margin-bottom: 16px;"><i class="fas fa-trophy"></i> Top Travelers</h3>
 					<div id="topTravelersContainer">
 						<div style="font-size:13px; color:#94a3b8; text-align:center; padding:10px;">Loading
@@ -826,7 +1239,7 @@
 					</div>
 				</div>
 
-				<div class="posts-list" id="postsList" style="margin-top:28px;">
+				<div class="posts-list" id="postsList" style="margin-top:0;">
 
 					<!-- Dynamic posts will be injected here via localStorage -->
 
@@ -863,58 +1276,29 @@
 						<input id="placeInput" class="cm-input" placeholder="Name of place" />
 					</div>
 					<div style="flex:1;">
-						<label class="cm-label">Location</label>
-						<input id="locationInput" class="cm-input" placeholder="City/Country" />
-					</div>
+					<label class="cm-label">City/Country</label>
+					<input id="locationInput" class="cm-input" placeholder="City or Country" />
 				</div>
+			</div>
 
-				<div style="display:flex;gap:16px;">
-					<div style="flex:1;">
-						<label class="cm-label">Category</label>
-						<select id="categoryInput" class="cm-input">
-							<option value="City">City</option>
-							<option value="Beach">Beach</option>
-							<option value="Mountain">Mountain</option>
-							<option value="Temple">Temple</option>
-							<option value="Adventure">Adventure</option>
-							<option value="Food">Food</option>
-							<option value="Other">Other</option>
-						</select>
-						<input id="customCategoryInput" class="cm-input" placeholder="Enter custom category" style="display:none; margin-top:8px;" />
-					</div>
-					<div style="flex:1;">
-						<label class="cm-label">Budget Spent (₹)</label>
-						<input id="budgetInput" type="number" class="cm-input" placeholder="e.g. 5000" />
-					</div>
-					<div style="flex:1;">
-						<label class="cm-label">Best Time to Visit</label>
-						<input id="timeInput" class="cm-input" placeholder="e.g. Oct-Dec" />
-					</div>
-				</div>
+			<!-- EXPERIENCE DESCRIPTION -->
+			<label class="cm-label">Experience</label>
+			<textarea id="captionInput" class="cm-textarea" rows="4"
+				placeholder="Share your travel experience and what made it memorable..."></textarea>
 
-				<!-- DESCRIPTION & TIPS -->
-				<label class="cm-label">Travel Description</label>
-				<textarea id="captionInput" class="cm-textarea" rows="3"
-					placeholder="Share your experience..."></textarea>
+			<label class="cm-label">Rating</label>
+			<div id="rating" class="rating-stars" data-rating="0">
+				<span class="star" data-value="1">☆</span>
+				<span class="star" data-value="2">☆</span>
+				<span class="star" data-value="3">☆</span>
+				<span class="star" data-value="4">☆</span>
+				<span class="star" data-value="5">☆</span>
+			</div>
 
-				<label class="cm-label">Travel Tips</label>
-				<textarea id="tipsInput" class="cm-textarea" rows="2"
-					placeholder="Any advice for future travelers? (Budget tips, hidden spots...)"></textarea>
-
-				<label class="cm-label">Rating</label>
-				<div id="rating" class="rating-stars" data-rating="0">
-					<span class="star" data-value="1">☆</span>
-					<span class="star" data-value="2">☆</span>
-					<span class="star" data-value="3">☆</span>
-					<span class="star" data-value="4">☆</span>
-					<span class="star" data-value="5">☆</span>
-				</div>
-
-				<div class="cm-actions">
-					<button type="button" id="publishBtn" class="btn btn-primary btn-lg">Post Travel Experience (+50
-						points)</button>
-					<button type="button" id="cancelBtn" class="btn btn-white">Cancel</button>
-				</div>
+			<div class="cm-actions">
+				<button type="button" id="publishBtn" class="btn btn-primary btn-lg">Post Travel Experience (+50 points)</button>
+				<button type="button" id="cancelBtn" class="btn btn-white">Cancel</button>
+			</div>
 			</form>
 		</div>
 	</div>
@@ -998,10 +1382,7 @@
 			});
 		}
 
-		const budgetSel = document.getElementById('budgetFilter');
-		if (budgetSel) {
-			budgetSel.addEventListener('change', runFilters);
-		}
+
 
 		/* ══════════════════════════════
 		   CREATE POST MODAL
@@ -1030,28 +1411,21 @@
 		document.getElementById('closeCreatePost').addEventListener('click', closeModal);
 		document.getElementById('cancelBtn').addEventListener('click', closeModal);
 
-		document.getElementById('categoryInput').addEventListener('change', function() {
-			const customInp = document.getElementById('customCategoryInput');
-			if (this.value === 'Other') {
-				customInp.style.display = 'block';
-			} else {
-				customInp.style.display = 'none';
-				customInp.value = '';
-			}
-		});
-
 		const dropZone = document.getElementById('dropZone');
 		const fileInput = document.getElementById('fileInput');
 		const preview = document.getElementById('preview');
 
-		dropZone.addEventListener('click', () => fileInput.click());
-		dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('over'); });
-		dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
-		dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('over'); handleFiles(e.dataTransfer.files); });
-		fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+		if (dropZone && fileInput && preview) {
+			dropZone.addEventListener('click', () => fileInput.click());
+			dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('over'); });
+			dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+			dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('over'); handleFiles(e.dataTransfer.files); });
+			fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+		}
 
 		let uploadedFiles = [];
 		function handleFiles(files) {
+			if (!preview) return;
 			Array.from(files).forEach(file => {
 				if (!file.type.startsWith('image/')) return;
 				uploadedFiles.push(file); // Raw file mapping
@@ -1066,60 +1440,64 @@
 			});
 		}
 
-		ratingEl.addEventListener('click', (e) => {
-			const s = e.target.closest('.star'); if (!s) return;
-			const val = Number(s.dataset.value);
-			ratingEl.dataset.rating = val;
-			[...ratingEl.querySelectorAll('.star')].forEach(st => st.textContent = Number(st.dataset.value) <= val ? '★' : '☆');
-		});
+		if (ratingEl) {
+			ratingEl.addEventListener('click', (e) => {
+				const s = e.target.closest('.star'); if (!s) return;
+				const val = Number(s.dataset.value);
+				ratingEl.dataset.rating = val;
+				[...ratingEl.querySelectorAll('.star')].forEach(st => st.textContent = Number(st.dataset.value) <= val ? '★' : '☆');
+			});
+		}
 
-		document.getElementById('publishBtn').addEventListener('click', async () => {
-			const place = document.getElementById('placeInput').value.trim();
-			const loc = document.getElementById('locationInput').value.trim();
-			const catBase = document.getElementById('categoryInput').value;
-			const customCat = document.getElementById('customCategoryInput').value.trim();
-			const cat = (catBase === 'Other' && customCat) ? customCat : catBase;
-			const budget = document.getElementById('budgetInput').value.trim();
-			const time = document.getElementById('timeInput').value.trim();
-			const cap = document.getElementById('captionInput').value.trim();
-			const tips = document.getElementById('tipsInput').value.trim();
-			const rating = Number(ratingEl.dataset.rating) || 0;
+		const publishBtn = document.getElementById('publishBtn');
+		if (publishBtn) {
+			publishBtn.addEventListener('click', async () => {
+				const placeEl = document.getElementById('placeInput');
+				const locEl = document.getElementById('locationInput');
+				const capEl = document.getElementById('captionInput');
+				
+				if (!placeEl || !locEl || !capEl) {
+					showToast('Form elements missing!', 'error');
+					return;
+				}
+				
+				const place = placeEl.value.trim();
+				const loc = locEl.value.trim();
+				const cap = capEl.value.trim();
+				const rating = ratingEl ? Number(ratingEl.dataset.rating) || 0 : 0;
 
-			if (!place) { showToast('Please enter a place name!', 'error'); return; }
-			if (!loc) { showToast('Please enter a location!', 'error'); return; }
-			if (!cap) { showToast('Please write a travel description!', 'error'); return; }
-			if (uploadedFiles.length === 0) { showToast('Images are mandatory. Please upload at least one image!', 'error'); return; }
+				if (!place) { showToast('Please enter a place name!', 'error'); return; }
+				if (!loc) { showToast('Please enter a city/country!', 'error'); return; }
+				if (!cap) { showToast('Please write about your experience!', 'error'); return; }
+				if (uploadedFiles.length === 0) { showToast('Images are mandatory. Please upload at least one image!', 'error'); return; }
 
-			const user = TmAuth.getUser();
-			if (!user) {
-				document.getElementById('loginPromptModal').classList.add('open');
-				return;
-			}
+				const user = TmAuth.getUser();
+				if (!user) {
+					document.getElementById('loginPromptModal').classList.add('open');
+					return;
+				}
 
-			const formData = new FormData();
-			formData.append('place_name', place);
-			formData.append('location', loc);
-			formData.append('category', cat);
-			if (budget) formData.append('budget', budget);
-			if (time) formData.append('best_time', time);
-			formData.append('caption', cap);
-			formData.append('tips', tips);
-			formData.append('rating', rating);
+				const formData = new FormData();
+				formData.append('place_name', place);
+				formData.append('location', loc);
+				formData.append('category', 'Experience'); // Default category
+				formData.append('caption', cap);
+				formData.append('rating', rating);
 
-			uploadedFiles.forEach(file => formData.append('images', file));
+				uploadedFiles.forEach(file => formData.append('images', file));
 
-			const btn = document.getElementById('publishBtn');
-			btn.disabled = true; btn.textContent = 'Analyzing Context...';
-			try {
-				const res = await fetch('http://localhost:5000/api/community/posts', {
-					method: 'POST',
-					headers: { 'Authorization': 'Bearer ' + TmAuth.getToken() },
-					body: formData
-				});
-				const data = await res.json();
-				if (!res.ok) throw new Error(data.message || 'Failed to post.');
+				const btn = document.getElementById('publishBtn');
+				btn.disabled = true; btn.textContent = 'Publishing...';
+				try {
+					const res = await fetch('http://localhost:5000/api/community/posts', {
+						method: 'POST',
+						headers: { 'Authorization': 'Bearer ' + TmAuth.getToken() },
+						body: formData
+					});
+					const data = await res.json();
+					if (!res.ok) throw new Error(data.message || 'Failed to post.');
 
-				showToast(`Analysis matched: ${data.assignedCategory} • +50 Points`);
+					showToast(`Experience shared! +50 Points`);
 				closeModal();
 				loadPosts(currentCategoryFilter);
 			} catch (e) {
@@ -1127,11 +1505,12 @@
 			} finally {
 				btn.disabled = false; btn.textContent = 'Post Travel Experience (+50 points)';
 			}
-		});
+			});
+		}
 
 		function buildPostCard(p) {
 			const parsedImages = p.images ? p.images.map(img => img.startsWith('http') ? img : 'http://localhost:5000/' + img) : [];
-			const avatarUrl = p.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.author_name || 'T')}&background=22c55e&color=fff&size=48&font-size=0.45&bold=true`;
+			const avatarUrl = p.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.author_name || 'T')}&background=2563eb&color=fff&size=48&font-size=0.45&bold=true`;
 			
 			const timeDiff = Date.now() - (p.created_at ? new Date(p.created_at).getTime() : Date.now());
 			const hoursAgo = Math.max(1, Math.floor(timeDiff / (1000 * 60 * 60)));
@@ -1139,23 +1518,38 @@
 
 			const isOwner = TmAuth.getUser() && TmAuth.getUser().id === p.user_id;
 			const isFollowing = JSON.parse(localStorage.getItem('tm_following') || '[]').includes(p.author_name);
-			const followBtnHtml = p.author_name ? `<button class="btn-follow-post" style="background:${isFollowing ? '#f1f5f9' : '#22c55e'}; color:${isFollowing ? '#475569' : '#fff'}; border:none; padding:8px 20px; border-radius:9999px; font-size:13.5px; font-weight:700; cursor:pointer; transition:all .2s;" onclick="followUser('${escapeHtml(p.author_name)}', this); event.stopPropagation();">${isFollowing ? 'Following' : 'Follow'}</button>` : '';
+			const followBtnHtml = p.author_name ? `<button class="btn-follow-post" style="background:${isFollowing ? '#f1f5f9' : '#2563eb'}; color:${isFollowing ? '#475569' : '#fff'}; border:none; padding:6px 14px; border-radius:9999px; font-size:12px; font-weight:700; cursor:pointer; transition:all .2s;" onclick="followUser('${escapeHtml(p.author_name)}', this); event.stopPropagation();">${isFollowing ? 'Following' : 'Follow'}</button>` : '';
+
+			// Determine liked state from backend has_liked flag OR localStorage
+			let isLiked = !!p.has_liked;
+			
+			// Check localStorage for like state as well
+			const currentUser = TmAuth.getUser();
+			if (currentUser) {
+				const likedPosts = JSON.parse(localStorage.getItem('tm_post_likes') || '{}');
+				if (likedPosts[p.id] !== undefined) {
+					isLiked = likedPosts[p.id];
+				}
+			}
+			
+			const likeColor = isLiked ? '#ed4956' : '#111827';
+			const likeFill = isLiked ? 'currentColor' : 'none';
 
 			return `
-				<article class="post-card" data-id="${p.id}" data-timestamp="${new Date(p.created_at || Date.now()).getTime()}" data-likes="${p.likes || 0}" data-rating="${p.rating || 0}" style="border-radius:12px; border:1px solid #e5e7eb; box-shadow:0 1px 2px rgba(0,0,0,0.05); overflow:hidden; background:#fff; padding:0; margin-bottom:24px;">
-					<header class="post-header" style="display:flex; justify-content:space-between; align-items:center; padding:16px;">
-						<div class="author" style="display:flex; align-items:center; gap:12px; cursor:pointer;" title="View Profile">
-							<img src="${avatarUrl}" alt="avatar" style="width:44px; height:44px; border-radius:50%; object-fit:cover;">
-							<div style="display:flex; flex-direction:column; gap:2px;">
-								<span class="author-name" style="font-weight:700; font-size:14px; color:#111827;">${escapeHtml(p.author_name || 'Traveller')}</span>
-								<span style="font-size:13px; color:#6b7280;">${dStr}</span>
+				<article class="post-card" data-id="${p.id}" data-timestamp="${new Date(p.created_at || Date.now()).getTime()}" data-likes="${p.likes || 0}" data-rating="${p.rating || 0}" style="border-radius:12px; border:1px solid #e5e7eb; box-shadow:0 1px 2px rgba(0,0,0,0.05); overflow:hidden; background:#fff; padding:0;">
+					<header class="post-header" style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px;">
+						<div class="author" style="display:flex; align-items:center; gap:10px; cursor:pointer;" title="View Profile">
+							<img src="${avatarUrl}" alt="avatar" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
+							<div style="display:flex; flex-direction:column; gap:1px;">
+								<span class="author-name" style="font-weight:700; font-size:13px; color:#111827;">${escapeHtml(p.author_name || 'Traveller')}</span>
+								<span style="font-size:11.5px; color:#6b7280;">${dStr}</span>
 							</div>
 						</div>
-						<div style="display:flex; align-items:center; gap:8px;">
+						<div style="display:flex; align-items:center; gap:6px;">
 							${!isOwner ? followBtnHtml : ''}
 							${isOwner ? `
-							<button class="icon-btn edit-btn" style="color:#6b7280; font-size:13px;" data-caption="${escapeHtml(p.caption || '')}"><i class="fas fa-edit"></i></button>
-							<button class="icon-btn delete-btn" style="color:#ef4444; font-size:13px;"><i class="fas fa-trash"></i></button>
+							<button class="icon-btn edit-btn" style="color:#6b7280; font-size:12px;" data-caption="${escapeHtml(p.caption || '')}"><i class="fas fa-edit"></i></button>
+							<button class="icon-btn delete-btn" style="color:#ef4444; font-size:12px;"><i class="fas fa-trash"></i></button>
 							` : ''}
 						</div>
 					</header>
@@ -1163,50 +1557,50 @@
 					<div style="padding:0; position:relative; width:100%; aspect-ratio:4/3; background:#f3f4f6; overflow:hidden;">
 					${(p.place_name || p.location) ? `
 						<div style="position:absolute; bottom:0; left:0; width:100%; height:40%; background:linear-gradient(transparent, rgba(0,0,0,0.85)); pointer-events:none; z-index:5;"></div>
-						<div style="position:absolute; bottom:16px; left:16px; color:#fff; z-index:10; font-family:'Plus Jakarta Sans', sans-serif;">
-							<div style="font-weight:700; font-size:16px; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
-								<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"></path></svg> 
+						<div style="position:absolute; bottom:12px; left:12px; color:#fff; z-index:10; font-family:'Plus Jakarta Sans', sans-serif;">
+							<div style="font-weight:700; font-size:14px; margin-bottom:2px; display:flex; align-items:center; gap:5px;">
+								<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"></path></svg> 
 								${escapeHtml(p.place_name || p.location)}
 							</div>
-							${p.budget ? `<div style="font-size:13px; color:rgba(255,255,255,0.9); font-weight:600;"><i class="fas fa-dollar-sign" style="opacity:0.8;"></i> Budget ~ ₹${escapeHtml(p.budget)}/trip</div>` : ''}
+	
 						</div>
 					` : ''}
 					${parsedImages.length > 1
 						? `<div id="carousel_${p.id}" style="display:flex; height:100%; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none;" onscroll="updateIndicator('carousel_${p.id}', ${parsedImages.length})">
 							${parsedImages.map(img => `<img src="${img}" class="feed-img" style="width:100%; height:100%; object-fit:cover; scroll-snap-align:center; flex-shrink:0; cursor:pointer;" onclick="openLightbox('${img}')">`).join('')}
 						   </div>
-						   <div id="ind_carousel_${p.id}" style="position:absolute; top:12px; right:12px; background:rgba(0,0,0,0.65); color:#fff; font-size:12px; font-weight:600; padding:4px 10px; border-radius:12px; z-index:2; pointer-events:none;">1/${parsedImages.length}</div>
-						   <button onclick="slideCarousel('carousel_${p.id}', -1, event)" style="position:absolute; left:8px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.85); color:#262626; border:none; width:32px; height:32px; border-radius:50%; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.15); z-index:2; display:flex; align-items:center; justify-content:center; transition:background 0.2s;"><i class="fas fa-chevron-left"></i></button>
-						   <button onclick="slideCarousel('carousel_${p.id}', 1, event)" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.85); color:#262626; border:none; width:32px; height:32px; border-radius:50%; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.15); z-index:2; display:flex; align-items:center; justify-content:center; transition:background 0.2s;"><i class="fas fa-chevron-right"></i></button>`
+						   <div id="ind_carousel_${p.id}" style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.65); color:#fff; font-size:11px; font-weight:600; padding:3px 8px; border-radius:10px; z-index:2; pointer-events:none;">1/${parsedImages.length}</div>
+						   <button onclick="slideCarousel('carousel_${p.id}', -1, event)" style="position:absolute; left:6px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.85); color:#262626; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.15); z-index:2; display:flex; align-items:center; justify-content:center; font-size:12px;"><i class="fas fa-chevron-left"></i></button>
+						   <button onclick="slideCarousel('carousel_${p.id}', 1, event)" style="position:absolute; right:6px; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.85); color:#262626; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.15); z-index:2; display:flex; align-items:center; justify-content:center; font-size:12px;"><i class="fas fa-chevron-right"></i></button>`
 						: parsedImages.length === 1
 						   ? `<img src="${parsedImages[0]}" style="width:100%; height:100%; object-fit:cover; display:block; cursor:pointer;" onclick="openLightbox('${parsedImages[0]}')">`
 						   : `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%;">
-						   		<div style="text-align:center; color:#94a3b8;"><i class="fas fa-image" style="font-size:3rem; margin-bottom:10px; opacity:0.5;"></i><p>No image uploaded</p></div>
+						   		<div style="text-align:center; color:#94a3b8;"><i class="fas fa-image" style="font-size:2.5rem; margin-bottom:8px; opacity:0.5;"></i><p style="font-size:13px;">No image uploaded</p></div>
 						      </div>`
 					}
 					</div>
 
-					<div class="post-footer" style="padding:16px;">
-						<div class="post-actions" style="display:flex; justify-content:space-between; margin-bottom:12px; align-items:center;">
-							<div style="display:flex; gap:16px;">
-								<button class="icon-btn like-btn" data-liked="false" style="padding:0; font-size:24px; color:#111827; transition: transform 0.2s; background:transparent; border:none; cursor:pointer;">
-									<svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path></svg>
+					<div class="post-footer" style="padding:12px 14px;">
+						<div class="post-actions" style="display:flex; justify-content:space-between; margin-bottom:8px; align-items:center;">
+							<div style="display:flex; gap:12px;">
+								<button class="icon-btn like-btn" data-liked="${isLiked}" style="padding:0; font-size:20px; color:${likeColor}; transition: transform 0.2s; background:transparent; border:none; cursor:pointer;">
+									<svg width="22" height="22" fill="${likeFill}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path></svg>
 								</button>
-								<button class="icon-btn message-btn" style="padding:0; font-size:24px; color:#111827; background:transparent; border:none; cursor:pointer;">
-									<svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"></path></svg>
+								<button class="icon-btn message-btn" style="padding:0; font-size:20px; color:#111827; background:transparent; border:none; cursor:pointer;">
+									<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"></path></svg>
 								</button>
-								<button class="icon-btn share-btn" style="padding:0; font-size:24px; color:#111827; background:transparent; border:none; cursor:pointer;">
-									<svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"></path></svg>
+								<button class="icon-btn share-btn" style="padding:0; font-size:20px; color:#111827; background:transparent; border:none; cursor:pointer;">
+									<svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"></path></svg>
 								</button>
 							</div>
 						</div>
-						<div style="font-weight:700; font-size:14px; margin-bottom:8px; color:#111827;"><span class="like-count">${p.likes ? Number(p.likes).toLocaleString() : 0}</span> likes</div>
-						<div style="margin-bottom:8px; line-height:1.5;">
-							<span style="font-weight:700; font-size:14px; color:#111827; margin-right:6px;">${escapeHtml(p.author_name || 'Traveller')}</span>
-							<span class="post-caption" style="font-size:14px; color:#374151;">${escapeHtml(p.caption || '')}</span>
+						<div style="font-weight:700; font-size:13px; margin-bottom:6px; color:#111827;"><span class="like-count">${p.likes ? Number(p.likes).toLocaleString() : 0}</span> likes</div>
+						<div style="margin-bottom:6px; line-height:1.45;">
+							<span style="font-weight:700; font-size:13px; color:#111827; margin-right:5px;">${escapeHtml(p.author_name || 'Traveller')}</span>
+							<span class="post-caption" style="font-size:13px; color:#374151;">${escapeHtml(p.caption || '')}</span>
 						</div>
 						
-						<div class="message-btn" style="font-size:14px; color:#6b7280; font-weight:600; cursor:pointer;">View all ${Math.floor(Math.random() * 200) + 1} comments</div>
+						<div class="message-btn" style="font-size:12.5px; color:#6b7280; font-weight:600; cursor:pointer;">View all comments</div>
 					</div>
 				</article>`;
 		}
@@ -1242,11 +1636,12 @@
 				if (categoryMap && categoryMap !== 'All') url += '&category=' + encodeURIComponent(categoryMap);
 
 				const searchVal = document.getElementById('searchInput').value.trim();
-				const budgetVal = document.getElementById('budgetFilter').value;
 				if (searchVal) url += '&search=' + encodeURIComponent(searchVal);
-				if (budgetVal) url += '&budget=' + encodeURIComponent(budgetVal);
 
-				const res = await fetch(url);
+				const fetchOpts = {};
+				const token = TmAuth.getToken();
+				if (token) fetchOpts.headers = { 'Authorization': 'Bearer ' + token };
+				const res = await fetch(url, fetchOpts);
 				const posts = await res.json();
 
 				if (!posts || !posts.length) {
@@ -1318,7 +1713,7 @@
 				}
 
 				container.innerHTML = travelers.map(t => {
-					const avatar = t.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(t.full_name || 'T')}&background=dcfce7&color=16a34a&size=40`;
+					const avatar = t.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(t.full_name || 'T')}&background=dbeafe&color=1d4ed8&size=40`;
 					return `
 					<div class="traveler-item">
 						<div class="trav-left" style="cursor:pointer;" onclick="localStorage.setItem('tm_targetUser', '${escapeHtml(t.full_name)}'); window.location.href='user-profile.html';">
@@ -1353,7 +1748,7 @@
 				following = following.filter(u => u !== username);
 				localStorage.setItem('tm_following', JSON.stringify(following));
 				btn.innerHTML = 'Follow';
-				btn.style.background = '#22c55e';
+				btn.style.background = '#2563eb';
 				btn.style.color = '#fff';
 				showToast('Unfollowed ' + username);
 			}
@@ -1366,18 +1761,20 @@
 
 		function escapeHtml(s) { return String(s).replace(/[&"'<>]/g, c => ({ '&': '&amp;', '"': '&quot;', '\'': '&#39;', '<': '&lt;', '>': '&gt;' }[c])); }
 		function clearForm() {
-			document.getElementById('createPostForm').reset();
-			document.getElementById('customCategoryInput').style.display = 'none';
-			uploadedImages = [];
-			preview.innerHTML = '';
-			[...ratingEl.querySelectorAll('.star')].forEach(st => st.textContent = '☆');
-			ratingEl.dataset.rating = 0;
+			const form = document.getElementById('createPostForm');
+			if (form) form.reset();
+			uploadedFiles = [];
+			if (preview) preview.innerHTML = '';
+			if (ratingEl) {
+				[...ratingEl.querySelectorAll('.star')].forEach(st => st.textContent = '☆');
+				ratingEl.dataset.rating = 0;
+			}
 		}
 
 		/* ══════════════════════════════
 		   UNIFIED CLICK HANDLER
 		══════════════════════════════ */
-		document.addEventListener('click', function (e) {
+		document.addEventListener('click', async function (e) {
 			const post = e.target.closest('.post-card');
 			if (!post) return;
 
@@ -1396,8 +1793,15 @@
 				const countEl = post.querySelector('.like-count');
 				let count = Number((countEl.textContent || '0').replace(/,/g, ''));
 				const liked = btn.dataset.liked === 'true';
-				btn.dataset.liked = liked ? 'false' : 'true';
 				
+				// Update localStorage to track like state
+				const currentUser = TmAuth.getUser();
+				const likedPosts = JSON.parse(localStorage.getItem('tm_post_likes') || '{}');
+				likedPosts[post.dataset.id] = !liked;
+				localStorage.setItem('tm_post_likes', JSON.stringify(likedPosts));
+				
+				// Optimistic UI update
+				btn.dataset.liked = liked ? 'false' : 'true';
 				const svgIcon = btn.querySelector('svg');
 				if (liked) {
 					btn.style.color = '#111827';
@@ -1421,11 +1825,32 @@
 				countEl.textContent = newCount.toLocaleString();
 				post.dataset.likes = newCount;
 
-				// Sync with MySQL
-				fetch('http://localhost:5000/api/community/posts/' + post.dataset.id + '/like', {
-					method: 'PUT',
-					headers: { 'Authorization': 'Bearer ' + TmAuth.getToken() }
-				}).catch(e => console.error('Silent like sync error:', e));
+				// Sync with MySQL and use server response as source of truth
+				try {
+					const res = await fetch('http://localhost:5000/api/community/posts/' + post.dataset.id + '/like', {
+						method: 'PUT',
+						headers: { 'Authorization': 'Bearer ' + TmAuth.getToken() }
+					});
+					const data = await res.json();
+					if (res.ok && data.likes !== undefined) {
+						countEl.textContent = Number(data.likes).toLocaleString();
+						post.dataset.likes = data.likes;
+						btn.dataset.liked = data.hasLiked ? 'true' : 'false';
+						
+						// Update localStorage to match server state
+						const likedPosts = JSON.parse(localStorage.getItem('tm_post_likes') || '{}');
+						likedPosts[post.dataset.id] = data.hasLiked;
+						localStorage.setItem('tm_post_likes', JSON.stringify(likedPosts));
+						
+						if (data.hasLiked) {
+							btn.style.color = '#ed4956';
+							if (svgIcon) { svgIcon.setAttribute('fill', 'currentColor'); svgIcon.setAttribute('stroke', 'currentColor'); }
+						} else {
+							btn.style.color = '#111827';
+							if (svgIcon) { svgIcon.setAttribute('fill', 'none'); svgIcon.setAttribute('stroke', 'currentColor'); }
+						}
+					}
+				} catch (err) { console.error('Silent like sync error:', err); }
 
 				// re-sort if in popular mode
 				if (currentFilter === 'popular') sortPosts('popular');
@@ -1683,6 +2108,17 @@
 		<button id="closeLightbox" style="position:absolute; top:20px; right:30px; background:none; border:none; color:#fff; font-size:40px; cursor:pointer; opacity:0.8; transition:opacity .2s;">&times;</button>
 		<img id="lightboxImg" src="" style="max-width:90vw; max-height:90vh; object-fit:contain; border-radius:8px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
 	</div>
+
+	<!-- Initialize seed posts on page load -->
+	<script src="seed_posts.js"></script>
+	<script>
+		// Initialize posts when page loads
+		document.addEventListener('DOMContentLoaded', function() {
+			if (typeof initializePostsInLocalStorage === 'function') {
+				initializePostsInLocalStorage();
+			}
+		});
+	</script>
 
 	<script>
 		// Global Lightbox Actions

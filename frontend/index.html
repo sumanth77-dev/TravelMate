@@ -85,15 +85,8 @@
     }
 
     @keyframes fadeSlideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .search-result-header {
@@ -173,7 +166,38 @@
       filter: grayscale(40%);
       transition: all .35s;
     }
-  </style>
+
+    /* ── Search Floating Card ── */
+    .search-floating-card {
+      max-width: 800px;
+      margin: -60px auto 80px;
+      background: #fff;
+      padding: 16px;
+      border-radius: 20px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      position: relative;
+      z-index: 20;
+    }
+    .search-floating-card input {
+      flex: 1; border: none; outline: none; font-size: 16px; padding: 12px; font-family: 'Plus Jakarta Sans',sans-serif; color: #0f172a;
+    }
+    .search-floating-card .btn-primary {
+      padding: 14px 36px; border-radius: 14px; font-size: 15px; background: #0f172a; color: white; border: none; font-weight: 600; cursor: pointer; transition: background 0.3s;
+    }
+    .search-floating-card .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    /* Smooth Page Transitions */
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body { animation: pageEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+    @keyframes pageEnter { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    * { transition: background-color 0.3s ease, color 0.3s ease; }
+    button:hover { transform: translateY(-2px); }
+    .card:hover, .dest-card:hover, .guide-card:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(37,99,235,0.2); }
+    </style>
 </head>
 
 <body>
@@ -184,16 +208,21 @@
       <a href="#" class="nav-logo">&#10022; Travel<span class="dot">Mate</span></a>
       <ul class="nav-links" id="navLinks">
         <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="main_community.html">Community</a></li>
-        <li><a href="findguides.html">Find Guides</a></li>
-        <li><a href="destinations.html">Destinations</a></li>
-        <li id="adminNav" style="display:None" ;>
+        <li class="nav-guest"><a href="about.html">About</a></li>
+        <li class="nav-guest"><a href="contact.html">Contact</a></li>
+        <li class="nav-auth" style="display:none;"><a href="main_community.html">Community</a></li>
+        <li class="nav-auth" style="display:none;"><a href="findguides.html">Find Guides</a></li>
+        <li class="nav-auth" style="display:none;"><a href="destinations.html">Destinations</a></li>
+        <li id="adminNav" style="display:none;">
           <a href="admin-dashboard.html">Admin Panel</a>
         </li>
-        <!-- Dashboard link removed - will be handled by tm-auth.js -->
+        <!-- Auth items injected by tm-auth.js -->
       </ul>
       <div style="display:flex;align-items:center;gap:12px;">
         <div id="pointsCounter" class="badge badge-teal">0 pts</div>
+        <button class="nav-explore-btn nav-guest-btn" onclick="openAuthModal()">
+          <i class="fas fa-compass"></i> Explore Now
+        </button>
       </div>
       <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
@@ -201,82 +230,112 @@
     </div>
   </nav>
 
-  <!-- ══════════════ HERO ══════════════ -->
-  <section class="hero">
+  <!-- ══════════════ HERO — Split Layout ══════════════ -->
+  <section class="hero" style="min-height:100vh; display:flex; align-items:center; position:relative; overflow:hidden; padding:0;">
     <div class="hero-bg"></div>
     <div class="hero-dots"></div>
     <div class="hero-circle"></div>
 
-    <div class="hero-content container">
-      <div class="hero-tag fade-up">
-        <i class="fas fa-compass"></i> Authentic Experiences Await
-      </div>
-      <h1 class="fade-up delay-1">Explore the World <br>with <em>Local Guides</em></h1>
-      <p class="hero-sub fade-up delay-2">
-        Discover hidden places, connect with trusted local guides, and share your travel experiences.
-      </p>
+    <!-- Abstract wave SVG overlay -->
+    <svg style="position:absolute; bottom:0; left:0; width:100%; z-index:2; pointer-events:none;" viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path d="M0,60 C360,120 1080,0 1440,60 L1440,120 L0,120 Z" fill="rgba(255,255,255,0.08)"/>
+      <path d="M0,80 C400,20 1040,120 1440,80 L1440,120 L0,120 Z" fill="rgba(255,255,255,0.05)"/>
+    </svg>
 
-      <div class="hero-actions fade-up delay-3"
-        style="display:flex; gap:16px; justify-content:center; margin-top:32px;">
-        <button class="btn btn-primary" onclick="window.location.href='findguides.html'"
-          style="padding:14px 32px; font-size:16px; border-radius:50px;">Find Guides</button>
-        <button class="btn btn-white" onclick="window.location.href='main_community.html'"
-          style="padding:14px 32px; font-size:16px; border-radius:50px; background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.3); backdrop-filter:blur(10px);">Explore
-          Community</button>
-      </div>
-    </div>
-  </section>
+    <div class="container" style="display:flex; align-items:center; gap:60px; position:relative; z-index:5; padding:120px 24px 80px; flex-wrap:wrap;">
+      
+      <!-- LEFT: Text + CTA -->
+      <div style="flex:1; min-width:340px;" class="fade-up">
+        <div class="hero-tag" style="margin-bottom:20px;">
+          <i class="fas fa-compass"></i> Your Next Adventure Starts Here
+        </div>
+        <h1 class="fade-up delay-1" style="text-align:left; font-size:clamp(2.4rem, 5vw, 3.6rem); line-height:1.15; margin-bottom:20px;">
+          Explore the World<br>with <em>Trusted Local Guides</em>
+        </h1>
+        <p class="hero-sub fade-up delay-2" style="text-align:left; max-width:500px; margin:0 0 36px 0; font-size:1.1rem; line-height:1.8;">
+          Discover hidden gems, connect with verified local guides, and share your travel stories with a community of passionate explorers.
+        </p>
 
-  <!-- ══════════════ DEDICATED SEARCH SECTION ══════════════ -->
-  <section class="dedicated-search" style="margin-top:-60px; position:relative; z-index:10; padding:0 20px;">
-    <div class="container" style="max-width:900px; margin:0 auto;">
-      <div class="search-floating-card"
-        style="background:#fff; padding:20px; border-radius:20px; box-shadow:0 12px 40px rgba(0,0,0,0.12); display:flex; gap:12px; align-items:center;">
-        <i class="fas fa-search" style="color:#64748b; font-size:20px; margin-left:14px;"></i>
-        <input type="text" id="heroSearch" placeholder="Search destinations, cities, experiences..." autocomplete="off"
-          style="flex:1; border:none; outline:none; font-size:16px; padding:12px; font-family:'Plus Jakarta Sans',sans-serif; color:#0f172a;">
-        <button class="btn btn-primary" onclick="handleSearch()"
-          style="padding:14px 36px; border-radius:14px; font-size:15px; background:var(--primary);">Search</button>
-      </div>
-      <div class="search-autocomplete" id="autocompleteList"
-        style="max-width:900px; margin:8px auto 0; box-shadow:0 8px 24px rgba(0,0,0,0.1);"></div>
-    </div>
-  </section>
-
-
-
-  <script>
-    (function () {
-      const el = document.getElementById('pointsCounter');
-      if (!el) return;
-      const pts = Number(localStorage.getItem('tm_points') || 0);
-      el.textContent = pts + ' pts';
-    })();
-  </script>
-
-  <!-- ══════════════ SEARCH RESULTS ══════════════ -->
-  <section id="searchResultsSection">
-    <div class="container">
-      <div class="search-result-header">
-        <h2>Results for <em id="searchTermDisplay"></em></h2>
-        <div style="display:flex;align-items:center;gap:12px;">
-          <span class="search-count" id="searchCount">0 found</span>
-          <button class="clear-search-btn" onclick="clearSearch()">
-            <i class="fas fa-times" style="margin-right:5px;"></i>Clear Search
+        <div class="fade-up delay-3" style="display:flex; gap:14px; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="gatedNav('destinations.html')"
+            style="padding:16px 36px; font-size:16px; border-radius:50px; background:linear-gradient(135deg,#2563eb,#1d4ed8); box-shadow:0 8px 28px rgba(37,99,235,0.35);">
+            <i class="fas fa-compass" style="margin-right:8px;"></i>Explore Now
+          </button>
+          <button class="btn" onclick="document.getElementById('howItWorks').scrollIntoView({behavior:'smooth'})"
+            style="padding:16px 36px; font-size:16px; border-radius:50px; background:rgba(255,255,255,0.1); color:#fff; border:1.5px solid rgba(255,255,255,0.3); backdrop-filter:blur(8px);">
+            How It Works
           </button>
         </div>
+
+        <!-- Trust badges -->
+        <div class="fade-up delay-4" style="display:flex; align-items:center; gap:24px; margin-top:40px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:8px; color:rgba(255,255,255,0.7); font-size:14px;">
+            <i class="fas fa-users" style="color:#60a5fa;"></i> 10K+ Travellers
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; color:rgba(255,255,255,0.7); font-size:14px;">
+            <i class="fas fa-map-marker-alt" style="color:#60a5fa;"></i> 500+ Destinations
+          </div>
+          <div style="display:flex; align-items:center; gap:8px; color:rgba(255,255,255,0.7); font-size:14px;">
+            <i class="fas fa-star" style="color:#fbbf24;"></i> 4.9 Rating
+          </div>
+        </div>
       </div>
-      <div class="dest-grid" id="searchResultsGrid"></div>
-      <div class="no-results" id="noResults" style="display:none;">
-        <div class="no-results-icon">🔍</div>
-        <h3>No destinations found</h3>
-        <p>Try "Bali", "Paris", "Tokyo" or a category like "Beach" or "Adventure"</p>
+
+      <!-- RIGHT: Image Collage -->
+      <div style="flex:1; min-width:340px; display:flex; justify-content:center; position:relative;" class="fade-up delay-2">
+        <div style="position:relative; width:100%; max-width:520px; aspect-ratio:1/1;">
+          <!-- Main hero image -->
+          <div style="position:absolute; top:0; right:0; width:75%; height:70%; border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.3); border:3px solid rgba(255,255,255,0.15); z-index:2;">
+            <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=600&q=80" alt="Beach paradise" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <!-- Secondary image -->
+          <div style="position:absolute; bottom:5%; left:0; width:55%; height:55%; border-radius:20px; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,0.25); border:3px solid rgba(255,255,255,0.15); z-index:3;">
+            <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&q=80" alt="Mountain adventure" style="width:100%; height:100%; object-fit:cover;">
+          </div>
+          <!-- Floating stat card -->
+          <div style="position:absolute; bottom:15%; right:-5%; background:rgba(255,255,255,0.95); backdrop-filter:blur(12px); padding:16px 20px; border-radius:16px; box-shadow:0 12px 36px rgba(0,0,0,0.15); z-index:4; display:flex; align-items:center; gap:12px;">
+            <div style="width:44px; height:44px; background:linear-gradient(135deg,#2563eb,#1d4ed8); border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px;">
+              <i class="fas fa-map-marked-alt"></i>
+            </div>
+            <div>
+              <div style="font-size:18px; font-weight:800; color:#0f172a;">120+</div>
+              <div style="font-size:12px; color:#64748b; font-weight:500;">Verified Guides</div>
+            </div>
+          </div>
+          <!-- Floating rating card -->
+          <div style="position:absolute; top:10%; left:-5%; background:rgba(255,255,255,0.95); backdrop-filter:blur(12px); padding:14px 18px; border-radius:14px; box-shadow:0 12px 36px rgba(0,0,0,0.15); z-index:4;">
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+              <i class="fas fa-star" style="color:#fbbf24; font-size:14px;"></i>
+              <i class="fas fa-star" style="color:#fbbf24; font-size:14px;"></i>
+              <i class="fas fa-star" style="color:#fbbf24; font-size:14px;"></i>
+              <i class="fas fa-star" style="color:#fbbf24; font-size:14px;"></i>
+              <i class="fas fa-star" style="color:#fbbf24; font-size:14px;"></i>
+            </div>
+            <div style="font-size:12px; color:#64748b; font-weight:600;">50K+ Reviews</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════ FEATURED DESTINATIONS ══════════════ -->
-  <section class="section-pad" id="destinations">
+  <!-- Global Destination Search Bar -->
+  <div class="container" style="padding: 0 24px;">
+    <div class="search-floating-card fade-up delay-4">
+      <i class="fas fa-search" style="color:#64748b; font-size:20px; margin-left:14px;"></i>
+      <input type="text" id="landingSearchInput" placeholder="Search for destinations, cities, landmarks..." onkeyup="if(event.key==='Enter') executeLandingSearch()">
+      <button class="btn btn-primary" onclick="executeLandingSearch()">Explore Maps</button>
+    </div>
+  </div>
+  
+  <script>
+    function executeLandingSearch() {
+      const q = document.getElementById('landingSearchInput').value.trim();
+      gatedNav(`destinations.html${q ? '?search='+encodeURIComponent(q) : ''}`);
+    }
+  </script>
+
+  <!-- ══════════════ FEATURED DESTINATIONS (Auth only) ══════════════ -->
+  <section class="section-pad nav-auth-section" id="destinations" style="display:none;">
     <div class="container">
       <div class="section-heading fade-up">
         <p class="section-label">&#10022; Top Picks</p>
@@ -295,8 +354,9 @@
       </div>
     </div>
   </section>
-  <!-- ══════════════ HOW TRAVELMATE WORKS ══════════════ -->
-  <section class="section-pad" style="background:var(--bg); border-top:1px solid var(--border);">
+
+  <!-- ══════════════ HOW IT WORKS (Visible to all) ══════════════ -->
+  <section id="howItWorks" class="section-pad" style="background:var(--bg); border-top:1px solid var(--border);">
     <div class="container">
       <div class="section-heading fade-up" style="text-align:center;">
         <p class="section-label">&#10022; Simple Process</p>
@@ -305,49 +365,59 @@
         <p class="section-sub">Your journey to extraordinary places starts in just three simple steps.</p>
       </div>
 
-      <div class="works-grid"
-        style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:32px; margin-top:40px;">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:32px; margin-top:40px;">
 
-        <div class="work-step scale-up delay-1"
+        <div class="scale-up delay-1"
           style="background:#fff; padding:40px 24px; border-radius:16px; text-align:center; box-shadow:0 4px 16px rgba(0,0,0,0.06); transition:transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1); border-bottom:4px solid var(--primary);">
-          <div class="step-icon"
-            style="width:70px; height:70px; background:var(--primary-light); color:var(--primary-dark); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px;">
+          <div style="width:70px; height:70px; background:var(--primary-light); color:var(--primary-dark); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px;">
             <i class="fas fa-search-location"></i>
           </div>
           <h3 style="font-size:18px; font-weight:700; margin-bottom:12px; color:var(--text);">1. Find a Guide</h3>
-          <p style="color:var(--muted); font-size:14px; line-height:1.6;">Browse local guides in your destination.
-            Filter by language, specialty, and price to find your perfect match.</p>
+          <p style="color:var(--muted); font-size:14px; line-height:1.6;">Browse local guides in your destination. Filter by language, specialty, and price to find your perfect match.</p>
         </div>
 
-        <div class="work-step scale-up delay-2"
+        <div class="scale-up delay-2"
           style="background:#fff; padding:40px 24px; border-radius:16px; text-align:center; box-shadow:0 4px 16px rgba(0,0,0,0.06); transition:transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1); border-bottom:4px solid #d4a843;">
-          <div class="step-icon"
-            style="width:70px; height:70px; background:#fef3c7; color:#b45309; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px;">
+          <div style="width:70px; height:70px; background:#fef3c7; color:#b45309; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px;">
             <i class="fas fa-calendar-check"></i>
           </div>
           <h3 style="font-size:18px; font-weight:700; margin-bottom:12px; color:var(--text);">2. Book Your Trip</h3>
-          <p style="color:var(--muted); font-size:14px; line-height:1.6;">Choose the guide that fits your needs. Message
-            them directly and secure your dates with a simple booking process.</p>
+          <p style="color:var(--muted); font-size:14px; line-height:1.6;">Choose the guide that fits your needs. Message them directly and secure your dates with a simple booking process.</p>
         </div>
 
-        <div class="work-step scale-up delay-3"
+        <div class="scale-up delay-3"
           style="background:#fff; padding:40px 24px; border-radius:16px; text-align:center; box-shadow:0 4px 16px rgba(0,0,0,0.06); transition:transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s cubic-bezier(0.16,1,0.3,1); border-bottom:4px solid #0e7490;">
-          <div class="step-icon"
-            style="width:70px; height:70px; background:#cffafe; color:#0e7490; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px;">
+          <div style="width:70px; height:70px; background:#cffafe; color:#0e7490; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:28px; margin:0 auto 20px;">
             <i class="fas fa-map-marked-alt"></i>
           </div>
-          <h3 style="font-size:18px; font-weight:700; margin-bottom:12px; color:var(--text);">3. Explore Like a Local
-          </h3>
-          <p style="color:var(--muted); font-size:14px; line-height:1.6;">Discover hidden gems with local experts. Enjoy
-            an authentic, personalized experience you won't find in guidebooks.</p>
+          <h3 style="font-size:18px; font-weight:700; margin-bottom:12px; color:var(--text);">3. Explore Like a Local</h3>
+          <p style="color:var(--muted); font-size:14px; line-height:1.6;">Discover hidden gems with local experts. Enjoy an authentic, personalized experience you won't find in guidebooks.</p>
         </div>
+      </div>
 
+      <!-- CTA below how it works for guests -->
+      <div class="nav-guest-section fade-up" style="text-align:center; margin-top:48px; padding:40px; background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#2563eb 100%); border-radius:20px; position:relative; overflow:hidden;">
+        <div style="position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size:24px 24px;"></div>
+        <div style="position:relative; z-index:2;">
+          <h3 style="font-family:'Playfair Display',serif; font-size:1.8rem; color:#fff; margin-bottom:10px;">Ready to Start Your Journey?</h3>
+          <p style="color:#93c5fd; font-size:1rem; margin-bottom:24px; max-width:500px; margin-left:auto; margin-right:auto;">Join 10,000+ travellers who explore the world with trusted local guides through TravelMate.</p>
+          <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+            <button onclick="openAuthModal()" style="padding:14px 32px; font-size:15px; font-weight:700; border-radius:50px; background:#fff; color:#1d4ed8; border:none; cursor:pointer; box-shadow:0 4px 16px rgba(0,0,0,0.15); font-family:'Plus Jakarta Sans',sans-serif; transition:all 0.25s; display:flex; align-items:center; gap:8px;">
+              <i class="fas fa-rocket"></i> Get Started Free
+            </button>
+            <button onclick="openRegisterModal()" style="padding:14px 32px; font-size:15px; font-weight:700; border-radius:50px; background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,0.3); cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:all 0.25s; display:flex; align-items:center; gap:8px; backdrop-filter:blur(4px);">
+              <i class="fas fa-user-plus"></i> Create Account
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════ TOP LOCAL GUIDES ══════════════ -->
-  <section class="section-pad" id="top-guides" style="background:#fff;">
+
+
+  <!-- ══════════════ TOP LOCAL GUIDES (Auth only) ══════════════ -->
+  <section class="section-pad nav-auth-section" id="top-guides" style="display:none; background:#fff;">
     <div class="container">
       <div class="section-heading fade-up">
         <p class="section-label">&#10022; Top Rated</p>
@@ -386,22 +456,22 @@
           </div>
         </div>
 
-        <div class="footer-col fade-up delay-2">
+        <div class="footer-col fade-up delay-2 nav-auth-section" style="display:none;">
           <h5>Explore</h5>
           <ul>
-            <li><a href="destinations.html">Destinations</a></li>
-            <li><a href="main_community.html">Community</a></li>
-            <li><a href="findguides.html">Find Guides</a></li>
+            <li><a href="javascript:gatedNav('destinations.html')">Destinations</a></li>
+            <li><a href="javascript:gatedNav('main_community.html')">Community</a></li>
+            <li><a href="javascript:gatedNav('findguides.html')">Find Guides</a></li>
           </ul>
         </div>
 
-        <div class="footer-col fade-up delay-3">
+        <div class="footer-col fade-up delay-3 nav-auth-section" style="display:none;">
           <h5>Community</h5>
           <ul>
-            <li><a href="main_community.html">Travel Stories</a></li>
-            <li><a href="main_community.html">Reviews</a></li>
-            <li><a href="findguides.html">Find Guides</a></li>
-            <li><a href="travel-mate-dashboard.html">My Dashboard</a></li>
+            <li><a href="javascript:gatedNav('main_community.html')">Travel Stories</a></li>
+            <li><a href="javascript:gatedNav('main_community.html')">Reviews</a></li>
+            <li><a href="javascript:gatedNav('findguides.html')">Find Guides</a></li>
+            <li><a href="javascript:gatedNav('travel-mate-dashboard.html')">My Dashboard</a></li>
           </ul>
         </div>
 
@@ -576,86 +646,7 @@
 
     initTopGuides();
 
-    /* ══════════════════════════════
-       SEARCH
-    ══════════════════════════════ */
-    function doSearch(query) {
-      const q = query.trim().toLowerCase();
-      if (!q) return;
 
-      document.getElementById('autocompleteList').classList.remove('open');
-
-      const matched = destinations.filter(d =>
-        d.name.toLowerCase().includes(q) ||
-        d.loc.toLowerCase().includes(q) ||
-        d.tags.toLowerCase().includes(q) ||
-        d.badge.toLowerCase().includes(q)
-      );
-
-      const section = document.getElementById('searchResultsSection');
-      section.classList.add('visible');
-      document.getElementById('searchTermDisplay').textContent = '"' + query.trim() + '"';
-      document.getElementById('searchCount').textContent = matched.length + ' found';
-
-      const grid = document.getElementById('searchResultsGrid');
-      const noRes = document.getElementById('noResults');
-      if (matched.length === 0) { grid.innerHTML = ''; noRes.style.display = 'block'; }
-      else { noRes.style.display = 'none'; grid.innerHTML = matched.map(buildResultCard).join(''); }
-
-      setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
-
-      // Highlight matching cards in main grid
-      document.querySelectorAll('#destinations .dest-card').forEach(card => {
-        const isMatch = (card.dataset.name || '').toLowerCase().includes(q) ||
-          (card.dataset.tags || '').toLowerCase().includes(q);
-        card.classList.toggle('search-match', isMatch);
-        card.classList.toggle('search-dim', !isMatch);
-      });
-    }
-
-    function clearSearch() {
-      document.getElementById('heroSearch').value = '';
-      document.getElementById('searchResultsSection').classList.remove('visible');
-      document.querySelectorAll('#destinations .dest-card').forEach(c => {
-        c.classList.remove('search-match', 'search-dim');
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    /* original function name kept so onclick="handleSearch()" still works */
-    function handleSearch() { doSearch(document.getElementById('heroSearch').value); }
-
-    document.getElementById('heroSearch').addEventListener('keypress', e => {
-      if (e.key === 'Enter') handleSearch();
-    });
-
-    /* ── Autocomplete ── */
-    document.getElementById('heroSearch').addEventListener('input', function () {
-      const q = this.value.trim().toLowerCase();
-      const ac = document.getElementById('autocompleteList');
-      if (!q) { ac.classList.remove('open'); return; }
-
-      const sugg = destinations.filter(d =>
-        d.name.toLowerCase().includes(q) ||
-        d.tags.toLowerCase().includes(q) ||
-        d.loc.toLowerCase().includes(q)
-      );
-      if (!sugg.length) { ac.classList.remove('open'); return; }
-
-      ac.innerHTML = sugg.map(d => `
-        <div class="autocomplete-item"
-             onclick="doSearch('${d.name}');document.getElementById('heroSearch').value='${d.name}';">
-          <i class="fas fa-map-marker-alt ac-icon"></i>
-          <span>${d.name}</span>
-          <span class="ac-badge">${d.badge}</span>
-        </div>`).join('');
-      ac.classList.add('open');
-    });
-
-    document.addEventListener('click', e => {
-      if (!e.target.closest('#heroSearch') && !e.target.closest('#autocompleteList'))
-        document.getElementById('autocompleteList').classList.remove('open');
-    });
 
     /* ── Save / Wishlist (original logic unchanged) ── */
     function toggleSave(btn) {
@@ -738,17 +729,47 @@
     });
 
   </script>
+
   <!-- Toast Container -->
   <div id="toastContainer"
     style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;"></div>
+
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    /* ═══════════════════════════════════════
+       GATED NAVBAR — Pre/Post Login
+    ═══════════════════════════════════════ */
+    function applyGatedNav() {
+      const isLoggedIn = TmAuth.isLogged();
       const user = TmAuth.getUser();
 
-      if (user && user.role === 'admin') {
+      // Toggle guest/auth nav items
+      document.querySelectorAll('.nav-guest').forEach(el => el.style.display = isLoggedIn ? 'none' : '');
+      document.querySelectorAll('.nav-auth').forEach(el => el.style.display = isLoggedIn ? '' : 'none');
+      document.querySelectorAll('.nav-guest-btn').forEach(el => el.style.display = isLoggedIn ? 'none' : '');
+
+      // Toggle auth-only content sections (destinations, guides, search)
+      document.querySelectorAll('.nav-auth-section').forEach(el => el.style.display = isLoggedIn ? '' : 'none');
+      // Toggle guest-only content sections (CTA banner)
+      document.querySelectorAll('.nav-guest-section').forEach(el => el.style.display = isLoggedIn ? 'none' : '');
+
+      // Admin nav
+      if (user && user.role === 'Admin') {
         document.getElementById('adminNav').style.display = 'block';
       }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyGatedNav();
     });
+  </script>
+  <script>
+    // Points System check
+    (function () {
+      const el = document.getElementById('pointsCounter');
+      if (!el) return;
+      const pts = Number(localStorage.getItem('tm_points') || 0);
+      el.textContent = pts + ' pts';
+    })();
   </script>
 </body>
 

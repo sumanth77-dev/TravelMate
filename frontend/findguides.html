@@ -20,7 +20,7 @@
       --text-foreground: #0f172a;
       --text-muted: #64748b;
       --border-color: #e2e8f0;
-      --primary-light-bg: rgba(34, 197, 94, 0.1);
+      --primary-light-bg: rgba(37, 99, 235, 0.1);
       --warning: #eab308;
     }
 
@@ -440,6 +440,14 @@
         transform: translateY(0);
       }
     }
+
+    /* Smooth Page Transitions */
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+    body { animation: pageEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+    @keyframes pageEnter { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    * { transition: all 0.3s ease; }
+    button:hover { transform: translateY(-2px); }
+    .dest-card:hover, .guide-card:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(37,99,235,0.2); }
   </style>
 </head>
 
@@ -640,140 +648,8 @@
     /* ══════════════════════════════
        REACT DATA MIGRATION
     ══════════════════════════════ */
-    let guidesData = [
-      {
-        id: "1",
-        name: "Aarav Sharma",
-        avatar: "assets/guide_aarav.png",
-        location: "Jaipur, Rajasthan",
-        languages: ["English", "Hindi", "French"],
-        rating: 4.9,
-        reviewCount: 142,
-        pricePerDay: 2500,
-        specialties: ["Heritage Walks", "Photography Tours", "Food Tours"],
-        available: true,
-      },
-      {
-        id: "2",
-        name: "Priya Patel",
-        avatar: "assets/guide_priya.png",
-        location: "Jaipur, Rajasthan",
-        languages: ["English", "Hindi", "Spanish"],
-        rating: 4.7,
-        reviewCount: 98,
-        pricePerDay: 2000,
-        specialties: ["Cultural Tours", "Art & Crafts", "Temple Visits"],
-        available: true,
-      },
-      {
-        id: "3",
-        name: "Ravi Kumar",
-        avatar: "assets/guide_ravi.png",
-        location: "Goa",
-        languages: ["English", "Hindi", "Portuguese"],
-        rating: 4.8,
-        reviewCount: 210,
-        pricePerDay: 3000,
-        specialties: ["Beach Tours", "Nightlife", "Water Sports"],
-        available: true,
-      },
-      {
-        id: "4",
-        name: "Meera Nair",
-        avatar: "assets/guide_meera.png",
-        location: "Kerala",
-        languages: ["English", "Malayalam", "Hindi"],
-        rating: 4.6,
-        reviewCount: 75,
-        pricePerDay: 1800,
-        specialties: ["Backwater Tours", "Ayurveda", "Nature Walks"],
-        available: true,
-      },
-      {
-        id: "5",
-        name: "Arjun Reddy",
-        avatar: "assets/guide_aarav.png",
-        location: "Hampi, Karnataka",
-        languages: ["English", "Kannada", "Hindi"],
-        rating: 4.9,
-        reviewCount: 165,
-        pricePerDay: 2200,
-        specialties: ["Archaeology", "Heritage Sites", "Cycling Tours"],
-        available: false,
-      },
-      {
-        id: "6",
-        name: "Sanya Gupta",
-        avatar: "assets/guide_priya.png",
-        location: "Varanasi, UP",
-        languages: ["English", "Hindi"],
-        rating: 4.5,
-        reviewCount: 88,
-        pricePerDay: 1500,
-        specialties: ["Spiritual Tours", "Boat Rides", "Street Food"],
-        available: true,
-      },
-      {
-        id: "7",
-        name: "Kabir Singh",
-        avatar: "assets/guide_ravi.png",
-        location: "Manali, HP",
-        languages: ["English", "Hindi", "Punjabi"],
-        rating: 4.8,
-        reviewCount: 130,
-        pricePerDay: 2800,
-        specialties: ["Trekking", "Adventure Sports", "Camping"],
-        available: true,
-      },
-      {
-        id: "8",
-        name: "Diya Chatterjee",
-        avatar: "assets/guide_meera.png",
-        location: "Darjeeling, WB",
-        languages: ["English", "Bengali", "Hindi", "Nepali"],
-        rating: 4.7,
-        reviewCount: 92,
-        pricePerDay: 1900,
-        specialties: ["Tea Garden Tours", "Monastery Visits", "Sunrise Points"],
-        available: true,
-      },
-      {
-        id: "9",
-        name: "Elena Rossi",
-        avatar: "assets/guide_priya.png",
-        location: "Rome, Italy",
-        languages: ["English", "Italian", "Spanish"],
-        rating: 4.9,
-        reviewCount: 245,
-        pricePerDay: 5000,
-        specialties: ["Heritage Walks", "Food Tours", "Art & Crafts"],
-        available: true,
-      },
-      {
-        id: "10",
-        name: "Kenji Tanaka",
-        avatar: "assets/guide_aarav.png",
-        location: "Tokyo, Japan",
-        languages: ["English", "Japanese"],
-        rating: 4.8,
-        reviewCount: 180,
-        pricePerDay: 4500,
-        specialties: ["Nightlife", "Street Food", "Temple Visits"],
-        available: true,
-      },
-      {
-        id: "11",
-        name: "Sophie Laurent",
-        avatar: "assets/guide_meera.png",
-        location: "Paris, France",
-        languages: ["English", "French"],
-        rating: 4.7,
-        reviewCount: 310,
-        pricePerDay: 4800,
-        specialties: ["Photography Tours", "Cultural Tours", "Art & Crafts"],
-        available: true,
-      },
-    ];
+    // Start with empty - will be populated from API
+    let guidesData = [];
 
     const allLanguages = ["English", "Hindi", "French", "Spanish", "Portuguese", "Malayalam", "Kannada", "Punjabi", "Bengali", "Nepali", "Italian", "Japanese"];
     const allSpecialties = [
@@ -869,23 +745,31 @@
           </div>
         </div>
       `).join('');
-      countDisplay.textContent = 'Searching guides...';
+      countDisplay.textContent = 'Loading guides...';
 
       // Simulate network request
       setTimeout(() => {
-        countDisplay.textContent = `${guides.length} guide${guides.length !== 1 ? 's' : ''} found`;
-
-        if (guides.length === 0) {
+        // Check if API data loaded
+        if (!guides || guides.length === 0) {
+          countDisplay.textContent = 'No guides loaded';
           container.innerHTML = `
-            <div class="no-results-panel fade-up" style="grid-column: 1 / -1; padding: 40px; text-align: center;">
-              <i class="fas fa-users" style="font-size:3rem; color:#cbd5e1; margin-bottom:16px;"></i>
-              <h3 style="color:#64748b; margin-bottom:8px;">No Guides Found 🗺️</h3>
-              <p>We couldn't find any guides matching your criteria.</p>
+            <div class="no-results-panel fade-up" style="grid-column: 1 / -1; padding: 40px; text-align: center; background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px;">
+              <i class="fas fa-wifi-slash" style="font-size:3rem; color:#b45309; margin-bottom:16px;"></i>
+              <h3 style="color:#b45309; margin-bottom:8px;">Guide Data Not Available</h3>
+              <p style="color:#92400e; margin-bottom:20px;">Unable to load guides from the server. Please check:</p>
+              <ul style="color:#92400e; text-align:left; display:inline-block;">
+                <li>✓ Backend server is running (port 5000)</li>
+                <li>✓ You're accessing via HTTP (not file://)</li>
+                <li>✓ Try refreshing the page</li>
+              </ul>
+              <p style="color:#92400e; margin-top:20px; font-size:14px;">Open browser console (F12) for more details</p>
             </div>
           `;
           if (typeof observer !== 'undefined') container.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
           return;
         }
+
+        countDisplay.textContent = `${guides.length} guide${guides.length !== 1 ? 's' : ''} found`;
 
         const html = guides.map((guide, index) => {
           const unavailableBadge = !guide.available ? `<span class="status-unavailable">Unavailable</span>` : '';
@@ -1007,17 +891,24 @@
 
     async function fetchGuidesFromBackend(searchTxt = "") {
       try {
+        console.log('🔍 Fetching guides from API...');
         let url = 'http://localhost:5000/api/guides';
         if (searchTxt) {
           url += '?search=' + encodeURIComponent(searchTxt);
         }
+        console.log('📡 API URL:', url);
+        
         const response = await fetch(url);
+        console.log('📬 API Response Status:', response.status);
+        
         if (response.ok) {
           const data = await response.json();
+          console.log('✅ Received guides from API:', data.length);
+          
           const apiGuides = data.map(g => ({
             id: g.id.toString(),
             name: g.full_name,
-            avatar: g.profile_photo ? 'http://localhost:5000/' + g.profile_photo : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + encodeURIComponent(g.full_name),
+            avatar: g.profile_photo ? (g.profile_photo.startsWith('http') ? g.profile_photo : 'http://localhost:5000/' + g.profile_photo) : "https://api.dicebear.com/7.x/avataaars/svg?seed=" + encodeURIComponent(g.full_name),
             location: g.city_location || "Not specified",
             languages: g.languages_spoken ? g.languages_spoken.split(',').map(s => s.trim()) : [],
             rating: Number(g.average_rating) || 0,
@@ -1027,13 +918,45 @@
             available: true,
             shortbio: g.short_bio ? (g.short_bio.substring(0, 75) + '...') : 'Passionate local guide eager to show you around.'
           }));
+          
+          console.log('🖼️  Sample guide avatar:', apiGuides[0]?.avatar);
           guidesData = apiGuides;
+        } else {
+          console.warn('⚠️  API returned status:', response.status);
         }
-      } catch (e) { console.error('API Error:', e); }
+      } catch (e) { 
+        console.error('❌ API Error:', e.message);
+        console.log('💡 Make sure backend is running at http://localhost:5000');
+        console.log('💡 Also make sure to access this page via HTTP, not file:// protocol');
+      }
     }
 
     // Initial render
     document.addEventListener('DOMContentLoaded', async () => {
+      console.log('📍 Current URL:', window.location.href);
+      
+      // Check if accessing via file:// and show warning
+      if (window.location.protocol === 'file:') {
+        console.warn('⚠️  IMPORTANT: Accessed via file:// protocol which blocks API calls!');
+        const container = document.getElementById('guidesContainer');
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1; padding: 40px; background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; text-align: center;">
+            <h2 style="color: #b45309; margin-bottom: 16px;">⚠️ Access via HTTP Required</h2>
+            <p style="color: #92400e; font-size: 16px; margin-bottom: 20px;">This page must be accessed via HTTP server, not file:// protocol.</p>
+            <p style="color: #92400e; font-size: 14px; margin-bottom: 20px;">
+              <strong>Use this URL instead:</strong><br>
+              <code style="background: white; padding: 8px 12px; border-radius: 6px; display: inline-block;">http://localhost:3000/findguides.html</code>
+            </p>
+            <ol style="color: #92400e; text-align: left; display: inline-block; margin: 20px 0;">
+              <li>Make sure frontend server is running on port 3000</li>
+              <li>Copy and paste the URL above into your browser's address bar</li>
+              <li>Press Enter - guides with AI profile photos will load</li>
+            </ol>
+          </div>
+        `;
+        return;
+      }
+      
       await fetchGuidesFromBackend("");
       renderGuides(guidesData);
     });

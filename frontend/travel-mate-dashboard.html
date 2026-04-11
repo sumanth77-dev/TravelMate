@@ -11,11 +11,11 @@
   <script src="tm-auth.js"></script>
   <style>
     :root {
-      --primary: #22c55e;
-      --primary-dark: #16a34a;
-      --primary-light: #dcfce7;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #dbeafe;
       --accent: #f59e0b;
-      --bg: #f0fdf4;
+      --bg: #eff6ff;
       --white: #ffffff;
       --text: #111827;
       --muted: #6b7280;
@@ -39,7 +39,7 @@
 
     /* ══════ HERO BANNER ══════ */
     .guide-hero {
-      background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
       padding: 100px 30px 0;
       position: relative;
       overflow: hidden;
@@ -49,7 +49,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%2322c55e' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%232563eb' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
 
     /* PROFILE HEADER */
@@ -73,7 +73,7 @@
       width: 100px;
       height: 100px;
       border-radius: 50%;
-      border: 4px solid #22c55e;
+      border: 4px solid #2563eb;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -81,7 +81,7 @@
       font-size: 32px;
       font-weight: 700;
       color: #fff;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
       overflow: hidden;
       flex-shrink: 0;
     }
@@ -120,15 +120,15 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(34, 197, 94, .25);
-      color: #86efac;
+      background: rgba(37, 99, 235, .25);
+      color: #93c5fd;
       padding: 4px 14px;
       border-radius: 50px;
       font-size: 0.78rem;
       font-weight: 700;
       letter-spacing: .07em;
       text-transform: uppercase;
-      border: 1px solid rgba(134, 239, 172, .35);
+      border: 1px solid rgba(147, 197, 253, .35);
       margin-bottom: 10px;
     }
 
@@ -147,7 +147,7 @@
     }
 
     .guide-meta-row i {
-      color: #86efac;
+      color: #93c5fd;
     }
 
     /* STAT STRIP */
@@ -193,7 +193,7 @@
 
     .strip-stat .si {
       font-size: 1.1rem;
-      color: #86efac;
+      color: #93c5fd;
       margin-bottom: 6px;
       display: block;
     }
@@ -638,6 +638,57 @@
       font-size: 16px;
       padding: 4px 8px;
     }
+
+    /* ─────── SMOOTH SCROLL & PAGE TRANSITIONS ─────── */
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 80px;
+    }
+
+    body {
+      animation: pageEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes pageEnter {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Smooth element transitions */
+    * {
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Card and button animations */
+    .guide-card, .dest-card, button {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
+    }
+
+    .guide-card:hover, .dest-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(37, 99, 235, 0.15);
+    }
+
+    /* Tab transitions */
+    [role="tab"] {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [role="tab"]:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
   </style>
 </head>
 
@@ -654,7 +705,6 @@
         <!-- Dashboard link removed - will be handled by tm-auth.js -->
       </ul>
       <div style="display:flex;align-items:center;gap:12px;">
-        <div id="pointsCounter" class="badge badge-teal">0 pts</div>
       </div>
       <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
@@ -890,6 +940,108 @@
   </div>
 
   <script>
+    /* ══════════════════════════════
+       NOTIFICATION MANAGEMENT
+    ══════════════════════════════ */
+    let allNotifications = [];
+
+    function loadNotifications() {
+      if (!TmAuth.getUser()) return;
+      
+      fetch('http://localhost:5000/api/notifications', {
+        headers: { 'Authorization': `Bearer ${TmAuth.getToken()}` }
+      })
+        .then(res => res.json())
+        .then(data => {
+          allNotifications = Array.isArray(data) ? data : [];
+          
+          // Save to localStorage
+          localStorage.setItem('tm_notifications', JSON.stringify(allNotifications));
+          
+          updateNotificationUI();
+        })
+        .catch(err => {
+          console.error('Error loading notifications:', err);
+          // Fall back to localStorage
+          const saved = localStorage.getItem('tm_notifications');
+          allNotifications = saved ? JSON.parse(saved) : [];
+          updateNotificationUI();
+        });
+    }
+
+    function updateNotificationUI() {
+      const badge = document.getElementById('notificationBadge');
+      const list = document.getElementById('notificationList');
+      const count = allNotifications.length;
+
+      if (badge) {
+        if (count > 0) {
+          badge.style.display = 'flex';
+          badge.textContent = count > 9 ? '9+' : count;
+          badge.style.alignItems = 'center';
+          badge.style.justifyContent = 'center';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+
+      if (list) {
+        if (count === 0) {
+          list.innerHTML = '<div style="padding:20px; text-align:center; color:#6b7280;">No notifications yet</div>';
+        } else {
+          list.innerHTML = allNotifications.map((notif, idx) => `
+            <div style="padding:12px 16px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center; cursor:pointer; hover:background:#f8fafc;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+              <div style="flex:1;">
+                <p style="margin:0 0 4px 0; font-size:14px; font-weight:600; color:#0f172a;">${escapeHtml(notif.message || 'Notification')}</p>
+                <p style="margin:0; font-size:12px; color:#6b7280;">${new Date(notif.created_at).toLocaleDateString()}</p>
+              </div>
+              <button onclick="removeNotification(${notif.id}, ${idx}); event.stopPropagation();" style="background:none; border:none; color:#6b7280; cursor:pointer; font-size:16px; padding:4px 8px;">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    function removeNotification(notifId, idx) {
+      // Remove from array
+      allNotifications.splice(idx, 1);
+      
+      // Update localStorage
+      localStorage.setItem('tm_notifications', JSON.stringify(allNotifications));
+      
+      // Update UI
+      updateNotificationUI();
+      
+      // Mark as read on backend
+      fetch('http://localhost:5000/api/notifications/' + notifId, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${TmAuth.getToken()}` }
+      }).catch(err => console.error('Error marking notification as read:', err));
+    }
+
+    function toggleNotificationPanel() {
+      const panel = document.getElementById('notificationPanel');
+      if (panel) {
+        if (panel.style.display === 'none' || !panel.style.display) {
+          panel.style.display = 'flex';
+        } else {
+          panel.style.display = 'none';
+        }
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&"'<>]/g, c => ({ '&': '&amp;', '"': '&quot;', '\'': '&#39;', '<': '&lt;', '>': '&gt;' }[c]));
+    }
+
+    // Load notifications on page load
+    loadNotifications();
+    
+    // Refresh notifications every 30 seconds
+    setInterval(loadNotifications, 30000);
+
     /* ── Auth guard: redirect Guide users to guide-dashboard ── */
     (function () {
       var u = TmAuth.getUser();
@@ -999,42 +1151,84 @@
       })
         .then(function (r) { return r.json(); })
         .then(function (data) {
-          if (Array.isArray(data)) {
-            if (bkEl) bkEl.textContent = data.length;
-            var container = document.getElementById('dashBookingsContainer');
-            if (container) {
-              if (data.length === 0) {
-                container.innerHTML = '<p style="color:var(--muted); font-size:14px; grid-column:1/-1;text-align:center;">No upcoming bookings.</p>';
-                return;
-              }
-              container.innerHTML = data.map(function (b) {
-                var isAppr = b.status === 'approved';
-                var isComp = b.status === 'completed';
-                const cardClass = isComp ? 'completed-card' : isAppr ? '' : 'pending-card';
-                const badgeClass = isComp ? 'completed' : isAppr ? 'confirmed' : 'pending';
-                var escapeStr = function(s) { return String(s).replace(/[&"'<>]/g, c => ({ '&': '&amp;', '"': '&quot;', '\'': '&#39;', '<': '&lt;', '>': '&gt;' }[c])); };
+          let serverData = Array.isArray(data) ? data : [];
+          const rawLocal = localStorage.getItem('tm_my_bookings');
+          const localData = rawLocal ? JSON.parse(rawLocal) : [];
+          const mergedData = [...serverData, ...localData];
 
-                return `
-                <div class="bk-card ${cardClass}" style="position:relative;">
-                  <div class="bk-top">
-                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(b.guide_name || 'Guide')}&background=dcfce7&color=16a34a" alt="Guide">
-                    <div>
-                      <h3>${escapeStr(b.guide_name || 'Guide')}</h3>
-                      <p>${escapeStr(b.city_location || '')}</p>
-                    </div>
-                    <span class="status-pill ${badgeClass}" style="position:absolute; top:20px; right:20px; text-transform:capitalize;">${escapeStr(b.status)}</span>
-                  </div>
-                  <div class="bk-details">
-                    <div class="bk-detail"><i class="fas fa-calendar"></i> Date: ${new Date(b.booking_date).toLocaleDateString()}</div>
-                    <div class="bk-detail"><i class="fas fa-clock"></i> Time: ${escapeStr(b.time_slot || 'N/A')}</div>
-                    <div class="bk-detail"><i class="fas fa-users"></i> Travelers: ${b.num_people || 1}</div>
-                    <div class="bk-detail"><i class="fas fa-wallet"></i> Price: ₹${b.total_price || 'N/A'}</div>
-                  </div>
-                </div>`;
-              }).join('');
+          if (bkEl) bkEl.textContent = mergedData.length;
+          var container = document.getElementById('dashBookingsContainer');
+          if (container) {
+            if (mergedData.length === 0) {
+              container.innerHTML = '<p style="color:var(--muted); font-size:14px; grid-column:1/-1;text-align:center;">No upcoming bookings.</p>';
+              return;
             }
+            container.innerHTML = mergedData.map(function (b) {
+              var stat = (b.status || 'pending').toLowerCase();
+              var isAppr = stat === 'approved';
+              var isComp = stat === 'completed';
+              const cardClass = isComp ? 'completed-card' : isAppr ? '' : 'pending-card';
+              const badgeClass = isComp ? 'completed' : isAppr ? 'confirmed' : 'pending';
+              var escapeStr = function(s) { return String(s || '').replace(/[&"'<>]/g, c => ({ '&': '&amp;', '"': '&quot;', '\'': '&#39;', '<': '&lt;', '>': '&gt;' }[c])); };
+
+              return `
+              <div class="bk-card ${cardClass}" style="position:relative;">
+                <div class="bk-top">
+                  <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(b.guide_name || 'Guide')}&background=dbeafe&color=1d4ed8" alt="Guide">
+                  <div>
+                    <h3>${escapeStr(b.guide_name || 'Guide')}</h3>
+                    <p>${escapeStr(b.city_location || b.location || '')}</p>
+                  </div>
+                  <span class="status-pill ${badgeClass}" style="position:absolute; top:20px; right:20px; text-transform:capitalize;">${escapeStr(b.status || 'Pending')}</span>
+                </div>
+                <div class="bk-details">
+                  <div class="bk-detail"><i class="fas fa-calendar"></i> Date: ${new Date(b.booking_date).toLocaleDateString()}</div>
+                  <div class="bk-detail"><i class="fas fa-clock"></i> Duration: ${escapeStr(b.duration || b.time_slot || 'N/A')}</div>
+                  <div class="bk-detail"><i class="fas fa-users"></i> Travelers: ${b.num_people || b.group_size || 1}</div>
+                  <div class="bk-detail"><i class="fas fa-wallet"></i> Price: ₹${b.total_price || 'N/A'}</div>
+                </div>
+              </div>`;
+            }).join('');
           }
-        }).catch(function (e) { console.error(e); });
+        }).catch(function (e) {
+          console.warn('API fetch failed, falling back to local bookings', e);
+          const rawLocal = localStorage.getItem('tm_my_bookings');
+          const data = rawLocal ? JSON.parse(rawLocal) : [];
+          
+          if (bkEl) bkEl.textContent = data.length;
+          var container = document.getElementById('dashBookingsContainer');
+          if (container) {
+            if (data.length === 0) {
+              container.innerHTML = '<p style="color:var(--muted); font-size:14px; grid-column:1/-1;text-align:center;">No upcoming bookings.</p>';
+              return;
+            }
+            container.innerHTML = data.map(function (b) {
+              var isAppr = b.status && b.status.toLowerCase() === 'approved';
+              var isComp = b.status && b.status.toLowerCase() === 'completed';
+              const cardClass = isComp ? 'completed-card' : isAppr ? '' : 'pending-card';
+              const badgeClass = isComp ? 'completed' : isAppr ? 'confirmed' : 'pending';
+              var escapeStr = function(s) { return String(s || '').replace(/[&"'<>]/g, c => ({ '&': '&amp;', '"': '&quot;', '\'': '&#39;', '<': '&lt;', '>': '&gt;' }[c])); };
+
+              return `
+              <div class="bk-card ${cardClass}" style="position:relative;">
+                <div class="bk-top">
+                  <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(b.guide_name || 'Guide')}&background=dbeafe&color=1d4ed8" alt="Guide">
+                  <div>
+                    <h3>${escapeStr(b.guide_name || 'Guide')}</h3>
+                    <p>${escapeStr(b.city_location || '')}</p>
+                  </div>
+                  <span class="status-pill ${badgeClass}" style="position:absolute; top:20px; right:20px; text-transform:capitalize;">${escapeStr(b.status || 'Pending')}</span>
+                </div>
+                <div class="bk-details">
+                  <div class="bk-detail"><i class="fas fa-calendar"></i> Date: ${new Date(b.booking_date).toLocaleDateString()}</div>
+                  <div class="bk-detail"><i class="fas fa-clock"></i> Duration: ${escapeStr(b.duration || 'N/A')} hours</div>
+                  <div class="bk-detail"><i class="fas fa-users"></i> Travelers: ${b.group_size || b.num_people || 1}</div>
+                  <div class="bk-detail"><i class="fas fa-wallet"></i> Price: ₹${b.total_price || 'N/A'}</div>
+                </div>
+              </div>`;
+            }).join('');
+          }
+        });
     })();
 
     /* ── Navbar scroll effect ── */
@@ -1081,7 +1275,7 @@
 
     .bk-card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 10px 28px rgba(34, 197, 94, .12);
+      box-shadow: 0 10px 28px rgba(37, 99, 235, .12);
     }
 
     .bk-card.pending-card {
@@ -1147,8 +1341,8 @@
     }
 
     .status-pill.confirmed {
-      background: #dcfce7;
-      color: #16a34a;
+      background: #dbeafe;
+      color: #1d4ed8;
     }
 
     .status-pill.pending {
@@ -1293,7 +1487,7 @@
         <div class="wishlist-empty" style="background:#fff; border-radius:16px; padding:60px 24px; box-shadow:var(--card-shadow); text-align:center; grid-column:1/-1; border-top:4px solid var(--primary);">
           <h3 style="font-family:'Playfair Display', serif; font-size:1.5rem; color:var(--text); margin-bottom:8px;">Your Wishlist Is Empty</h3>
           <p style="color:var(--muted); font-size:14px; margin-bottom:24px;">Go to the home page and click ❤️ on any destination to thoughtfully save it here.</p>
-          <a href="index.html" style="display:inline-block; background:var(--primary); color:#fff; padding:12px 28px; border-radius:50px; text-decoration:none; font-weight:700; font-size:13.5px; transition:background 0.2s; box-shadow:0 4px 12px rgba(34,197,94,0.3);">Explore Destinations</a>
+          <a href="index.html" style="display:inline-block; background:var(--primary); color:#fff; padding:12px 28px; border-radius:50px; text-decoration:none; font-weight:700; font-size:13.5px; transition:background 0.2s; box-shadow:0 4px 12px rgba(37,99,235,0.3);">Explore Destinations</a>
         </div>`;
         return;
       }
@@ -1343,7 +1537,7 @@
         const escaped = String(user).replace(/[&"'<>]/g, c => ({ '&': '&amp;', '"': '&quot;', '\\\'': '&#39;', '<': '&lt;', '>': '&gt;' }[c]));
         return `
       <div class="wishlist-card" style="padding:24px 16px;text-align:center;display:flex;flex-direction:column;align-items:center;">
-        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user)}&background=dcfce7&color=16a34a&size=80" alt="${escaped}" style="width:72px;height:72px;border-radius:50%;margin:0 auto 12px;border:3px solid #f1f5f9;object-fit:cover;">
+        <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(user)}&background=dbeafe&color=1d4ed8&size=80" alt="${escaped}" style="width:72px;height:72px;border-radius:50%;margin:0 auto 12px;border:3px solid #f1f5f9;object-fit:cover;">
         <h3 style="font-size:16px;font-weight:700;margin-bottom:4px;color:var(--text);">${escaped}</h3>
         <p style="font-size:13px;color:var(--muted);margin-bottom:16px;"><i class="fas fa-suitcase-rolling" style="color:var(--primary);"></i> Explorer</p>
         <button onclick="localStorage.setItem('tm_targetUser','${escaped}');window.location.href='user-profile.html'" 

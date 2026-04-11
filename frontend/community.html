@@ -13,9 +13,9 @@
 
 <style>
 :root{
-  --primary:#22c55e;
-  --primary-dark:#16a34a;
-  --light:#f0fdf4;
+  --primary:#2563eb;
+  --primary-dark:#1d4ed8;
+  --light:#eff6ff;
   --white:#ffffff;
   --text:#1f2937;
 }
@@ -42,7 +42,7 @@ body{
   background:white;
   border-radius:25px;
   padding:0 0 20px;
-  box-shadow:0 10px 30px rgba(34,197,94,0.15);
+  box-shadow:0 10px 30px rgba(37,99,235,0.15);
   overflow:hidden;
 }
 
@@ -98,7 +98,7 @@ body{
   transition:border-color .2s, transform .15s;
 }
 .thumb-strip img.active{ border-color:var(--primary); transform:scale(1.04); }
-.thumb-strip img:hover{ border-color:#86efac; }
+.thumb-strip img:hover{ border-color:#93c5fd; }
 
 .place-desc{ padding:14px 22px 0; color:#555; font-size:0.97rem; }
 
@@ -169,7 +169,7 @@ body{
 }
 .review-avatar{
   width:44px; height:44px; border-radius:50%;
-  background:linear-gradient(135deg,#22c55e,#16a34a);
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
   color:#fff; display:flex; align-items:center; justify-content:center;
   font-weight:700; font-size:1.15rem; flex-shrink:0;
 }
@@ -202,13 +202,13 @@ body{
 .inline-msg-box{
   display:none;
   margin-top:14px;
-  background:#f0fdf4;
+  background:#eff6ff;
   border-radius:14px;
   padding:14px 16px;
   border:1px solid #bbf7d0;
 }
 .inline-msg-box textarea{
-  width:100%; border:1px solid #d1fae5; border-radius:10px;
+  width:100%; border:1px solid #bfdbfe; border-radius:10px;
   padding:9px 12px; font-family:'Poppins',sans-serif; font-size:0.88rem;
   resize:none; outline:none; background:#fff; transition:border .2s;
 }
@@ -238,7 +238,7 @@ body{
   justify-content:flex-end;
 }
 .msg-bubble{
-  background:#dcfce7;
+  background:#dbeafe;
   border:1px solid #bbf7d0;
   border-radius:16px 16px 4px 16px;
   padding:9px 14px;
@@ -301,6 +301,14 @@ body{
   .place-hero-overlay .overlay-title{ font-size:1.6rem; }
   .thumb-strip img{ width:80px; height:54px; }
 }
+
+/* Smooth Page Transitions */
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+body { animation: pageEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+@keyframes pageEnter { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+* { transition: all 0.3s ease; }
+button:hover { transform: translateY(-2px); }
+.guide-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(37,99,235,0.2); }
 </style>
 </head>
 
@@ -465,26 +473,26 @@ body{
 
   </div><!-- /reviews section -->
 
+  <!-- COMMUNITY POSTS SECTION -->
+  <div class="section" id="posts">
+    <h2 style="margin-top:0;color:#1f2937;font-size:1.25rem;margin-bottom:18px;">Posts About This Place</h2>
+    <div id="communityPostsContainer" style="display:flex;flex-direction:column;gap:16px;"></div>
+    <div id="noPostsMsg" style="display:none;text-align:center;padding:30px;background:#f3f4f6;border-radius:16px;color:#9ca3af;">
+      <i class="fas fa-inbox" style="font-size:2rem;margin-bottom:8px;display:block;"></i>
+      <p style="margin:0;font-size:0.98rem;">No posts yet for this place. Be the first to share your experience on the <a href="main_community.html" style="color:#2563eb;text-decoration:none;font-weight:600;">Community</a> page!</p>
+    </div>
+  </div>
+
   <!-- GUIDES SECTION -->
   <div class="section" id="guides">
-    <div class="guide-card">
-      <a href="guide-profile.html?guide=RameshKumar" style="display:block;"><img src="https://ui-avatars.com/api/?name=Ramesh+Kumar&background=dcfce7&color=16a34a&size=60" alt="Ramesh"></a>
-      <div>
-        <div class="guide-name">Ramesh Kumar</div>
-        <div class="guide-sub">5 Years Experience | English &amp; Hindi</div>
-      </div>
-      <a href="guide-profile.html?guide=RameshKumar" class="guide-btn">View &amp; Book</a>
+    <h2 style="margin-top:0;color:#1f2937;font-size:1.25rem;margin-bottom:18px;">Available Guides for This Place</h2>
+    <div id="guidesContainer" style="display:flex;flex-direction:column;gap:16px;"></div>
+    <div id="noGuidesMsg" style="display:none;text-align:center;padding:30px;background:#f3f4f6;border-radius:16px;color:#9ca3af;">
+      <i class="fas fa-compass" style="font-size:2rem;margin-bottom:8px;display:block;"></i>
+      <p style="margin:0;font-size:0.98rem;">No guides available yet for this place. <a href="findguides.html" style="color:#2563eb;text-decoration:none;font-weight:600;">Browse all guides</a></p>
     </div>
-    <div class="guide-card">
-      <a href="guide-profile.html?guide=AnitaSharma" style="display:block;"><img src="https://ui-avatars.com/api/?name=Anita+Sharma&background=dcfce7&color=16a34a&size=60" alt="Anita"></a>
-      <div>
-        <div class="guide-name">Anita Sharma</div>
-        <div class="guide-sub">3 Years Experience | English</div>
-      </div>
-      <a href="guide-profile.html?guide=AnitaSharma" class="guide-btn">View &amp; Book</a>
-    </div>
-    <div style="text-align:center;margin-top:10px;">
-      <a href="findguides.html" style="display:inline-flex;align-items:center;gap:8px;background:#f0fdf4;color:#16a34a;padding:11px 28px;border-radius:50px;font-weight:600;font-size:0.9rem;text-decoration:none;border:1.5px solid #bbf7d0;transition:all .2s;" onmouseover="this.style.background='#22c55e';this.style.color='white'" onmouseout="this.style.background='#f0fdf4';this.style.color='#16a34a'">
+    <div style="text-align:center;margin-top:20px;">
+      <a href="findguides.html" style="display:inline-flex;align-items:center;gap:8px;background:#eff6ff;color:#1d4ed8;padding:11px 28px;border-radius:50px;font-weight:600;font-size:0.9rem;text-decoration:none;border:1.5px solid #bbf7d0;transition:all .2s;" onmouseover="this.style.background='#2563eb';this.style.color='white'" onmouseout="this.style.background='#eff6ff';this.style.color='#1d4ed8'">
         <i class="fas fa-compass"></i> Browse All Available Guides
       </a>
     </div>
@@ -707,7 +715,7 @@ window.addEventListener('scroll', function () {
 
     const initial = name.charAt(0).toUpperCase();
     const colors = [
-      'linear-gradient(135deg,#22c55e,#16a34a)',
+      'linear-gradient(135deg,#2563eb,#1d4ed8)',
       'linear-gradient(135deg,#3b82f6,#1d4ed8)',
       'linear-gradient(135deg,#f59e0b,#d97706)',
       'linear-gradient(135deg,#ec4899,#be185d)',
@@ -778,10 +786,13 @@ window.addEventListener('scroll', function () {
     const placeKey = (new URLSearchParams(window.location.search).get('place') || 'bali').toLowerCase();
     const allPosts = JSON.parse(localStorage.getItem('community_posts') || '[]');
     
-    // Filter posts matching this place (by location containing place name)
-    const matched = allPosts.filter(p =>
-      p.location && p.location.toLowerCase().includes(placeKey.replace(/[^a-z]/g,''))
-    );
+    // Filter posts matching this place (by location or place_name containing place name)
+    const matched = allPosts.filter(p => {
+      if (!p.location && !p.place_name) return false;
+      const locationStr = (p.location || '') + ' ' + (p.place_name || '');
+      return locationStr.toLowerCase().includes(placeKey) || 
+             locationStr.toLowerCase().replace(/[^a-z]/g,'').includes(placeKey.replace(/[^a-z]/g,''));
+    });
     
     const container = document.getElementById('communityPostsContainer');
     const noMsg     = document.getElementById('noPostsMsg');
@@ -792,7 +803,7 @@ window.addEventListener('scroll', function () {
     }
 
     matched.forEach(p => {
-      const avatarUrl = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(p.author||'T') + '&background=dcfce7&color=16a34a&size=40';
+      const avatarUrl = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(p.author||'T') + '&background=dbeafe&color=1d4ed8&size=40';
       const stars = '★'.repeat(p.rating||0) + '☆'.repeat(5-(p.rating||0));
       let photosHtml = '';
       if (p.images && p.images.length > 1) {
@@ -808,7 +819,7 @@ window.addEventListener('scroll', function () {
       card.innerHTML = `
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
           <a href="user-profile.html" onclick="localStorage.setItem('tm_targetUser', '${(p.author||'').replace(/'/g, "\\'")}')">
-            <img src="${avatarUrl}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #dcfce7;">
+            <img src="${avatarUrl}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #dbeafe;">
           </a>
           <div>
             <div style="font-weight:700;font-size:0.95rem;">
@@ -825,6 +836,123 @@ window.addEventListener('scroll', function () {
       
       container.appendChild(card);
     });
+  })();
+
+  /* ── Load real guides for this place from API ── */
+  (function loadGuidesForPlace(){
+    const placeParam = (new URLSearchParams(window.location.search).get('place') || 'bali').toLowerCase();
+    const guidesContainer = document.getElementById('guidesContainer');
+    const noGuidesMsg = document.getElementById('noGuidesMsg');
+
+    if (!guidesContainer) {
+      console.error('❌ guidesContainer not found!');
+      return;
+    }
+
+    console.log('🔍 Loading guides for place:', placeParam);
+
+    // Map place names to search keywords
+    const placeKeywords = {
+      'bali': ['bali', 'indonesia'],
+      'tokyo': ['tokyo', 'japan'],
+      'kyoto': ['kyoto', 'japan'],
+      'paris': ['paris', 'france'],
+      'swiss': ['swiss', 'alps'],
+      'maldives': ['maldives'],
+      'goa': ['goa'],
+      'manali': ['manali'],
+      'varanasi': ['varanasi'],
+      'queenstown': ['queenstown'],
+      'jaipur': ['jaipur'],
+      'rome': ['rome', 'italy']
+    };
+
+    const searchKeywords = placeKeywords[placeParam] || [placeParam];
+    console.log('🔎 Search keywords:', searchKeywords);
+
+    // Try fetching from API
+    fetch('http://localhost:5000/api/guides?t=' + Date.now(), {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    })
+      .then(res => {
+        console.log('📡 API response status:', res.status);
+        if (!res.ok) throw new Error('API returned ' + res.status);
+        return res.json();
+      })
+      .then(guides => {
+        console.log('✅ API Success - Total guides:', guides ? guides.length : 0);
+        
+        if (!Array.isArray(guides) || guides.length === 0) {
+          console.warn('⚠️  No guides returned from API');
+          noGuidesMsg.style.display = 'block';
+          return;
+        }
+
+        // Filter guides by checking both areas_you_guide AND city_location
+        const filteredGuides = guides.filter(g => {
+          if (!g || !g.full_name) return false;
+          
+          const areasStr = (g.areas_you_guide || '').toLowerCase();
+          const cityStr = (g.city_location || '').toLowerCase();
+          const bioStr = (g.short_bio || '').toLowerCase();
+          
+          const match = searchKeywords.some(keyword => 
+            areasStr.includes(keyword) || 
+            cityStr.includes(keyword) ||
+            bioStr.includes(keyword)
+          );
+          
+          if (match) {
+            console.log(`✅ Matched: ${g.full_name}`);
+          }
+          
+          return match;
+        });
+
+        console.log(`📊 Filtered ${filteredGuides.length} guides for "${placeParam}"`);
+
+        if (filteredGuides.length === 0) {
+          console.warn('⚠️  No guides match the place filter');
+          noGuidesMsg.style.display = 'block';
+          return;
+        }
+
+        // Clear any previous content
+        guidesContainer.innerHTML = '';
+
+        // Display up to 5 best guides for this place
+        filteredGuides.slice(0, 5).forEach((guide, idx) => {
+          try {
+            const guideId = guide.id;
+            const experienceText = guide.years_of_experience ? guide.years_of_experience + ' Years Experience' : 'Experienced';
+            const languagesText = guide.languages_spoken || 'Multiple Languages';
+            const ratingDisplay = guide.average_rating ? parseFloat(guide.average_rating).toFixed(1) : 'New';
+            const avatarUrl = guide.profile_photo || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(guide.full_name) + '&background=dbeafe&color=1d4ed8&size=60');
+
+            const guideCard = document.createElement('div');
+            guideCard.className = 'guide-card';
+            guideCard.innerHTML = `
+              <a href="guide-profile.html?id=${guideId}" style="display:block;text-decoration:none;"><img src="${avatarUrl}" alt="${guide.full_name}" onerror="this.src='https://via.placeholder.com/60'"></a>
+              <div>
+                <div class="guide-name">${guide.full_name}</div>
+                <div class="guide-sub">${experienceText} | ${languagesText}</div>
+                <div style="font-size:0.8rem;color:#f59e0b;margin-top:4px;"><i class="fas fa-star"></i> ${ratingDisplay} ${guide.review_count ? '(' + guide.review_count + ' reviews)' : 'New'}</div>
+              </div>
+              <a href="guide-profile.html?id=${guideId}" class="guide-btn">View & Book</a>
+            `;
+            guidesContainer.appendChild(guideCard);
+          } catch (e) {
+            console.error('Error rendering guide ' + idx, e);
+          }
+        });
+      })
+      .catch(err => {
+        console.error('❌ API Error:', err.message);
+        console.log('⚠️  Could not load guides from API');
+        // Show no guides message
+        noGuidesMsg.style.display = 'block';
+      });
   })();
 
   // SEND — appends bubble ABOVE textarea inside the thread div
