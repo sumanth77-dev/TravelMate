@@ -132,6 +132,11 @@ body { font-family:'Plus Jakarta Sans','Poppins',Arial,sans-serif; background:va
         <button class="suggestion-btn" onclick="filterCategory('Culture', this)">⛩️ Culture</button>
       </div>
 
+      <!-- Admin Add Destination Btn -->
+      <div id="adminControls" style="display: none; text-align: right; margin-bottom: 20px;" class="fade-up delay-1">
+        <button class="btn btn-success" style="background-color: #10b981; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; color: white; display: inline-flex; align-items: center; gap: 8px;" onclick="openAddDestinationModal()"><i class="fas fa-plus"></i> Add Destination</button>
+      </div>
+
       <!-- Results Section using global dest-grid -->
       <div class="dest-grid" id="destinationContainer"></div>
     </div>
@@ -145,8 +150,8 @@ body { font-family:'Plus Jakarta Sans','Poppins',Arial,sans-serif; background:va
     })();
 
 
-// Mock Data (Frontend Only)
-const destinations = [
+// Mock Data (Frontend Fallback)
+let destinations = [
     { name: "Bali, Indonesia", category: "Beach", price: "$45", image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4", tagClass: "badge-teal", rating: 4.8, revs: "2,340" },
     { name: "Paris, France", category: "City", price: "$120", image: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a", tagClass: "badge-gold", rating: 4.9, revs: "5,621" },
     { name: "Swiss Alps, Switzerland", category: "Hill", price: "$200", image: "https://images.unsplash.com/photo-1472791108553-c9405341e398", tagClass: "badge-teal", rating: 4.7, revs: "1,980" },
@@ -172,7 +177,15 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 
 // Apply query parameter search if present, else show all
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
+    const user = TmAuth.getUser();
+    if (user && user.role === 'Admin') {
+        const adC = document.getElementById('adminControls');
+        if (adC) adC.style.display = 'block';
+    }
+
+    await loadDestinations();
+
     const params = new URLSearchParams(window.location.search);
     const initialSearch = params.get('search');
     if (initialSearch) {
@@ -181,6 +194,27 @@ window.addEventListener('DOMContentLoaded', () => {
         showAll();
     }
 });
+
+async function loadDestinations() {
+  try {
+     const res = await fetch('http://localhost:5000/api/destinations');
+     if (res.ok) {
+         const data = await res.json();
+         destinations = data.map(d => ({
+            id: d.id,
+            name: d.name,
+            category: d.badge_text,
+            price: d.price_text,
+            image: d.image_url,
+            tagClass: d.badge_class || 'badge-teal',
+            rating: parseFloat(d.rating) || 5.0,
+            revs: d.reviews_count || "0"
+         }));
+     }
+  } catch (err) {
+      console.warn("Failed to load from API. Using local destinations fallback.");
+  }
+}
 
 function displayDestinations(filteredList) {
     // 1. Inject Shimmering Skeletons
@@ -341,6 +375,99 @@ window.addEventListener('scroll', function () {
 
 <!-- Toast Container -->
 <div id="toastContainer" style="position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;"></div>
+
+<!-- Add Destination Modal -->
+<div id="addDestinationModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding:20px;">
+  <div style="background:#fff; width:100%; max-width:500px; border-radius:16px; padding:32px; box-shadow:0 10px 40px rgba(0,0,0,0.2);">
+    <h3 style="margin-bottom:24px; font-family:'Playfair Display', serif; font-weight:700; color:#0f172a;">Add New Destination</h3>
+    <form id="addDestForm" onsubmit="submitNewDestination(event)">
+      <div class="mb-3">
+         <label class="form-label" style="font-weight:600; font-size:14px; color:#475569;">Destination Name (e.g. Kyoto, Japan)</label>
+         <input type="text" id="destName" class="form-control" style="border-radius:10px; padding:12px;" required>
+      </div>
+      <div class="mb-3">
+         <label class="form-label" style="font-weight:600; font-size:14px; color:#475569;">Category (Badge Text)</label>
+         <select id="destCategory" class="form-select" style="border-radius:10px; padding:12px;" required>
+           <option value="City">City</option>
+           <option value="Beach">Beach</option>
+           <option value="Hill">Hill</option>
+           <option value="Adventure">Adventure</option>
+           <option value="Culture">Culture</option>
+         </select>
+      </div>
+      <div class="mb-3">
+         <label class="form-label" style="font-weight:600; font-size:14px; color:#475569;">Image URL</label>
+         <input type="url" id="destImage" class="form-control" style="border-radius:10px; padding:12px;" required placeholder="https://images.unsplash.com/...">
+      </div>
+      <div class="mb-4">
+         <label class="form-label" style="font-weight:600; font-size:14px; color:#475569;">Price Text (e.g. $80/night)</label>
+         <input type="text" id="destPrice" class="form-control" style="border-radius:10px; padding:12px;" required placeholder="$50/night">
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:12px;">
+         <button type="button" class="btn btn-secondary" style="border-radius:8px; padding:10px 20px; font-weight:600; background:#f1f5f9; color:#475569; border:none;" onclick="closeAddDestinationModal()">Cancel</button>
+         <button type="submit" class="btn btn-primary" id="addDestBtn" style="border-radius:8px; padding:10px 20px; font-weight:600;">Add Destination</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openAddDestinationModal() {
+  document.getElementById('addDestinationModal').style.display = 'flex';
+}
+function closeAddDestinationModal() {
+  document.getElementById('addDestinationModal').style.display = 'none';
+  document.getElementById('addDestForm').reset();
+}
+async function submitNewDestination(e) {
+  e.preventDefault();
+  const btn = document.getElementById('addDestBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+
+  const nameVal = document.getElementById('destName').value.trim();
+  const spl = nameVal.split(',');
+  const loc = spl.length > 1 ? spl[spl.length-1].trim() : nameVal;
+
+  const payload = {
+     name: nameVal,
+     location: loc,
+     badge_text: document.getElementById('destCategory').value,
+     image_url: document.getElementById('destImage').value.trim(),
+     price_text: document.getElementById('destPrice').value.trim()
+  };
+
+  try {
+     const res = await fetch('http://localhost:5000/api/destinations/add', {
+       method: 'POST',
+       headers: { 
+         'Content-Type': 'application/json',
+         'Authorization': `Bearer ${TmAuth.getToken()}`
+       },
+       body: JSON.stringify(payload)
+     });
+     
+     if (res.ok) {
+       closeAddDestinationModal();
+       if (window.TmToast) window.TmToast.show('Destination added successfully!', 'success');
+       else alert('Added successfully');
+       
+       await loadDestinations();
+       document.querySelector('.suggestion-btn.active').click(); // trigger filtering refresh
+     } else {
+       const err = await res.json();
+       if (window.TmToast) window.TmToast.show('Error: ' + err.message, 'error');
+       else alert('Error: ' + err.message);
+     }
+  } catch (err) {
+     if (window.TmToast) window.TmToast.show('Network error while adding.', 'error');
+     else alert('Network error while adding.');
+  } finally {
+     btn.disabled = false;
+     btn.innerHTML = 'Add Destination';
+  }
+}
+</script>
 
 </body>
 </html>

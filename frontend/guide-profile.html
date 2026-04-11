@@ -435,79 +435,7 @@
     /* ══════════════════════════════
        REACT DATA MIGRATION
     ══════════════════════════════ */
-    const guidesData = [
-      {
-        id: "1", name: "Aarav Sharma", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=aarav", location: "Jaipur, Rajasthan",
-        languages: ["English", "Hindi", "French"], rating: 4.9, reviewCount: 142, pricePerDay: 2500, experience: 8,
-        specialties: ["Heritage Walks", "Photography Tours", "Food Tours"],
-        bio: "Passionate about Rajasthani heritage with 8 years of guiding experience. I specialize in uncovering hidden gems and local stories that bring history to life.",
-        available: true,
-      },
-      {
-        id: "2", name: "Priya Patel", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=priya", location: "Jaipur, Rajasthan",
-        languages: ["English", "Hindi", "Spanish"], rating: 4.7, reviewCount: 98, pricePerDay: 2000, experience: 5,
-        specialties: ["Cultural Tours", "Art & Crafts", "Temple Visits"],
-        bio: "Art enthusiast and certified guide specializing in Rajasthani culture, art, and traditions. Let me show you the colorful side of Jaipur!",
-        available: true,
-      },
-      {
-        id: "3", name: "Ravi Kumar", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ravi", location: "Goa",
-        languages: ["English", "Hindi", "Portuguese"], rating: 4.8, reviewCount: 210, pricePerDay: 3000, experience: 10,
-        specialties: ["Beach Tours", "Nightlife", "Water Sports"],
-        bio: "Born and raised in Goa, I know every hidden beach and secret spot. From serene sunsets to vibrant nightlife, I've got you covered.",
-        available: true,
-      },
-      {
-        id: "4", name: "Meera Nair", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=meera", location: "Kerala",
-        languages: ["English", "Malayalam", "Hindi"], rating: 4.6, reviewCount: 75, pricePerDay: 1800, experience: 4,
-        specialties: ["Backwater Tours", "Ayurveda", "Nature Walks"],
-        bio: "Explore the God's own country with me. From tranquil backwaters to lush tea gardens, Kerala has endless beauty to offer.",
-        available: true,
-      },
-      {
-        id: "5", name: "Arjun Reddy", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=arjun", location: "Hampi, Karnataka",
-        languages: ["English", "Kannada", "Hindi"], rating: 4.9, reviewCount: 165, pricePerDay: 2200, experience: 7,
-        specialties: ["Archaeology", "Heritage Sites", "Cycling Tours"],
-        bio: "History buff with deep knowledge of Vijayanagara Empire ruins. I make ancient stones tell their stories.",
-        available: false,
-      },
-      {
-        id: "6", name: "Sanya Gupta", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sanya", location: "Varanasi, UP",
-        languages: ["English", "Hindi"], rating: 4.5, reviewCount: 88, pricePerDay: 1500, experience: 6,
-        specialties: ["Spiritual Tours", "Boat Rides", "Street Food"],
-        bio: "Discover the spiritual heart of India. From mesmerizing Ganga Aarti to narrow alleys full of surprises, Varanasi never disappoints.",
-        available: true,
-      },
-      {
-        id: "7", name: "Kabir Singh", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=kabir", location: "Manali, HP",
-        languages: ["English", "Hindi", "Punjabi"], rating: 4.8, reviewCount: 130, pricePerDay: 2800, experience: 9,
-        specialties: ["Trekking", "Adventure Sports", "Camping"],
-        bio: "Adventure is my middle name. From high-altitude treks to river rafting, I'll take you on the thrill ride of a lifetime in the Himalayas.",
-        available: true,
-      },
-      {
-        id: "8", name: "Diya Chatterjee", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=diya", location: "Darjeeling, WB",
-        languages: ["English", "Bengali", "Hindi", "Nepali"], rating: 4.7, reviewCount: 92, pricePerDay: 1900, experience: 5,
-        specialties: ["Tea Garden Tours", "Monastery Visits", "Sunrise Points"],
-        bio: "Let me take you through the misty hills and aromatic tea gardens of Darjeeling. A certified guide with a love for storytelling.",
-        available: true,
-      },
-    ];
 
-    const reviewsData = [
-      { id: "r1", guideId: "1", reviewer: "Neha M.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=neha", rating: 5, comment: "Aarav made our Jaipur trip unforgettable! His knowledge of the old city is incredible.", date: "2026-02-10" },
-      { id: "r2", guideId: "1", reviewer: "Tom W.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=tom", rating: 5, comment: "Best heritage walk I've ever been on. Highly recommended!", date: "2026-01-28" },
-      { id: "r3", guideId: "1", reviewer: "Sneha R.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sneha", rating: 4, comment: "Very knowledgeable and friendly. The food tour was a highlight.", date: "2026-01-15" },
-      { id: "r4", guideId: "2", reviewer: "Amit K.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=amit", rating: 5, comment: "Priya showed us the real artistic side of Jaipur. Amazing experience!", date: "2026-02-05" },
-      { id: "r5", guideId: "2", reviewer: "Lisa C.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=lisa", rating: 4, comment: "Wonderful cultural tour. Priya is very passionate about local art.", date: "2026-01-20" },
-      { id: "r6", guideId: "3", reviewer: "Rahul D.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=rahul", rating: 5, comment: "Ravi knows every hidden beach in Goa. We had the best day ever!", date: "2026-02-12" },
-      { id: "r7", guideId: "3", reviewer: "Sophie L.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sophie", rating: 5, comment: "Perfect guide for adventure lovers. The water sports were thrilling!", date: "2026-01-30" },
-      { id: "r11", guideId: "5", reviewer: "Pooja B.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=pooja", rating: 5, comment: "Arjun brings Hampi's ruins to life! Absolutely fascinating.", date: "2026-02-01" },
-      { id: "r12", guideId: "5", reviewer: "Mark T.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=mark", rating: 5, comment: "The cycling tour through Hampi was the highlight of our India trip.", date: "2026-01-18" },
-      { id: "r13", guideId: "6", reviewer: "Kavita P.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=kavita", rating: 5, comment: "Sanya's Varanasi tour was deeply moving. The Ganga Aarti was magical!", date: "2026-02-14" },
-      { id: "r16", guideId: "7", reviewer: "Nikhil G.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=nikhil", rating: 5, comment: "Kabir took us on an unforgettable trek. The views were breathtaking!", date: "2026-02-11" },
-      { id: "r18", guideId: "8", reviewer: "Suresh M.", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=suresh", rating: 5, comment: "Diya's storytelling made the tea garden tour magical.", date: "2026-02-06" },
-    ];
 
     function formatDate(dateString) {
       return new Date(dateString).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
@@ -574,10 +502,7 @@
         console.error('API Error:', e);
       }
 
-      if (!guide) {
-        guide = guidesData.find(g => g.id === guideId);
-        guideReviews = reviewsData.filter(r => r.guideId === guideId);
-      }
+
 
       if (!guide) {
         root.innerHTML = `
