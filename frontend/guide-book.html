@@ -204,16 +204,7 @@
   <div id="toastMessage" class="toast"></div>
 
   <script>
-    const guidesData = [
-      { id: "1", name: "Aarav Sharma", location: "Jaipur, Rajasthan", pricePerDay: 2500 },
-      { id: "2", name: "Priya Patel", location: "Jaipur, Rajasthan", pricePerDay: 2000 },
-      { id: "3", name: "Ravi Kumar", location: "Goa", pricePerDay: 3000 },
-      { id: "4", name: "Meera Nair", location: "Kerala", pricePerDay: 1800 },
-      { id: "5", name: "Arjun Reddy", location: "Hampi, Karnataka", pricePerDay: 2200 },
-      { id: "6", name: "Sanya Gupta", location: "Varanasi, UP", pricePerDay: 1500 },
-      { id: "7", name: "Kabir Singh", location: "Manali, HP", pricePerDay: 2800 },
-      { id: "8", name: "Diya Chatterjee", location: "Darjeeling, WB", pricePerDay: 1900 },
-    ];
+
 
     let currentGuide = null;
     let pricePerHour = 0;
@@ -252,9 +243,7 @@
         }
       } catch (e) { console.error('API Error:', e); }
 
-      if (!currentGuide) {
-        currentGuide = guidesData.find(g => g.id == guideId);
-      }
+
 
       if (!currentGuide) {
         root.innerHTML = `<div style="text-align:center;padding:40px;"><p>Guide not found.</p><a href="findguides.html">Back to search</a></div>`;
