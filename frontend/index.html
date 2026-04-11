@@ -322,16 +322,149 @@
   <div class="container" style="padding: 0 24px;">
     <div class="search-floating-card fade-up delay-4">
       <i class="fas fa-search" style="color:#64748b; font-size:20px; margin-left:14px;"></i>
-      <input type="text" id="landingSearchInput" placeholder="Search for destinations, cities, landmarks..." onkeyup="if(event.key==='Enter') executeLandingSearch()">
-      <button class="btn btn-primary" onclick="executeLandingSearch()">Explore Maps</button>
+      <input type="text" id="landingSearchInput" placeholder="Search for destinations, cities, landmarks..." onkeyup="if(event.key==='Enter') executeLandingSearch(); else onSearchInput()">
+      <button class="btn btn-primary" onclick="executeLandingSearch()">Search</button>
     </div>
   </div>
+
+  <!-- Search Results Section -->
+  <section id="searchResultsSection">
+    <div class="container" style="padding: 60px 24px;">
+      <div class="search-result-header">
+        <h2>Search Results for <em id="searchQueryDisplay"></em></h2>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <span class="search-count" id="resultCount">0 results</span>
+          <button class="clear-search-btn" onclick="clearSearch()">Clear Search</button>
+        </div>
+      </div>
+
+      <!-- Destinations Results -->
+      <div id="destResultsContainer" style="margin-bottom: 60px;">
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 18px; font-weight: 600; color: #0f172a; margin-bottom: 16px;">Destinations</h3>
+          <div class="dest-grid" id="destSearchResults">
+            <div class="no-results">
+              <div class="no-results-icon"><i class="fas fa-map"></i></div>
+              <h3>No Destinations Found</h3>
+              <p>Try searching for different places or browse all destinations.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Guides Results -->
+      <div id="guideResultsContainer" style="margin-bottom: 60px;">
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 18px; font-weight: 600; color: #0f172a; margin-bottom: 16px;">Local Guides</h3>
+          <div class="dest-grid" id="guideSearchResults">
+            <div class="no-results">
+              <div class="no-results-icon"><i class="fas fa-user"></i></div>
+              <h3>No Guides Found</h3>
+              <p>Try searching with different keywords or browse all guides.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
   
   <script>
+    let allDestinations = [];
+    let allGuides = [];
+
+    function onSearchInput() {
+      const query = document.getElementById('landingSearchInput').value.trim();
+      if (query.length === 0) {
+        clearSearch();
+        return;
+      }
+      performSearch(query);
+    }
+
+    function performSearch(query) {
+      const q = query.toLowerCase();
+      
+      // Filter destinations
+      const filteredDest = destinations.filter(d => 
+        d.name.toLowerCase().includes(q) || 
+        d.loc.toLowerCase().includes(q) ||
+        (d.tags && d.tags.toLowerCase().includes(q))
+      );
+
+      // Filter guides
+      const filteredGuides = allGuides.filter(g =>
+        g.full_name.toLowerCase().includes(q) ||
+        (g.city_location && g.city_location.toLowerCase().includes(q)) ||
+        (g.expertise && g.expertise.toLowerCase().includes(q))
+      );
+
+      // Display results
+      const destContainer = document.getElementById('destSearchResults');
+      if (filteredDest.length > 0) {
+        destContainer.innerHTML = filteredDest.map(d => buildResultCard(d)).join('');
+        document.getElementById('destResultsContainer').style.display = 'block';
+      } else {
+        destContainer.innerHTML = `
+          <div class="no-results">
+            <div class="no-results-icon"><i class="fas fa-map"></i></div>
+            <h3>No Destinations Found</h3>
+            <p>Try searching for different places.</p>
+          </div>`;
+        document.getElementById('destResultsContainer').style.display = 'block';
+      }
+
+      const guideContainer = document.getElementById('guideSearchResults');
+      if (filteredGuides.length > 0) {
+        guideContainer.innerHTML = filteredGuides.map((g, idx) => buildGuideCard(g, idx)).join('');
+        document.getElementById('guideResultsContainer').style.display = 'block';
+      } else {
+        guideContainer.innerHTML = `
+          <div class="no-results">
+            <div class="no-results-icon"><i class="fas fa-user"></i></div>
+            <h3>No Guides Found</h3>
+            <p>Try searching with different keywords.</p>
+          </div>`;
+        document.getElementById('guideResultsContainer').style.display = 'block';
+      }
+
+      // Update header
+      document.getElementById('searchQueryDisplay').textContent = `"${query}"`;
+      const totalResults = filteredDest.length + filteredGuides.length;
+      document.getElementById('resultCount').textContent = totalResults + ' ' + (totalResults === 1 ? 'result' : 'results');
+
+      // Show results section and scroll to it
+      document.getElementById('searchResultsSection').classList.add('visible');
+      setTimeout(() => {
+        document.getElementById('searchResultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    function clearSearch() {
+      document.getElementById('landingSearchInput').value = '';
+      document.getElementById('searchResultsSection').classList.remove('visible');
+      document.getElementById('destResultsContainer').style.display = 'none';
+      document.getElementById('guideResultsContainer').style.display = 'none';
+    }
+
     function executeLandingSearch() {
       const q = document.getElementById('landingSearchInput').value.trim();
-      gatedNav(`destinations.html${q ? '?search='+encodeURIComponent(q) : ''}`);
+      if (q.length > 0) {
+        performSearch(q);
+      }
     }
+
+    // Load all guides on page load
+    async function loadAllGuides() {
+      try {
+        const res = await fetch('http://localhost:5000/api/guides');
+        const data = await res.json();
+        allGuides = data;
+      } catch(err) {
+        console.error('Failed to load guides for search', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAllGuides);
   </script>
 
   <!-- ══════════════ FEATURED DESTINATIONS (Auth only) ══════════════ -->

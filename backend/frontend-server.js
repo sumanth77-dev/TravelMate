@@ -6,8 +6,10 @@ const PORT = 3000;
 const FRONTEND_DIR = path.join(__dirname, '../frontend');
 
 const server = http.createServer((req, res) => {
+  // Remove query string from URL
+  let url = req.url.split('?')[0];
   // Default to index.html if accessing root or directory
-  let filePath = path.join(FRONTEND_DIR, req.url === '/' ? 'index.html' : req.url);
+  let filePath = path.join(FRONTEND_DIR, url === '/' ? 'index.html' : url);
   
   // Prevent directory traversal
   if (!path.resolve(filePath).startsWith(FRONTEND_DIR)) {
