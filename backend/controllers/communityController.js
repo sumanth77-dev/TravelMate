@@ -86,7 +86,18 @@ const getPosts = async (req, res) => {
             budget: req.query.budget
         };
 
-        const posts = await Community.getPosts(filters);
+        // Extract userId from token (optional — not required for public feed)
+        let userId = null;
+        try {
+            const authHeader = req.headers.authorization;
+            if (authHeader && authHeader.startsWith('Bearer ')) {
+                const jwt = require('jsonwebtoken');
+                const decoded = jwt.verify(authHeader.split(' ')[1], process.env.JWT_SECRET);
+                userId = decoded.id;
+            }
+        } catch (e) { /* token missing or invalid — continue without userId */ }
+
+        const posts = await Community.getPosts(filters, userId);
 
         // To make it easy for frontend to just parse, we handle null JSON returns
         const formatted = posts.map(p => ({
@@ -129,7 +140,7 @@ const toggleLike = async (req, res) => {
         const result = await Community.toggleLike(postId, userId);
         
         // --- NOTIFICATION HOOK: Like Reaction ---
-        if (result.action === 'liked') {
+        if (result.hasLiked) {
             try {
                 const Notification = require('../models/notificationModel');
                 const db = require('../config/db');

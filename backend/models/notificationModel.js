@@ -57,6 +57,20 @@ const Notification = {
             console.error('[DEBUG] Error bulk creating notifications:', error);
             throw error;
         }
+    },
+
+    // Delete notification
+    deleteNotification: async (id, userId) => {
+        try {
+            const [result] = await db.query(
+                'DELETE FROM notifications WHERE id = ? AND user_id = ?',
+                [id, userId]
+            );
+            return result.affectedRows > 0;
+        } catch (error) {
+            console.error('[DEBUG] Error deleting notification:', error);
+            throw error;
+        }
     }
 };
 

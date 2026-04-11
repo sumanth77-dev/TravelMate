@@ -6,6 +6,10 @@ const { protect } = require('../middleware/authMiddleware');
 router.route('/')
     .post(protect, createBooking);
 
+// GET /api/bookings/user - Get authenticated user's bookings
+router.route('/user')
+    .get(protect, getMyBookings);
+
 router.route('/guide')
     .get(protect, getGuideBookings);
 

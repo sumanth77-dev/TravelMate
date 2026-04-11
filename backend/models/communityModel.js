@@ -17,11 +17,12 @@ const Community = {
         await db.query(`INSERT INTO post_images (post_id, image_url) VALUES ?`, [values]);
     },
 
-    getPosts: async (filters) => {
+    getPosts: async (filters, userId) => {
         let query = `
             SELECT p.*, 
                    IFNULL(JSON_ARRAYAGG(pi.image_url), JSON_ARRAY()) as images,
                    IFNULL(lc.loc_count, 0) as loc_count
+                   ${userId ? ', (SELECT COUNT(*) FROM post_likes pl2 WHERE pl2.post_id = p.id AND pl2.user_id = ?) as has_liked' : ', 0 as has_liked'}
             FROM community_posts p
             LEFT JOIN post_images pi ON p.id = pi.post_id
             LEFT JOIN (
@@ -31,6 +32,7 @@ const Community = {
             ) lc ON lc.location = p.location
         `;
         const params = [];
+        if (userId) params.push(userId);
         const conditions = [];
 
         if (filters.category && filters.category !== 'All') {
@@ -87,6 +89,9 @@ const Community = {
                 try { r.images = JSON.parse(r.images); } catch (e) { }
             }
             if (r.images[0] === null) r.images = []; // MySQL JSON_ARRAYAGG weirdness handling
+            // Deduplicate images (GROUP BY can cause duplicates)
+            r.images = [...new Set(r.images)].filter(Boolean);
+            r.has_liked = r.has_liked > 0;
             return r;
         });
     },

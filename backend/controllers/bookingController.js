@@ -32,6 +32,30 @@ const createBooking = async (req, res) => {
             }
         } catch (notifErr) { console.error('[DEBUG] Fault propagating booking request notification:', notifErr); }
 
+        // Fetch the created booking with guide details for response
+        try {
+            const db = require('../config/db');
+            const [[booking]] = await db.query(
+                `SELECT b.*, g.city_location, u.full_name AS guide_name 
+                 FROM bookings b 
+                 JOIN guides g ON b.guide_id = g.id 
+                 JOIN users u ON g.user_id = u.id
+                 WHERE b.id = ?`,
+                [bookingId]
+            );
+            
+            if (booking) {
+                return res.status(201).json({ 
+                    id: bookingId, 
+                    message: 'Booking request sent successfully',
+                    booking: booking
+                });
+            }
+        } catch (fetchErr) {
+            console.error('[DEBUG] Error fetching created booking:', fetchErr);
+        }
+
+        // Fallback response if fetch fails
         res.status(201).json({ id: bookingId, message: 'Booking request sent successfully' });
     } catch (error) {
         console.error(error);
@@ -41,7 +65,14 @@ const createBooking = async (req, res) => {
 
 const getMyBookings = async (req, res) => {
     try {
-        const bookings = await Booking.findByUserId(req.params.userId || req.user.id);
+        // Use req.user.id from auth middleware (authenticated user)
+        // If :userId param exists and is numeric, support fetching other user's bookings (optional)
+        // But by default use the authenticated user's ID
+        const userId = req.params.userId && !isNaN(req.params.userId) 
+            ? req.params.userId 
+            : req.user.id;
+        
+        const bookings = await Booking.findByUserId(userId);
         res.status(200).json(bookings);
     } catch (error) {
         console.error(error);
