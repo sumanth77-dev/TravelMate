@@ -1,6 +1,6 @@
-/* ══════════════════════════════════════════
-   TravelMate — Auth Utility  (tm-auth.js)
-   ══════════════════════════════════════════ */
+﻿/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+   TravelMate Ã¢â‚¬â€ Auth Utility  (tm-auth.js)
+   Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 
 const TmAuth = (() => {
   const KEY = 'tm_user';
@@ -23,7 +23,7 @@ const TmAuth = (() => {
     window.location.href = 'index.html';
   };
 
-  /* ── Notifications API & State ── */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Notifications API & State Ã¢â€â‚¬Ã¢â€â‚¬ */
   let currentNotifications = [];
 
   const fetchNotifications = async () => {
@@ -81,7 +81,7 @@ const TmAuth = (() => {
   };
   const getNotifs = () => currentNotifications;
 
-  /* ── redirect by role if on wrong dashboard ── */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ redirect by role if on wrong dashboard Ã¢â€â‚¬Ã¢â€â‚¬ */
   const guardDashboard = () => {
     const u = getUser(); const path = window.location.pathname;
 
@@ -101,7 +101,7 @@ const TmAuth = (() => {
     }
   };
 
-  /* ── inject auth-aware nav items ── */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ inject auth-aware nav items Ã¢â€â‚¬Ã¢â€â‚¬ */
   const applyNav = () => {
     document.querySelectorAll('#pointsCounter').forEach(el => {
       if (!window.location.pathname.includes('dashboard')) {
@@ -177,7 +177,7 @@ const TmAuth = (() => {
         ul.appendChild(bellLi);
 
       } else {
-        // Don't inject Login/Register links on landing pages — they use the "Explore Now" CTA
+        // Don't inject Login/Register links on landing pages Ã¢â‚¬â€ they use the "Explore Now" CTA
         const isLandingPage = ['index.html', 'about.html', 'contact.html'].some(p => window.location.pathname.endsWith(p)) || window.location.pathname.endsWith('/');
         if (!isLandingPage) {
           ['login.html|Login', 'signup.html|Register'].forEach(pair => {
@@ -195,7 +195,7 @@ const TmAuth = (() => {
     _buildNotifPanel();
   };
 
-  /* ── Notification dropdown panel ── */
+  /* Ã¢â€â‚¬Ã¢â€â‚¬ Notification dropdown panel Ã¢â€â‚¬Ã¢â€â‚¬ */
   const _buildNotifPanel = () => {
     if (document.getElementById('tmNotifPanel')) return;
     const panel = document.createElement('div');
@@ -208,7 +208,7 @@ const TmAuth = (() => {
     panel.innerHTML = `
       <style>@keyframes notifSlide{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}</style>
       <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px 12px;border-bottom:1px solid #f3f4f6;">
-        <span style="font-weight:700;font-size:0.95rem;color:#111827;">🔔 Notifications</span>
+        <span style="font-weight:700;font-size:0.95rem;color:#111827;">Ã°Å¸â€â€ Notifications</span>
         <button onclick="TmAuth.markAllRead()" style="font-size:0.75rem;color:#2563eb;font-weight:600;background:none;border:none;cursor:pointer;">Mark all read</button>
       </div>
       <div id="tmNotifList" style="overflow-y:auto;max-height:320px;padding:8px 0;"></div>
@@ -235,14 +235,14 @@ const TmAuth = (() => {
 
   const getIconForType = (type) => {
     switch(type) {
-      case 'new_post': return '📝';
-      case 'post_reaction': return '❤️';
-      case 'booking_request': return '📅';
-      case 'booking_accepted': return '✅';
-      case 'booking_rejected': return '❌';
-      case 'admin': return '🛡️';
-      case 'guide': return '🧭';
-      default: return '🔔';
+      case 'new_post': return 'Ã°Å¸â€œÂ';
+      case 'post_reaction': return 'Ã¢ÂÂ¤Ã¯Â¸Â';
+      case 'booking_request': return 'Ã°Å¸â€œâ€¦';
+      case 'booking_accepted': return 'Ã¢Å“â€¦';
+      case 'booking_rejected': return 'Ã¢ÂÅ’';
+      case 'admin': return 'Ã°Å¸â€ºÂ¡Ã¯Â¸Â';
+      case 'guide': return 'Ã°Å¸Â§Â­';
+      default: return 'Ã°Å¸â€â€';
     }
   };
 
@@ -260,7 +260,7 @@ const TmAuth = (() => {
     if (!list) return;
     if (!currentNotifications || !currentNotifications.length) {
       list.innerHTML = `<div style="text-align:center;padding:32px 20px;color:#9ca3af;">
-        <div style="font-size:2.5rem;margin-bottom:8px;">🔕</div>
+        <div style="font-size:2.5rem;margin-bottom:8px;">Ã°Å¸â€â€¢</div>
         <p style="font-size:0.88rem;">No notifications yet</p></div>`;
       return;
     }
@@ -293,7 +293,7 @@ const TmAuth = (() => {
 
   /* auto-run on DOMContentLoaded */
   if (document.readyState === 'loading') {
-    /* ── Init ── */
+    /* Ã¢â€â‚¬Ã¢â€â‚¬ Init Ã¢â€â‚¬Ã¢â€â‚¬ */
     document.addEventListener('DOMContentLoaded', () => {
       guardDashboard();
       applyNav();
@@ -351,9 +351,9 @@ const TmAuth = (() => {
   };
 })();
 
-/* ══════════════════════════════════════════
+/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
    GLOBAL TOAST NOTIFICATIONS
-   ══════════════════════════════════════════ */
+   Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 window.TmToast = {
   initContainer: function () {
     if (!document.getElementById('tm-toast-container')) {
@@ -385,9 +385,9 @@ window.TmToast = {
   }
 };
 
-/* ══════════════════════════════════════════
+/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
    GLOBAL AUTH MODAL (SPLIT-PANEL)
-   ══════════════════════════════════════════ */
+   Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
 window.openAuthModal = function() {
   let modal = document.getElementById('tmGlobalAuthModal');
   if (!modal) {
@@ -449,11 +449,13 @@ window.openAuthModal = function() {
                 </div>
                 <div class="gmodal-input-wrap">
                   <div class="gmodal-input-bar"></div>
-                  <input type="password" id="gmodalPass" class="gmodal-input" placeholder="••••••••" required>
+                  <input type="password" id="gmodalPass" class="gmodal-input" placeholder="Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢" required>
                   <button type="button" onclick="const p=document.getElementById('gmodalPass'); p.type=p.type==='password'?'text':'password'; this.textContent=p.type==='password'?'Show':'Hide';" style="position:absolute; right:14px; top:50%; transform:translateY(-50%); background:none; border:none; color:#94a3b8; font-weight:600; cursor:pointer; font-size:13px;">Show</button>
                 </div>
                 
                 <button class="gmodal-btn" onclick="TmAuth._submitModalLogin()">SIGN IN</button>
+                 <div style="display:flex;align-items:center;gap:12px;margin:16px 0 4px;"><div style="flex:1;height:1px;background:#e2e8f0;"></div><span style="font-size:11px;color:#94a3b8;font-weight:600;">OR CONTINUE WITH</span><div style="flex:1;height:1px;background:#e2e8f0;"></div></div>
+                 <div id="gmodalGoogleBtnLogin" style="display:flex;justify-content:center;width:100%;min-height:44px;"></div>
                 <p style="text-align:center; margin-top:20px; font-size:14px; color:#64748b;">Don't have an account? <a href="#" onclick="event.preventDefault(); TmAuth._switchModalTab('register');" style="color:#2563eb; font-weight:600; text-decoration:none;">Sign up free</a></p>
               </div>
 
@@ -512,6 +514,8 @@ window.openAuthModal = function() {
                 </div>
                 
                 <button class="gmodal-btn" onclick="TmAuth._submitModalRegister()">CREATE ACCOUNT</button>
+                 <div style="display:flex;align-items:center;gap:12px;margin:16px 0 4px;"><div style="flex:1;height:1px;background:#e2e8f0;"></div><span style="font-size:11px;color:#94a3b8;font-weight:600;">OR CONTINUE WITH</span><div style="flex:1;height:1px;background:#e2e8f0;"></div></div>
+                 <div id="gmodalGoogleBtnRegister" style="display:flex;justify-content:center;width:100%;min-height:44px;"></div>
                 <p style="text-align:center; margin-top:20px; font-size:14px; color:#64748b;">Already have an account? <a href="#" onclick="event.preventDefault(); TmAuth._switchModalTab('login');" style="color:#2563eb; font-weight:600; text-decoration:none;">Sign in</a></p>
               </div>
            </div>
@@ -519,6 +523,8 @@ window.openAuthModal = function() {
       </div>
     `;
     document.body.appendChild(modal);
+    // Render Google Sign-In buttons after modal is in DOM (uses popup, not FedCM)
+    setTimeout(_tmInitAndRenderGoogleBtns, 300);
   }
   
   // Reset fields
@@ -529,11 +535,93 @@ window.openAuthModal = function() {
   modal.style.display = 'flex';
   void modal.offsetWidth;
   modal.style.opacity = '1';
+  // Render Google buttons after modal is visible in DOM
+  setTimeout(function() {
+    if (typeof window._tmRenderGoogleButtons === 'function') {
+      window._tmRenderGoogleButtons();
+    }
+  }, 300);
 };
 
 window.openRegisterModal = function() {
   openAuthModal();
   setTimeout(() => TmAuth._switchModalTab('register'), 200);
+};
+
+
+// --- GOOGLE SIGN-IN FOR MODAL ---
+const GMODAL_CLIENT_ID = '410963444859-hp8pq90ma485ejgjeschku36bte24ln8.apps.googleusercontent.com';
+window._tmGoogleInitDone = false;
+
+function _tmInitAndRenderGoogleBtns() {
+  if (typeof google === 'undefined' || !google.accounts) return;
+  if (!window._tmGoogleInitDone) {
+    google.accounts.id.initialize({
+      client_id: GMODAL_CLIENT_ID,
+      callback: window._tmHandleGoogleCredential,
+      auto_select: false,
+      cancel_on_tap_outside: true
+    });
+    window._tmGoogleInitDone = true;
+  }
+  ['gmodalGoogleBtnLogin', 'gmodalGoogleBtnRegister'].forEach(function(id) {
+    const wrap = document.getElementById(id);
+    if (wrap && wrap.children.length === 0) {
+      google.accounts.id.renderButton(wrap, {
+        type: 'standard',
+        theme: 'outline',
+        size: 'large',
+        text: 'continue_with',
+        shape: 'rectangular',
+        logo_alignment: 'left',
+        width: 360
+      });
+    }
+  });
+}
+
+// Load GSI script and render buttons once it's ready
+(function loadGoogleGSI() {
+  if (document.querySelector('script[src*="accounts.google.com/gsi"]')) {
+    // Already loaded — just try to render
+    setTimeout(_tmInitAndRenderGoogleBtns, 100);
+    return;
+  }
+  const s = document.createElement('script');
+  s.src = 'https://accounts.google.com/gsi/client';
+  s.async = true;
+  s.defer = true;
+  s.onload = function() { _tmInitAndRenderGoogleBtns(); };
+  document.head.appendChild(s);
+})();
+
+// Callback after Google account is chosen (uses popup flow, no FedCM)
+window._tmHandleGoogleCredential = async function(response) {
+  const errEl = document.getElementById('gmodalErr');
+  try {
+    const res = await fetch('http://localhost:5000/api/auth/google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential: response.credential })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Google sign-in failed');
+    localStorage.setItem('tm_active_role', data.role || 'User');
+    localStorage.setItem('token', data.token);
+    TmAuth.login(data.full_name, data.email, data.role || 'User', data.avatar || null, data.token, data.id);
+    closeAuthModal();
+    const intended = sessionStorage.getItem('tm_intended_url');
+    if (intended) {
+      sessionStorage.removeItem('tm_intended_url');
+      window.location.href = intended;
+    } else {
+      if (data.role === 'Admin') window.location.href = 'admin-dashboard.html';
+      else if (data.role === 'Guide' || data.role === 'Both') window.location.href = 'guide-dashboard.html';
+      else window.location.reload();
+    }
+  } catch(err) {
+    if (errEl) { errEl.textContent = err.message; errEl.style.display = 'block'; }
+  }
 };
 
 window.closeAuthModal = function() {

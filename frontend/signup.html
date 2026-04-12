@@ -11,6 +11,8 @@
     rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="tm-auth.js"></script>
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
     body {
@@ -698,7 +700,10 @@
 
         <div class="or-divider">OR</div>
 
-        <button class="google-btn" onclick="simulateGoogleAuth()">
+        <!-- Hidden Google One-Tap render target -->
+        <div id="googleBtnContainerSignup" style="display:none;"></div>
+
+        <button class="google-btn" id="googleSignUpBtn" onclick="handleGoogleSignup()">
           <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="18" alt="Google">
           Continue with Google
         </button>
@@ -855,26 +860,58 @@
       }
     });
 
-    function simulateGoogleAuth() {
-      // Create a mock Google user if they don't exist
-      const googleUser = {
-        name: "Google Explorer",
-        email: "explorer@gmail.com",
-        role: selectedRole,
-        password: "hidden_google_oauth_token"
-      };
+    // ── Google OAuth (Signup page) ────────────────────────────────────────────
+    const GOOGLE_CLIENT_ID = '410963444859-hp8pq90ma485ejgjeschku36bte24ln8.apps.googleusercontent.com';
 
-      const users = JSON.parse(localStorage.getItem('tm_users') || '[]');
-      if (!users.find(u => u.email === googleUser.email && u.role === selectedRole)) {
-        users.push(googleUser);
-        localStorage.setItem('tm_users', JSON.stringify(users));
+    window.handleGoogleCredentialSignup = async function(response) {
+      const btn = document.getElementById('googleSignUpBtn');
+      btn.disabled = true;
+      btn.textContent = 'Signing up with Google...';
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: response.credential })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Google sign-up failed');
+
+        localStorage.setItem('tm_active_role', data.role || 'User');
+        localStorage.setItem('token', data.token);
+        TmAuth.login(data.full_name, data.email, data.role || 'User', data.avatar || null, data.token, data.id);
+
+        showSuccess('Account ready! Redirecting...');
+        setTimeout(() => window.location.href = 'travel-mate-dashboard.html', 800);
+      } catch(err) {
+        showError(err.message);
+        btn.disabled = false;
+        btn.innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="18" alt="Google"> Continue with Google';
       }
+    };
 
-      showSuccess('Google Authentication successful! Redirecting...');
-      TmAuth.login(googleUser.name, googleUser.email, googleUser.role, null);
-      setTimeout(() => window.location.href = 'index.html', 1000);
-    }
+    window.handleGoogleSignup = function() {
+      if (typeof google === 'undefined') {
+        showError('Google services not loaded. Check your internet connection.');
+        return;
+      }
+      google.accounts.id.prompt();
+    };
+
+    window.addEventListener('load', function() {
+      if (typeof google === 'undefined') return;
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredentialSignup,
+        auto_select: false,
+        cancel_on_tap_outside: true
+      });
+      google.accounts.id.renderButton(
+        document.getElementById('googleBtnContainerSignup'),
+        { theme: 'outline', size: 'large', text: 'signup_with' }
+      );
+    });
   </script>
+
 
 </body>
 

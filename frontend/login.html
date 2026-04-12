@@ -11,6 +11,8 @@
     rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="tm-auth.js"></script>
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <style>
     body {
@@ -375,8 +377,23 @@
       background: #e2e8f0;
     }
 
-    /* Google button */
-    .google-btn {
+    /* Google button wrapper — scales GSI button to full width */
+    .google-btn-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    /* Scale the GSI iframe to fill the container */
+    .google-btn-wrap > div,
+    .google-btn-wrap iframe {
+      width: 100% !important;
+    }
+
+    /* Fallback custom button (shown only if GSI fails) */
+    .google-btn-fallback {
       width: 100%;
       padding: 12px;
       border: 1.5px solid #e2e8f0;
@@ -394,7 +411,7 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    .google-btn:hover {
+    .google-btn-fallback:hover {
       border-color: #2563eb;
       background: #eff6ff;
       transform: translateY(-1px);
@@ -556,7 +573,7 @@
             <label>Password</label>
             <div class="input-wrap">
               <div class="input-bar"></div>
-              <input type="password" id="password" placeholder="••••••••" required>
+              <input type="password" id="password" placeholder="password" required>
               <button type="button" class="toggle-pass" onclick="togglePassword()">Show</button>
             </div>
           </div>
@@ -573,10 +590,8 @@
 
         <div class="or-divider">OR</div>
 
-        <button class="google-btn" onclick="simulateGoogleAuth()">
-          <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="18" alt="Google">
-          Continue with Google
-        </button>
+        <!-- Google Sign-In button rendered by GSI (full-width) -->
+        <div class="google-btn-wrap" id="googleBtnWrap"></div>
 
         <div class="auth-switch">
           Don't have an account? <a href="signup.html">Create Account</a>
@@ -681,6 +696,79 @@
       }
     });
 
+    // ── Google OAuth ──────────────────────────────────────────────────────────
+    const GOOGLE_CLIENT_ID = '410963444859-hp8pq90ma485ejgjeschku36bte24ln8.apps.googleusercontent.com';
+
+    // Called by Google after user picks an account
+    window.handleGoogleCredential = async function(response) {
+      const wrap = document.getElementById('googleBtnWrap');
+      wrap.innerHTML = '<div style="text-align:center;padding:10px;font-size:13px;color:#64748b;">Signing in with Google...</div>';
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: response.credential })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Google login failed');
+
+        localStorage.setItem('tm_active_role', data.role || 'User');
+        localStorage.setItem('token', data.token);
+        TmAuth.login(data.full_name, data.email, data.role || 'User', data.avatar || null, data.token, data.id);
+
+        if (data.role === 'Admin') {
+          window.location.href = 'admin-dashboard.html';
+        } else if (data.role === 'Guide' || data.role === 'Both') {
+          window.location.href = 'guide-dashboard.html';
+        } else {
+          window.location.href = 'travel-mate-dashboard.html';
+        }
+      } catch(err) {
+        showError(err.message);
+        initGoogleButton(); // Re-render the button on error
+      }
+    };
+
+    function initGoogleButton() {
+      const wrap = document.getElementById('googleBtnWrap');
+      if (typeof google !== 'undefined' && google.accounts) {
+        // Initialize GSI
+        google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleCredential,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+          ux_mode: 'popup'
+        });
+        // Render the real Google button — full width of the container
+        google.accounts.id.renderButton(wrap, {
+          type: 'standard',
+          theme: 'outline',
+          size: 'large',
+          text: 'continue_with',
+          shape: 'rectangular',
+          logo_alignment: 'left',
+          width: wrap.offsetWidth || 368
+        });
+      } else {
+        // Fallback if GSI script didn't load
+        wrap.innerHTML = `
+          <button class="google-btn-fallback" onclick="showError('Google Sign-In is not available. Make sure you are connected to the internet.')">
+            <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png" width="18" alt="Google">
+            Continue with Google
+          </button>`;
+      }
+    }
+
+    // Try to init immediately, also on load (GSI may load before or after)
+    if (document.readyState === 'complete') {
+      initGoogleButton();
+    } else {
+      window.addEventListener('load', initGoogleButton);
+    }
+    // Retry after 1.5s if GSI loads late (async defer)
+    setTimeout(initGoogleButton, 1500);
+
     function simulateForgotPassword(e) {
       e.preventDefault();
       const emailInput = document.getElementById('email')?.value.trim();
@@ -691,9 +779,6 @@
       }
     }
 
-    function simulateGoogleAuth() {
-      showSuccess('Google OAuth is not configured for this demo.');
-    }
 
     // Secret backdoor to show Admin tab (double click title)
     document.querySelector('.auth-form-title').addEventListener('dblclick', () => {
